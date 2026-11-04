@@ -1,0 +1,28 @@
+line_item_key,label,statement,section,sign,is_subtotal,display_order
+revenue_corbatas,Revenue corbatas,income_statement,revenue,1,false,1
+revenue_bufandas,Revenue bufandas,income_statement,revenue,1,false,2
+revenue_calcetines,Revenue calcetines,income_statement,revenue,1,false,3
+revenue_total,Revenue total,income_statement,revenue,1,true,4
+cost_corbatas,Cost corbatas,income_statement,cost_of_sales,-1,false,5
+cost_bufandas,Cost bufandas,income_statement,cost_of_sales,-1,false,6
+cost_calcetines,Cost calcetines,income_statement,cost_of_sales,-1,false,7
+cost_of_sales_total,Cost of sales total,income_statement,cost_of_sales,-1,true,8
+gross_profit,Gross profit,income_statement,margin,1,true,9
+margin_corbatas,Margin corbatas,income_statement,cost_of_sales,1,false,10
+margin_bufandas,Margin bufandas,income_statement,cost_of_sales,1,false,11
+margin_calcetines,Margin calcetines,income_statement,cost_of_sales,1,false,12
+marketing_expenses,Marketing expenses,income_statement,opex,-1,false,13
+personnel_expenses,Personnel expenses,income_statement,opex,-1,false,14
+rd_expenses,Rd expenses,income_statement,opex,-1,false,15
+depreciation_expenses,Depreciation expenses,income_statement,opex,-1,false,16
+insolvency_expenses,Insolvency expenses,income_statement,opex,-1,false,17
+general_expenses,General expenses,income_statement,opex,-1,false,18
+operating_expenses_total,Operating expenses total,income_statement,opex,-1,true,19
+gross_result,Gross result,income_statement,margin,1,true,20
+financial_income,Financial income,income_statement,financial,1,false,21
+financial_expense,Financial expense,income_statement,financial,-1,false,22
+financial_result,Financial result,income_statement,financial,1,true,23
+extraordinary_result,Extraordinary result,income_statement,extraordinary,1,false,24
+net_result_before_taxes,Net result before taxes,income_statement,net,1,true,25
+taxes,Taxes,income_statement,net,-1,false,26
+net_result_after_taxes,Net result after taxes,income_statement,net,1,true,27

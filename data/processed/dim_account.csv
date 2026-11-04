@@ -1,0 +1,24 @@
+account_key,label,section,is_total
+accounts_receivable,Accounts receivable,current_assets,false
+balance_detail_residual,Balance detail residual,other,false
+balance_reported_residual,Balance reported residual,other,false
+capital,Capital,equity,false
+cash,Cash,current_assets,false
+detailed_equity,Detailed equity,equity,false
+extraordinary_debt,Extraordinary debt,other,false
+financial_assets_cp,Financial assets cp,other,false
+inventory,Inventory,current_assets,false
+long_term_debt,Long term debt,other,false
+reported_equity,Reported equity,equity,false
+reserves,Reserves,equity,false
+result,Result,equity,false
+short_term_debt,Short term debt,current_liabilities,false
+suppliers,Suppliers,current_liabilities,false
+taxes_payable,Taxes payable,current_liabilities,false
+total_assets,Total assets,assets,true
+total_current_assets,Total current assets,assets,true
+total_current_liabilities,Total current liabilities,other,true
+total_liabilities,Total liabilities,liabilities,true
+total_liabilities_equity,Total liabilities equity,liabilities,true
+total_non_current_assets,Total non current assets,assets,true
+working_capital,Working capital,other,false

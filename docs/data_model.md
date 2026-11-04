@@ -157,9 +157,21 @@ Annual grain, period-end snapshot. ~120 rows.
 | `product_key` | text | FK → `dim_product` |
 | `units_sold` | int | |
 | `revenue` | decimal | Net of channel discount |
-| `cost_of_sales` | decimal | Direct cost only |
 
-Quarterly grain. 20 quarters × 3 products = 60 rows.
+Quarterly grain. 20 quarters × 3 products = 60 rows. Cost is not available at
+quarterly depth, so it lives in `fact_product_annual`.
+
+### `fact_product_annual.csv` — grain: year × product
+
+| Column | Type | Notes |
+|---|---|---|
+| `period_key` | text | FK → `dim_period` (year grain) |
+| `product_key` | text | FK → `dim_product` |
+| `revenue` | decimal | |
+| `cost_of_sales` | decimal | Direct cost only |
+| `gross_margin` | decimal | `revenue - cost_of_sales` |
+
+Annual grain. 5 years × 3 products = 15 rows.
 
 ### `fact_market.csv` — grain: year × product
 
@@ -214,6 +226,9 @@ dim_status     1 ── *  fact_balance
 
 dim_period     1 ── *  fact_sales
 dim_product    1 ── *  fact_sales
+
+dim_period     1 ── *  fact_product_annual
+dim_product    1 ── *  fact_product_annual
 
 dim_period     1 ── *  fact_market
 dim_product    1 ── *  fact_market
@@ -277,6 +292,19 @@ The annual figure is authoritative and is **not** the sum of its quarters in thi
 dataset. Both grains are stored in `dim_period` with an explicit `grain` column so
 that a filter can never silently mix them. Any measure that aggregates across
 grains must filter on `dim_period[grain]` first.
+
+## Implementation status
+
+| Table | Status |
+|---|---|
+| 9 dimensions | Produced |
+| `fact_financials` | Produced — 177 rows (5 years actual + 3 years budget) |
+| `fact_balance` | Produced — 115 rows |
+| `fact_sales` | Produced — 60 rows |
+| `fact_product_annual` | Produced — 15 rows |
+| `fact_market` | Pending — the market sheet stacks three blocks and needs block disambiguation |
+| `fact_forecast` | Pending — needs the forecast engine |
+| `fact_sensitivity` | Pending — needs the sensitivity engine |
 
 ## Adding a new year
 

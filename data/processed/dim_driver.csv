@@ -1,0 +1,6 @@
+driver_key,label,unit
+price,Price,percent
+volume,Volume,percent
+unit_cost,Unit cost,percent
+channel_discount,Channel discount,percent
+capex,Capex,percent

@@ -1,0 +1,5 @@
+status_key,label,severity,description
+confirmed,Confirmed,0,Ties to a source cell and passes all applicable identities
+inferred_accepted,Inferred accepted,1,Derived from confirmed inputs; derivation documented
+pending,Pending,2,Source exists but is incomplete or contested
+unreconciled,Unreconciled,4,Fails a reconciliation and is carried forward as a visible gap

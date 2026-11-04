@@ -155,6 +155,11 @@ def _sheet_key(sheet: str) -> str:
     return value
 
 
+def sheet_role(sheet: str, source_id: str, aliases: dict[str, dict[str, str]]) -> str:
+    """Resolve the business role of a sheet, honouring per-source aliases."""
+    return aliases.get(source_id, {}).get(normalize_label(sheet), _sheet_key(sheet))
+
+
 def _source(observation: Observation | None) -> str:
     return observation.source_id if observation is not None else ""
 
@@ -201,9 +206,7 @@ class Builder:
 
     def _role(self, observation: Observation) -> str:
         """Resolve the business role of a sheet, honouring per-source aliases."""
-        aliases = self.config.sheet_aliases.get(observation.source_id, {})
-        raw = normalize_label(observation.sheet)
-        return aliases.get(raw, _sheet_key(observation.sheet))
+        return sheet_role(observation.sheet, observation.source_id, self.config.sheet_aliases)
 
     def find(
         self,
