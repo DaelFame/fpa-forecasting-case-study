@@ -192,3 +192,21 @@ def test_sources_remain_unchanged(f2_result) -> None:
     for source in f2_result.pipeline.sources:
         assert source.hash_unchanged is True
         assert sha256_file(Path(source.path)) == source.sha256_before
+
+
+def test_engine_covers_every_closed_year(f2_result) -> None:
+    years = {row.period for row in f2_result.rows if row.section == "income_statement"}
+    assert years == {2024, 2025, 2026, 2027, 2028}
+
+
+def test_every_closed_year_has_a_positive_revenue(f2_result) -> None:
+    for year in (2024, 2025, 2026, 2027, 2028):
+        revenue = next(
+            row
+            for row in f2_result.rows
+            if row.section == "income_statement"
+            and row.metric == "revenue_total"
+            and row.period == year
+        )
+        assert revenue.value is not None, f"sin ingresos en {year}"
+        assert revenue.value > 0, f"ingresos no positivos en {year}"

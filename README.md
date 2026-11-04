@@ -121,7 +121,7 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 | Component | Status |
 |---|---|
 | Literal extraction, canonical layer, validation | Done |
-| Income statement, balance, debt, cash flow reconciliation | Done — 2026–2027 |
+| Income statement, balance, debt, cash flow reconciliation | Done — 2024–2028 (2024 cash flow partial: no 2023 opening balance) |
 | Dual decision-schema normalisation | Done |
 | Deterministic driver model | Done — reconstructed from 2024–2028 |
 | Annual and quarterly panel, 2024–2029 | In progress |

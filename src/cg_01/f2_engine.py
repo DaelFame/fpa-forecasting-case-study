@@ -47,6 +47,9 @@ class F2Config:
     output_dir: Path
     exact_tolerance_eur: float = 0.005
     documented_residual_eur: float = 1.0
+    periods: tuple[int, ...] = (2026, 2027)
+    precedence: dict[int, dict[str, int]] = field(default_factory=dict)
+    sheet_aliases: dict[str, dict[str, str]] = field(default_factory=dict)
 
 
 @dataclass
@@ -112,11 +115,36 @@ def load_f2_config(
     resolved_output = Path(output_dir) if output_dir is not None else Path(str(paths.get("output_dir", "outputs/f2")))
     if not resolved_output.is_absolute():
         resolved_output = (root / resolved_output).resolve()
+
+    periods_raw = raw.get("periods", {}) if isinstance(raw.get("periods", {}), dict) else {}
+    start = int(periods_raw.get("start", 2026))
+    end = int(periods_raw.get("end", 2027))
+    periods = tuple(range(start, end + 1))
+
+    precedence: dict[int, dict[str, int]] = {}
+    precedence_raw = raw.get("precedence", {}) if isinstance(raw.get("precedence", {}), dict) else {}
+    for key, sources in precedence_raw.items():
+        if not isinstance(sources, list):
+            continue
+        precedence[int(key)] = {str(source): rank for rank, source in enumerate(sources)}
+
+    sheet_aliases: dict[str, dict[str, str]] = {}
+    aliases_raw = raw.get("sheet_aliases", {}) if isinstance(raw.get("sheet_aliases", {}), dict) else {}
+    for source_id, mapping in aliases_raw.items():
+        if not isinstance(mapping, dict):
+            continue
+        sheet_aliases[str(source_id)] = {
+            normalize_label(str(sheet)): str(role) for sheet, role in mapping.items()
+        }
+
     return F2Config(
         project_root=root,
         output_dir=resolved_output,
         exact_tolerance_eur=float(reconciliation.get("exact_tolerance_eur", 0.005)),
         documented_residual_eur=float(reconciliation.get("documented_residual_eur", 1.0)),
+        periods=periods,
+        precedence=precedence,
+        sheet_aliases=sheet_aliases,
     )
 
 
@@ -171,6 +199,12 @@ class Builder:
             if observation is not None:
                 self.balance_labels.add((observation.period, observation.label_normalized))
 
+    def _role(self, observation: Observation) -> str:
+        """Resolve the business role of a sheet, honouring per-source aliases."""
+        aliases = self.config.sheet_aliases.get(observation.source_id, {})
+        raw = normalize_label(observation.sheet)
+        return aliases.get(raw, _sheet_key(observation.sheet))
+
     def find(
         self,
         period: int,
@@ -186,7 +220,7 @@ class Builder:
         for observation in self.observations:
             if observation.year != period or observation.data_type != "real":
                 continue
-            if _sheet_key(observation.sheet) != target_sheet:
+            if self._role(observation) != target_sheet:
                 continue
             if observation.label_normalized != target_label:
                 continue
@@ -195,16 +229,11 @@ class Builder:
             candidates.append(observation)
         if not candidates:
             return None
-        priority = {
-            2027: {"SRC-XLSX-003": 0},
-            2026: {"SRC-XLSX-003": 0, "SRC-XLSX-002": 1, "SRC-XLSX-001": 2},
-            2025: {"SRC-XLSX-003": 0, "SRC-XLSX-002": 1, "SRC-XLSX-001": 2},
-            2024: {"SRC-XLSX-003": 0, "SRC-XLSX-002": 1, "SRC-XLSX-001": 2},
-        }.get(period, {})
+        priority = self.config.precedence.get(period, {})
         return min(
             candidates,
             key=lambda obs: (
-                priority.get(obs.source_id, 9),
+                priority.get(obs.source_id, 99),
                 obs.source_row,
                 obs.source_column,
             ),
@@ -233,8 +262,10 @@ class Builder:
         return self.find(period, "Margen", label, scope_contains=f"Análisis Margen Producto {product}")
 
     def balance_unreconciled(self, period: int, label: str) -> bool:
+        # Los totales de balance son estructuralmente poco fiables en todo el dataset
+        # (108 anomalías de balance), no solo en los años con cierre conciliado.
         return (str(period), normalize_label(label)) in self.balance_labels or (
-            period in {2026, 2027} and normalize_label(label) in BALANCE_TOTAL_LABELS
+            normalize_label(label) in BALANCE_TOTAL_LABELS
         )
 
     def add(
@@ -665,6 +696,7 @@ class Builder:
             period=period,
             value=opening_value,
             source=opening,
+            derived_from="" if opening is not None else f"closing_cash_{period - 1}_not_in_dataset",
             notes=f"Caja de cierre {period - 1}.",
         )
         self.add(
@@ -1051,7 +1083,7 @@ class Builder:
             )
 
     def build(self) -> list[F2Row]:
-        for period in (2026, 2027):
+        for period in self.config.periods:
             self.build_income_statement(period)
             self.build_balance(period)
             self.build_debt(period)

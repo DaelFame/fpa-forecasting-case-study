@@ -100,6 +100,17 @@ Quarterly data is reliable for volume and revenue from 2024, but the full income
 statement only reaches quarterly depth from 2026. Quarterly analysis is therefore
 restricted to seasonality and revenue, never to full P&L.
 
+### L-11 — 2024 cash flow is partial
+
+2024 is the first year with a reported close, so its opening cash position (the 2023
+closing balance) is not in the dataset. Eight of the fifteen cash-flow rows for 2024
+are therefore empty, and the operating, investing and financing bridges cannot be
+closed for that year. The 2024 income statement, balance sheet and debt schedule are
+complete.
+
+**Impact:** cash-flow trend analysis starts in 2025. 2024 is used for revenue,
+margin and balance structure only.
+
 ## How these limitations are handled
 
 1. Every affected figure carries an explicit status.
