@@ -14,6 +14,11 @@ wheels/
 # Generated artifacts — regenerable with `uv run python -m cg_01`
 outputs/
 
+# Power BI local artifacts (the .pbip project itself IS versioned)
+*.pbix
+*.pbix.lock
+**/.pbi/
+
 # OS
 .DS_Store
 Thumbs.db
