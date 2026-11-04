@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "FPA_Case_Study"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "d4ba0c44-d325-4c26-8fe6-98484607a355"
+  }
+}
