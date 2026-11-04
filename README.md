@@ -7,7 +7,7 @@ budget-vs-actual reconciliation, driver-based forecasting and scenario analysis.
 > **Data provenance.** An anonymised dataset from a competitive business simulation.
 > The company is anonymised; the origin is not. See [docs/limitations.md](docs/limitations.md).
 
-![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/DaelFame/fpa-forecasting-case-study/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![uv](https://img.shields.io/badge/managed%20with-uv-black)
 
