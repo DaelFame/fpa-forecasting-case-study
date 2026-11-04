@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-10-23",
+  "questions": [],
+  "notes": [
+    "No hay preguntas humanas abiertas. Fase 1 cerrada; Q-001/Q-008 resueltas, Q-009 aceptada como excepción, INT-003 aceptada como inferencia.",
+    "F2.1 está autorizada; no se reabren decisiones aceptadas.",
+    "Antes de añadir una pregunta nueva, revisar interpretations.json."
+  ]
+}

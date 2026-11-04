@@ -1,0 +1,488 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-10-23",
+  "items": [
+    {
+      "id": "INT-001",
+      "concept": "Semántica de producción 0 y 1",
+      "status": "confirmed",
+      "basis": "documented_rule",
+      "decision": "En unidades a producir, 0 significa mantener la producción del periodo anterior y 1 significa detener la línea. No se interpreta 0 como detención.",
+      "evidence": [
+        "docs/modules/Decisiones_matriz_1/Módulo de Producción.md: sección B, reglas y restricciones especiales",
+        "specs/000-general-system/spec.md: RG-02",
+        "src/cg_01/validation.py: reglas PROD-ZERO-KEEP y PROD-ONE-STOP"
+      ],
+      "scope": [
+        "bitácoras de decisiones",
+        "modelo de producción"
+      ],
+      "affects": [
+        "unidades producidas",
+        "costes industriales",
+        "ocupación",
+        "caja"
+      ],
+      "confirmed_at": "2026-10-23"
+    },
+    {
+      "id": "INT-002",
+      "concept": "Correspondencia entre la bitácora 2026 y el cierre real 2026",
+      "status": "confirmed",
+      "basis": "internal_evidence",
+      "decision": "La bitácora de 2026 contiene las decisiones que coinciden con el cierre real 2026 en precios, producción, mantenimiento y CAPEX seleccionado. Se usa como referencia de calibración, no como un cierre adicional.",
+      "evidence": [
+        "data/decisiones/Bitacora_decisiones_para_2026.json: precios 17,20 / 28,90 / 3,00",
+        "data/Matriz_General_1.xlsx, hoja Marketing, B5:D7: precios 2026 coincidentes",
+        "data/decisiones/Bitacora_decisiones_para_2026.json: producción 210.000 / 29.000 / 33.000",
+        "data/Matriz_General_1.xlsx, hoja Produccion, B7:D7: producción 2026 coincidente",
+        "data/decisiones/Bitacora_decisiones_para_2026.json: mantenimiento 3,0 % y CAPEX seleccionado 400.000",
+        "data/Matriz_General_1.xlsx, hoja Resultados, B90: gasto de mantenimiento 93.240"
+      ],
+      "scope": [
+        "calibración histórica",
+        "Fase 2"
+      ],
+      "affects": [
+        "validación del modelo",
+        "reconstrucción histórica"
+      ],
+      "confirmed_at": "2026-10-23"
+    },
+    {
+      "id": "INT-003",
+      "concept": "Escala de la fila de total de ingresos 2026",
+      "status": "inference",
+      "basis": "user_accepted_inference",
+      "decision": "Se acepta como inferencia respaldada por las tablas. Para cálculos se usa 3.861.039, conservando 38.610,39 como valor bruto original y 3.861.039 como valor normalizado candidato. No se corrige la fuente.",
+      "original_value": 38610.39,
+      "normalized_value": 3861039.0,
+      "normalization_status": "pending_scale_confirmation",
+      "evidence": [
+        "data/Matriz_General_1.xlsx, hoja Ingresos, B8: 38.610,39",
+        "data/Matriz_General_1.xlsx, hoja Ingresos, B17: 3.861.039",
+        "data/Matriz_General_1.xlsx, hoja Resultados, B5: 3.861.039",
+        "data/Matriz_General_1.xlsx, hoja Indicadores Clave, B7: 3.861.039",
+        "data/Matriz_general_2.xlsx, hoja Ingresos, C8/C17: 38.610,39 y 3.861.039"
+      ],
+      "scope": [
+        "capa normalizada",
+        "validación de ingresos"
+      ],
+      "affects": [
+        "ingresos",
+        "márgenes",
+        "resultado",
+        "valor de compañía"
+      ],
+      "inferred_at": "2026-10-23",
+      "accepted": true
+    },
+    {
+      "id": "INT-004",
+      "concept": "Precedencia provisional entre matrices por ejercicio, métrica y periodo",
+      "status": "provisional",
+      "basis": "user_decision",
+      "decision": "La matriz posterior es la referencia preferente para los datos del ejercicio que cubre, aplicando la regla por métrica y periodo, no indiscriminadamente a toda la matriz. Matriz_general_2 está confirmada por el usuario como cierre real y ejecutado de 2027; se usa como fuente principal para 2027 cuando la tabla y el periodo lo respaldan. Las versiones anteriores se conservan como evidencia. Las discrepancias se registran sin sobrescribir valores.",
+      "precedence": [
+        "2027: Matriz_general_2, cierre real confirmado por el usuario; clasificación por tabla y periodo",
+        "2026: Matriz_general_2 prevalece cuando la métrica y el periodo son comparables; Matriz_General_1 se mantiene para presupuesto y métricas ausentes",
+        "2024-2025: Matriz_General_1 o Matriz_general_2 si coinciden; Matriz_General_0 como histórico"
+      ],
+      "evidence": [
+        "data/Matriz_General_0.xlsx: 2026-10-19 05:36",
+        "data/Matriz_General_1.xlsx: 2026-10-19 06:21; incluye presupuesto 2026",
+        "data/Matriz_general_2.xlsx: 2026-10-23 16:04; incluye 2027 y comparativo 2026-2024",
+        "src/cg_01/analysis.py: source_overlap compara por hoja normalizada, indicador, periodo y unidad",
+        "Confirmación del usuario (2026-10-23): Matriz_general_2 es el cierre real y ejecutado de 2027"
+      ],
+      "discrepancies": [
+        "2025 reservas: 1.282.163 en Matriz_General_1 frente a 1.035.773 en Matriz_general_2",
+        "2025 total corriente: 2.322.014 frente a 2.447.014",
+        "2025 coste de depreciación: 180.000 frente a 135.000",
+        "2025 costes generales: 156.750 frente a 118.250",
+        "2025 total coste de las ventas: 1.775.579 frente a 1.684.084"
+      ],
+      "scope": [
+        "capa canónica",
+        "comparación de periodos",
+        "Fase 2"
+      ],
+      "affects": [
+        "series históricas",
+        "selección de fuente",
+        "validación"
+      ],
+      "recorded_at": "2026-10-23"
+    },
+    {
+      "id": "INT-005",
+      "concept": "Activos financieros a CP y Total Corriente resumido",
+      "status": "confirmed",
+      "basis": "arithmetic",
+      "decision": "Los activos financieros a CP de 125.000 forman parte del activo corriente. La diferencia de 125.000 en el Total Corriente resumido es una omisión del bloque resumido, no un activo ausente. El bloque detallado y el Activo Total sí los incluyen.",
+      "evidence": [
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, B12: Activos Financieros a CP 125.000",
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, B16: Total Corriente 903.281",
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, B47: Total Corriente 1.028.281",
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, B17/B48: Activo Total 5.335.431",
+        "data/Matriz_general_2.xlsx, hoja Balance, C42/C46/C47: 125.000 / 903.281 / 1.028.281"
+      ],
+      "scope": [
+        "balance",
+        "activo corriente"
+      ],
+      "affects": [
+        "lectura del balance",
+        "conciliación de activo corriente"
+      ],
+      "confirmed_at": "2026-10-23"
+    },
+    {
+      "id": "INT-006",
+      "concept": "Dos reglas de ocupación: penalización de planta y costes por línea",
+      "status": "confirmed",
+      "basis": "user_decision",
+      "decision": "La penalización por baja ocupación se evalúa sobre la planta global (occupancy_penalty_mode=plant). El cálculo de costes industriales usa la ocupación específica de cada línea (occupancy_cost_mode=line). Ambas reglas se documentan por separado y el notebook muestra los dos niveles. La documentación del juego se refiere al uso total de la planta para la penalización.",
+      "evidence": [
+        "config/f1.toml: occupancy_penalty_mode = \"plant\"; occupancy_cost_mode = \"line\"",
+        "src/cg_01/config.py: validación de ambos modos",
+        "src/cg_01/validation.py: check_occupancy aplica occupancy_penalty_mode",
+        "docs/modules/Decisiones_matriz_1/Módulo de Producción.md: umbral del 60 % sobre uso total de la planta",
+        "docs/modules/Decisiones_matriz_2/Modulo_Produccion_matriz_2.md: el volumen total producido por debajo del 60 % de la capacidad de planta genera gastos excepcionales",
+        "data/Matriz_General_1.xlsx, hoja Produccion, B8:D8: ocupación por línea",
+        "data/Matriz_General_1.xlsx, hoja Indicadores Clave, B18: ocupación de fábricas"
+      ],
+      "scope": [
+        "validación de ocupación",
+        "costes industriales",
+        "configuración"
+      ],
+      "affects": [
+        "gastos excepcionales",
+        "costes de producción",
+        "Fase 2"
+      ],
+      "confirmed_at": "2026-10-23"
+    },
+    {
+      "id": "INT-007",
+      "concept": "Indicadores idénticos de competidores en tablas comparativas de 2025",
+      "status": "provisional",
+      "basis": "user_interpretation",
+      "decision": "En la tabla concreta de ingresos por compañía de Matriz_General_1 (2025), varias columnas de competidores repiten los valores de Spain10. La igualdad se confirma solo en esa tabla y no se extrapola a todos los indicadores. Matriz_general_2 muestra diferenciación en ejercicios posteriores.",
+      "evidence": [
+        "data/Matriz_General_1.xlsx, hoja Ingresos, filas 47-49, columnas I-N: valores repetidos de Spain10",
+        "data/Matriz_general_2.xlsx, hoja Ingresos, filas 46-50: valores distintos por compañía para 2026",
+        "data/Matriz_general_2.xlsx, hoja Indicadores clave, filas 29-47: indicadores diferenciados en 2027"
+      ],
+      "scope": [
+        "tabla de ingresos por compañía 2025",
+        "análisis de mercado"
+      ],
+      "affects": [
+        "comparativa de competidores",
+        "Fase 2"
+      ],
+      "recorded_at": "2026-10-23"
+    },
+    {
+      "id": "INT-008",
+      "concept": "Balance 2026: bloque detallado, activos financieros a CP y reservas",
+      "status": "confirmed",
+      "basis": "user_confirmation_and_arithmetic",
+      "decision": "Se adopta el bloque detallado de Analisis de Balance como referencia operativa. Los activos financieros a CP de 125.000 forman parte del activo corriente. Las reservas detalladas de 2026 son 930.663 y las resumidas 1.177.053; el usuario informa de que D-02 es un ajuste interno de presentación del simulador, sin documento independiente que permita verificar su origen.",
+      "verified": "Identidad 2026 con componentes detallados: activo 5.335.431; pasivo 1.447.132; capital 2.802.686 + reservas 930.663 + resultado 154.951 = 3.888.300; pasivo + patrimonio = 5.335.432. Diferencia residual: 1 € (5.335.432 - 5.335.431). No se redondea ni se corrige la fuente. Con el resumen (reservas 1.177.053 y patrimonio 4.134.690) la suma es 5.581.822 y la diferencia es 246.391. El Total Corriente detallado suma 1.028.282 frente a 1.028.281 reportado: otro residual de 1 €.",
+      "evidence": [
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, B12/B16/B47: 125.000 / 903.281 / 1.028.281",
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, B19/B50: 1.177.053 / 930.663",
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, B49/B50/B51: 2.802.686 + 930.663 + 154.951 = 3.888.300",
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, B52/B60: 4.134.690 / 5.335.431",
+        "data/Matriz_general_2.xlsx, hoja Balance, C19/C29/C49/C59: 1.177.053 / 5.335.431 / 930.663 / 5.335.431"
+      ],
+      "scope": [
+        "balance 2026",
+        "reservas",
+        "patrimonio neto"
+      ],
+      "affects": [
+        "patrimonio",
+        "reservas",
+        "balance",
+        "Fase 2"
+      ],
+      "recorded_at": "2026-10-23",
+      "residuals": [
+        {
+          "concept": "Total Corriente detallado",
+          "reported": 1028281,
+          "components": 1028282,
+          "difference": 1
+        },
+        {
+          "concept": "Balance 2026 con bloque detallado",
+          "assets": 5335431,
+          "liabilities_plus_equity": 5335432,
+          "difference": 1
+        },
+        {
+          "concept": "Balance 2026 con resumen",
+          "assets": 5335431,
+          "liabilities_plus_equity": 5581822,
+          "difference": 246391
+        }
+      ]
+    },
+    {
+      "id": "INT-009",
+      "concept": "Gastos generales indirectos de central/taller",
+      "status": "hypothesis",
+      "basis": "user_explanation",
+      "decision": "Los 150.000 no explicados se atribuyen provisionalmente a gastos generales indirectos de central/taller. Se conserva como hipótesis aportada por el usuario, no como regla confirmada, hasta localizar evidencia documental o contable.",
+      "evidence": [
+        "data/Matriz_General_1.xlsx, hoja Resultados, B14/B97/B98/B99: 344.808 / 194.808 / 0 / 344.808",
+        "data/Matriz_general_2.xlsx, hoja Resultados, C14/C40: 344.808"
+      ],
+      "scope": [
+        "gastos generales 2026"
+      ],
+      "affects": [
+        "resultado",
+        "gastos operativos",
+        "Fase 2"
+      ],
+      "recorded_at": "2026-10-23"
+    },
+    {
+      "id": "INT-010",
+      "concept": "Composición del incremento de inmovilizado material 2026",
+      "status": "confirmed",
+      "basis": "arithmetic",
+      "decision": "El incremento de inmovilizado material bruto es 1.533.000. Se descompone en 1.308.000 de fábrica y 225.000 de almacén. La bitácora justifica 400.000 de proyectos seleccionados. Restan 1.133.000 cuya causa no está documentada. No se afirma revalorización ni reclasificación sin evidencia.",
+      "evidence": [
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, B5/C5: 4.958.000 / 3.425.000",
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, B201/C201: 3.108.000 / 1.800.000",
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, B205/C205: 450.000 / 225.000",
+        "data/decisiones/Bitacora_decisiones_para_2026.json: 125.000 + 250.000 + 25.000 = 400.000"
+      ],
+      "scope": [
+        "CAPEX 2026",
+        "activo no corriente"
+      ],
+      "affects": [
+        "activo",
+        "deuda",
+        "caja",
+        "Fase 2"
+      ],
+      "confirmed_at": "2026-10-23"
+    },
+    {
+      "id": "INT-011",
+      "concept": "Dos tipos para el crédito extraordinario",
+      "status": "provisional",
+      "basis": "user_interpretation",
+      "decision": "El 7,6 % de Analisis de Balance!E98 se interpreta como tipo nominal calculado para el periodo. El 13,2 % de Analisis de Balance!B168 se interpreta como tasa de penalización por iliquidez. Los encabezados, periodos y tablas son distintos; la documentación disponible solo menciona 13,2 %. Se conservan ambos valores y no se elige uno automáticamente para el modelo.",
+      "evidence": [
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, E98: 0,076 en 'Tipo de Interés aplicable por tipo de operación'",
+        "data/Matriz_general_2.xlsx, hoja Analisis de Balance, E98: 0,076 en la misma tabla",
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, B168: 0,132 en 'Tasas/Tipos aplicables por modalidad de préstamo'",
+        "data/Matriz_general_2.xlsx, hoja Balance, B168: 0,132 en la misma tabla de modalidades",
+        "docs/modules/Decisiones_matriz_1/Módulo de Financiación.md: 13,2 % como tasa de penalización",
+        "docs/modules/Decisiones_matriz_2/Módulo de Financiación.md: 8,7 % de penalización para 2028, distinto del 7,6 % nominal de 2027"
+      ],
+      "scope": [
+        "financiación",
+        "crédito extraordinario"
+      ],
+      "affects": [
+        "coste de iliquidez",
+        "caja",
+        "Fase 2"
+      ],
+      "recorded_at": "2026-10-23"
+    },
+    {
+      "id": "INT-012",
+      "concept": "Reservas y balance 2027 con componentes detallados",
+      "status": "confirmed",
+      "basis": "user_confirmation_and_arithmetic",
+      "decision": "Se conserva 1.085.613 como reservas observadas de 2027 en Matriz_general_2. La suma de reservas detalladas 2026 (930.663) y resultado 2026 (154.951) da 1.085.614; la diferencia de 1 € se registra como residual y no se corrige. Para la identidad se usan los componentes detallados, no el patrimonio reportado.",
+      "verified": "Balance 2027 con componentes detallados: activo 5.665.584; pasivo 1.219.836; capital 2.802.686 + reservas 1.085.613 + resultado 557.448 = 4.445.747; pasivo + patrimonio = 5.665.583. Diferencia residual: 1 €. El patrimonio reportado 4.692.138 es 246.391 superior a los componentes detallados y no se usa para la identidad.",
+      "residuals": [
+        {
+          "concept": "Reservas 2027",
+          "observed": 1085613,
+          "derived_from_2026": 1085614,
+          "difference": 1
+        },
+        {
+          "concept": "Balance 2027 con bloque detallado",
+          "assets": 5665584,
+          "liabilities_plus_equity": 5665583,
+          "difference": 1
+        },
+        {
+          "concept": "Patrimonio reportado 2027",
+          "reported": 4692138,
+          "detailed_components": 4445747,
+          "difference": 246391
+        }
+      ],
+      "evidence": [
+        "data/Matriz_general_2.xlsx, hoja Balance, B48/B49/B50/B51: 2.802.686 / 1.085.613 / 557.448 / 4.692.138",
+        "data/Matriz_general_2.xlsx, hoja Balance, B57/B58/B59: 599.841 / 1.219.836 / 5.665.584",
+        "data/Matriz_General_1.xlsx, hoja Analisis de Balance, B50/B51: 930.663 / 154.951"
+      ],
+      "scope": [
+        "balance 2027",
+        "reservas",
+        "patrimonio neto"
+      ],
+      "affects": [
+        "patrimonio",
+        "reservas",
+        "balance",
+        "Fase 2"
+      ],
+      "recorded_at": "2026-10-23"
+    },
+    {
+      "id": "INT-013",
+      "concept": "Producción de bufandas 2027 y semántica de 0",
+      "status": "accepted_exception",
+      "basis": "user_decision",
+      "decision": "Q-009 se acepta como excepción documentada. Se conserva el dato real de 30.000 unidades de bufandas en 2027 y NO se cambia la regla general 0 = mantener la producción anterior. La diferencia 29.000 -> 30.000 queda registrada como caso específico, no como nueva regla.",
+      "verified": "2026: producción de bufandas 29.000 y capacidad 30.000. 2027: producción 30.000 y capacidad 30.000. La bitácora 2027 indica 0 en las tres líneas. La documentación de Matriz 2 declara como producción anterior 2027 32.000 para bufandas, que no coincide con 29.000 (Matriz 1) ni con 30.000 (Matriz 2). No se localiza una explicación documental del paso 29.000 -> 30.000 bajo 0 = mantener.",
+      "evidence": [
+        "data/Matriz_General_1.xlsx, hoja Produccion, B6:D6 capacidad 215.000 / 30.000 / 40.000",
+        "data/Matriz_General_1.xlsx, hoja Produccion, B7:D7 producción 2026 210.000 / 29.000 / 33.000",
+        "data/Matriz_general_2.xlsx, hoja Produccion, B7:D7 capacidad 2027 215.000 / 30.000 / 40.000",
+        "data/Matriz_general_2.xlsx, hoja Produccion, B8:D8 producción 2027 215.000 / 30.000 / 40.000",
+        "data/decisiones/Bitacora_decisiones_para_2027.json: unidades_producir 0 en las tres líneas",
+        "docs/modules/Decisiones_matriz_1/Módulo de Producción.md: 0 = mantener producción anterior",
+        "docs/modules/Decisiones_matriz_2/Modulo_Produccion_matriz_2.md: anterior 2027 215.000 / 32.000 / 40.000"
+      ],
+      "scope": [
+        "producción 2027",
+        "bufandas",
+        "semántica de 0"
+      ],
+      "affects": [
+        "modelo de producción",
+        "costes industriales",
+        "ocupación",
+        "Fase 2"
+      ],
+      "recorded_at": "2026-10-23",
+      "accepted_at": "2026-10-23"
+    },
+    {
+      "id": "INT-014",
+      "concept": "Cierre de Fase 1 y alcance de F2.1",
+      "status": "confirmed",
+      "basis": "user_approval",
+      "decision": "F1.4 aprobada y Fase 1 cerrada. Se autoriza la primera entrega acotada de F2: estado de resultados, balance, deuda, caja y conciliación histórica 2026-2027, con tolerancias 0,005 € / 1 €. Las 81 anomalías de balance se marcan unreconciled. No se inicia Monte Carlo ni optimización.",
+      "evidence": [
+        "Aprobación humana de F1.4 (2026-10-23)",
+        "Página de alcance F2 aprobada",
+        "outputs/f1/anomalies.csv: 16 críticas de balance y 81 anomalías de categoría balance"
+      ],
+      "scope": [
+        "gobierno del proyecto",
+        "F2.1"
+      ],
+      "affects": [
+        "Fase 1 cerrada",
+        "Fase 2 primera entrega",
+        "estados y tolerancias"
+      ],
+      "confirmed_at": "2026-10-23"
+    },
+    {
+      "id": "INT-015",
+      "concept": "F2.1 implementada",
+      "status": "confirmed",
+      "basis": "internal_verification",
+      "decision": "La primera entrega acotada de F2 está implementada: estado de resultados, balance, deuda, caja y conciliación histórica 2026-2027. Salidas en outputs/f2 con 7 archivos. Las 81 anomalías de balance se conservan unreconciled y los derivados heredan la marca.",
+      "evidence": [
+        "outputs/f2/income_statement.csv",
+        "outputs/f2/balance.csv",
+        "outputs/f2/debt.csv",
+        "outputs/f2/cash_flow.csv",
+        "outputs/f2/reconciliation.csv",
+        "outputs/f2/manifest.json",
+        "outputs/f2/report.md",
+        "tests/test_f2_engine.py"
+      ],
+      "scope": [
+        "F2.1"
+      ],
+      "affects": [
+        "resultados",
+        "balance",
+        "deuda",
+        "caja",
+        "conciliación"
+      ],
+      "confirmed_at": "2026-10-23"
+    },
+    {
+      "id": "INT-016",
+      "concept": "Corrección del puente de caja F2.1",
+      "status": "confirmed",
+      "basis": "internal_evidence",
+      "decision": "El puente de caja incluye la Depreciación Fábrica de Balance como ajuste no-cash explícito. El residual pasa de 278.101/327.300 a 1/0; se marca documented_residual/exact.",
+      "evidence": [
+        "data/Matriz_general_2.xlsx, hoja Balance, C203=278.100 y B203=327.300",
+        "data/Matriz_general_2.xlsx, hoja Resultados, C12=148.000 y B12=136.750",
+        "Incremento de Depreciación Acumulada 2026: 426.100; 2027: 464.050",
+        "outputs/f2/report.md: Diagnóstico del puente de caja"
+      ],
+      "scope": [
+        "F2.1",
+        "flujo de caja"
+      ],
+      "affects": [
+        "cash_flow",
+        "reconciliation",
+        "residual"
+      ],
+      "confirmed_at": "2026-10-23"
+    },
+    {
+      "id": "INT-017",
+      "concept": "F2.1 aprobada y alcance F2.2 propuesto",
+      "status": "confirmed",
+      "basis": "user_approval",
+      "decision": "F2.1 aprobada. Se autoriza la preparación de la página de alcance F2.2 sobre producción, inventarios y coste de ventas; F2.2 no se implementa hasta aprobación de esa página.",
+      "evidence": [
+        "Aprobación humana de F2.1 (2026-10-23)",
+        "docs/f2_2_scope.md"
+      ],
+      "scope": [
+        "F2.1",
+        "F2.2"
+      ],
+      "affects": [
+        "gobierno",
+        "producción",
+        "inventarios",
+        "coste de ventas"
+      ],
+      "confirmed_at": "2026-10-23"
+    }
+  ],
+  "notes": [
+    "Este archivo registra hechos verificados, políticas de proyecto, inferencias, hipótesis e interpretaciones provisionales. Las dudas materiales no resueltas viven en open_questions.json.",
+    "Una interpretación confirmada no autoriza a modificar data/; solo orienta la capa normalizada y los cálculos.",
+    "INT-003 conserva valor bruto y candidato normalizado; no aplica la corrección automáticamente.",
+    "INT-008 e INT-012 aplican la decisión del usuario y registran los residuales de 1 € sin corregir las fuentes.",
+    "INT-013 mantiene la regla general RG-02 y aísla la contradicción específica de producción de bufandas 2027.",
+    "INT-003 e INT-013 están aceptadas por el usuario; no se reabren.",
+    "Fase 1 cerrada y aprobada; F2.1 autorizada. No reabrir Q-001, Q-008, Q-009 ni INT-003.",
+    "F2.1 implementada y probada; no se inicia Monte Carlo ni optimización.",
+    "INT-016 corrige el puente de caja; la depreciación de fábrica embebida en coste de ventas ya no queda como residual.",
+    "F2.1 aprobada; F2.2 solo tiene página de alcance, sin implementación."
+  ]
+}

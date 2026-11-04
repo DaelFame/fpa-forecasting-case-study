@@ -1,0 +1,106 @@
+{
+  "empresa": "Spain10",
+  "periodo": 2028,
+  "ronda": 3,
+  "modulos": {
+    "ventas": {
+      "precios_venta_unitario": {
+        "corbatas_euro": 18.00,
+        "bufandas_euro": 30.00,
+        "calcetines_catalogo_euro": 3.60
+      },
+      "descuento_canal_porcentaje": 10.0,
+      "promocion_marca_euro": {
+        "corbatas": 120000,
+        "bufandas": 80000,
+        "calcetines": 20000,
+        "total_euro": 220000
+      },
+      "incentivos_equipo_ventas_porcentaje": {
+        "corbatas": 3.5,
+        "bufandas": 4.0,
+        "calcetines": 3.5
+      }
+    },
+    "producto": {
+      "gasto_diseno_euro": {
+        "corbatas": 60000,
+        "bufandas": 40000,
+        "calcetines": 20000,
+        "total_euro": 120000
+      },
+      "amplitud_gama_modelos": {
+        "corbatas": 15,
+        "bufandas": 8,
+        "calcetines": 5
+      },
+      "proveedor_materia_prima": {
+        "corbatas": "Estandard",
+        "bufandas": "Estandard",
+        "calcetines": "Economica"
+      }
+    },
+    "produccion": {
+      "ampliacion_capacidad_nivel": {
+        "corbatas": 1,
+        "bufandas": 1,
+        "calcetines": 2,
+        "inversion_total_euro": 430000
+      },
+      "unidades_a_producir": {
+        "corbatas": 235000,
+        "bufandas": 38000,
+        "calcetines": 90000,
+        "total_unidades": 363000
+      },
+      "gasto_mantenimiento_porcentaje": 3.0,
+      "centro_logistico_comun": "Sin Inversión (NS/NC)"
+    },
+    "otros_proyectos": {
+      "venta_solar_urbanizable": {
+        "decision": "Aceptar",
+        "ingreso_caja_euro": 585000,
+        "plusvalia_contable_euro": 305000
+      },
+      "venta_terreno_agricola": {
+        "decision": "Rechazar"
+      },
+      "automatizacion_almacen": {
+        "decision": "Aceptar",
+        "inversion_euro": 125000
+      },
+      "proyecto_integracion_ia": {
+        "decision": "Aceptar",
+        "inversion_euro": 75000
+      },
+      "modernizacion_fabrica": {
+        "decision": "Aceptar",
+        "inversion_corbatas_euro": 250000,
+        "inversion_calcetines_euro": 25000
+      },
+      "acuerdo_comercial_calcetines": {
+        "decision": "Aceptar",
+        "volumen_extra_unidades": 60000,
+        "precio_maximo_euro": 3.00,
+        "ingreso_estimado_euro": 180000
+      }
+    },
+    "financiacion": {
+      "prestamo_largo_plazo_euro": 0,
+      "prestamo_corto_plazo_euro": 0,
+      "plazo_cobro_clientes_dias": 45,
+      "plazo_pago_proveedores_dias": 45,
+      "cancelacion_anticipada_prestamo_lp_euro": 200000,
+      "distribucion_dividendos_porcentaje": 0.0
+    },
+    "inversiones_financieras": {
+      "compra_deuda_publica_largo_plazo_2_anos_euro": 200000,
+      "compra_deuda_publica_corto_plazo_euro": {
+        "trimestre_1": 0,
+        "trimestre_2": 0,
+        "trimestre_3": 0,
+        "trimestre_4": 0
+      }
+    }
+  }
+}

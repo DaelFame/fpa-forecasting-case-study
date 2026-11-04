@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cg-01"
+version = "0.3.0"
+description = "FP&A analytics on a fashion-accessories manufacturer: canonical financial layer, budget-vs-actual reconciliation and driver-based forecasting"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Joaquín" }]
+keywords = ["fpna", "financial-modeling", "forecasting", "variance-analysis", "power-bi"]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Office/Business :: Financial :: Accounting",
+]
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.5.4",
+    "openpyxl>=3.1.5",
+    "pandas>=3.1.0",
+]
+
+[project.scripts]
+cg-01 = "cg_01.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ipykernel>=6.29",
+    "nbclient>=0.10",
+    "nbformat>=5.10",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cg_01"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

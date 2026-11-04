@@ -1,0 +1,129 @@
+
+Otros proyectos
+
+Te recomendamos estar atento a este apartado y aprovechar las oportunidades que consideres interesantes para la compañía.
+
+1.Venta del Terreno Agrícola
+Mejora del layout de la planta de producción.
+Oportunidad de venta de un terreno agrícola.
+
+La empresa tiene un terreno de 90 hectáreas a las afueras del pueblo. El terreno se adquirió hace 20 años por motivos desconocidos. Desde entonces, el terreno ha estado arrendado a una empresa agrícola que ha estado utilizándolo en sus actividades. En compensación, la empresa recibe un ingreso de 18000 €/$, que se ven reflejados en el apartado de Resultados Extraordinarios.
+
+Recientemente, la empresa ha recibido una oferta de compra del terreno.
+
+El valor contable del terreno es de: 375000 €/$.
+
+La oferta recibida por la compra del terreno asciende a: 265000 €/$.
+
+El director financiero está bastante satisfecho con la propuesta, aunque ha estimado que puede suponer unas pérdidas contables para la empresa de 50.000 €/$.
+
+El director de producción también está a favor de la propuesta, pues el terreno no se está utilizando para ninguna actividad productiva y considera positivo captar fondos.
+
+2.Venta del solar urbanizable
+Mejora la eficiencia de tu proceso de producción.
+Oportunidad de venta de un solar urbanizable.
+
+La empresa tiene un solar de 3500 metros en el centro del pueblo, que en su día se compró con la intención de montar unas oficinas o una tienda en el centro del pueblo. Con el tiempo, el proyecto original ha ido perdiendo sentido y el terreno ha quedado en el olvido.
+
+Hace un par de meses, la empresa recibió una propuesta de adquisición del terreno por parte de las autoridades municipales, con el propósito de construir allí la nueva escuela municipal.
+
+El valor contable del terreno es de: 280000 €/$.
+
+La oferta recibida por la compra del terreno asciende a: 585000 €/$.
+
+El director financiero tiene algunas dudas con la propuesta. No se la ha podido estudiar a fondo, pero estima que puede suponer unas pérdidas contables considerables para la empresa.
+
+El director de marketing y comercial también está a favor de la propuesta, pues el terreno no se está utilizando para ninguna actividad productiva y considera positivo captar fondos.
+
+Programa de inversiones
+Te recomendamos estar atento a este apartado, pues te pueden llegar propuestas para mejorar el nivel de eficiencia o el nivel de calidad del producto o el proceso productivo.
+
+3.Inversiones para la modernización de la fábrica.
+Mejora la eficiencia de tu proceso de producción.
+Adaptación del proceso productivo para mejorar la eficiencia productiva.
+
+Recientemente, el director de producción ha recibido un propuesta que parece muy interesante para mejorar la eficiencia de la planta de producción. En concreto, se trata de adaptar o sustituir una serie de máquinas que retrasan y encarecen de forma significativa el proceso de elaboración.
+
+Esta oportunidad es el resultado de una extensa búsqueda de una amplia variedad de opciones que se han estado considerando. De acuerdo a los análisis e hipótesis realizados, se estima que el coste que representa este componente en el coste unitario del producto se podría reducir hasta en un 20%.
+
+La inversión realizada se verá reflejada en el Activo No Corriente del Balance. Los importes de inversión previstos son:
+Inversión mejora eficiencia proceso elaboración. 2.
+📋
+📊
+ 	Inversión
+Corbatas 	250.000
+Bufandas 	--
+Calcetines 	25.000
+
+El director de producción recomienda realizar la inversión, aunque entiende que el departamento financiero deberá realizar el análisis de rentabilidad que se requiere habitualmente para un proyecto de estas características.
+
+Si deseas formalizar la contratación del proyecto, debe marcar con un tick la decisión adjunta.
+
+El proveedor de maquinaria ha advertido que sólo podrá admitir las tres primeras solicitudes que reciba.
+me salio esto de warnig pero aprce que si puedo seleccion  
+Diferentes competidores ya se te han adelantado, por tanto, en este periodo no podrás tomar esta decisión. El proveedor no puede atender más de tres pedidos en un periodo.
+
+
+4.Inversión en mejora del almacén.
+Automatización del almacén y mejora de la preparación de pedidos.
+Automatización del almacén para mejora de la preparación de pedidos.
+
+Desde hace muchos años el equipo comercial ha estado transmitiendo un gran número de quejas de los clientes provocadas por el retraso en la entrega de los pedidos y los errores que se producian en las entregas. Aproximadamente el 10% de los pedidos contienen artículos incorrectos.
+
+El responsable del almacén ha dado diferentes explicaciones. De hecho, cada año incorpora nuevas causas y razones, pero dos son las más habituales:
+
+    Errores en la recepción de los pedidos: los pedidos son recibidos por el equipo comercial, habitualmente por teléfono. Esto provoca errores y confusiones. Adicionalmente, los datos habitualmente escritos a mano puede ser mal interpretados por el equipo dedicado a la preparación de los pedidos.
+    Inadecuación de las instalaciones de almacenaje: se refiere al espacio disponible en el almacén y las instalaciones con las que cuentan. En ese espacio resulta muy difícil trabajar de forma ordenada y eficiente, y los errores que se producen podrían ser muchos más, si no fuera por el nivel de experiencia y dedicación del personal de almacén.
+
+Dada esta problemática, la dirección de la compañía ha decidido contactar con una empresa especialista en este tipo de instalaciones. Han propuesto un proyecto que permitiría reducir en un 50% el tiempo necesario para la preparación de los pedidos y hasta un 90% los errores que actualmente se están produciendo.
+
+Los respondables de fábrica y almacén se han mostrado muy satisfechos con este proyecto y consideran que es prioritario para la compañía. Por su parte, el director comercial ha manifestado que si alcanzan los resultados prometidos, el impacto en ventas podría llegar a ser de un incremento del 8% ya en el primer año.
+
+Si deseas formalizar la contratación del proyecto, debe marcar con un tick la decisión adjunta.
+
+La inversión estimada para el desarrollo del proyecto es de: 125000 $/€
+
+La inversión se verá reflejada en el Activo No Corriente de la compañía.
+
+5.Proyecto Integración IA
+Proyecto experimental de integración de Inteligencia Artificial.
+Proyecto experimental de integración de Inteligencia Artificial en las áreas de planificación de la producción y compras.
+
+Un proveedor de software muy relevante a nivel internacional ha propuesto un proyecto de implantación de un módulo de Inteligencia Artificial para reforzar los procesos de compras y planificación de la producción.
+
+Después de diversas reuniones de análisis del software, parece que cumple con todos los requisitos necesarios. El proceso de implementación llevará dos meses de trabajo, aunque serán necesarias sucesivas revisiones para optimizar el software.
+
+Los impactos previstos del proyecto son:
+
+    Reducción de los costes unitarios de materia prima: 9
+    Reducción de los costes unitarios de almacenaje: 9
+
+Naturalmente, la evolución de las partidas de costes anteriores estarán sometidas a otras decisiones y variaciones.
+
+La inversión realizada se verá reflejada en el Activo No Corriente del Balance. Los importes de inversión previstos son: 75000 $/€
+
+6.Acuerdo comercial para la venta de calcetines
+Amplia la línea de productos calcetines.
+cuerdo comercial para la venta de calcetines.
+
+El Director de Marketing y Comercial ha elaborado un extenso informe para soportar una cambio de tendencia en el producto calcetines.
+
+En dicho producto se pone en evidencia que realizando la adaptación del diseño y encontrando el socio comercial adecuado, es posible obtener una posición competitiva idónea e incrementar las ventas y el margen de forma relevante.
+
+Con el propósito de aprovechar esta oportunidad, se ha preparado un acuerdo comercial con una gran distribuidor nacional. El acuerdo permitiría tener presencia en más de 200 puntos de ventas y superar en más de 60.000 unidades de venta de calcetines.
+
+Para poder atender la demanda de este nuevo cliente se debería asumir la inversión de nueva maquinaria de producción con capacidad para 60.000 unidades. La estructura de costes de estos lotes de producción sería similar a la producción actual.El director de producción será el responsable de programar la producción para poder suministrar los productos demandados.
+
+El distribuidor requiere que el precio no sea superior a 3 €/$ por unidad. En cualquier caso, el precio no debería ser superior al del último año.
+
+Teniendo en cuenta los datos anteriores, el análisis de rentabilidad realizado por el Director de Marketing permite obtener los siguientes valores:
+
+    Ingresos: 180.000 €/$
+    Costes de Materia Prima: 21.000 €/$
+    Margen aproximado: 159.000 €/$
+
+La inversión realizada se verá reflejada en el Activo No Corriente del Balance. El importe de inversión previsto en la maquinaria, instalación y puesta en marcha: 0 €/$
+
+El director marketing y comercial está muy interesado en que se formalice el contrato. El director financiero no pudo estar en la reunión, pero el director comercial confirmó que los datos habían sido revisadas por varias personas de su departamento.
+
+El director de producción manifestó que el proyecto le parecía interesante, pero opinaba que era conveniente revisar en detalle el análisis de margen presentado.

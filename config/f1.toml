@@ -1,0 +1,51 @@
+[paths]
+data_dir = "data"
+output_dir = "outputs/f1"
+markdown_dir = "outputs/markdown"
+
+[periods]
+min_year = 2000
+max_year = 2100
+
+[validation]
+price_corridor_pct = 15.0
+occupancy_threshold_pct = 60.0
+occupancy_penalty_mode = "plant"
+occupancy_cost_mode = "line"
+balance_tolerance_eur = 1.0
+
+[labels]
+"total activo" = "total_activo"
+"activo total" = "total_activo"
+"total no corriente" = "total_no_corriente"
+"total activo no corriente" = "total_no_corriente"
+"activo no corriente" = "total_no_corriente"
+"total corriente" = "total_corriente"
+"total activo corriente" = "total_corriente"
+"activo corriente" = "total_corriente"
+"activos financieros a cp" = "af_cp"
+"inventario" = "inventario"
+"cuentas por cobrar neto" = "cuentas_cobrar"
+"clientes" = "cuentas_cobrar"
+"efectivo disponible" = "efectivo"
+"total pasivo" = "total_pasivo"
+"total pasivo corriente" = "total_pasivo_corriente"
+"total pasivo no corriente" = "total_pasivo_no_corriente"
+"prestamo largo plazo" = "prestamo_lp"
+"prestamo corto plazo" = "prestamo_cp"
+"prestamos corto plazo" = "prestamo_cp"
+"credito extraordinario" = "credito_extra"
+"prestamo extraordinario" = "credito_extra"
+"proveedores" = "proveedores"
+"impuestos pendientes de pago" = "impuestos"
+"capital" = "capital"
+"recursos propios" = "capital"
+"reservas" = "reservas"
+"resultado desp impuestos" = "resultado"
+"resultado desp impuesto" = "resultado"
+"resultado neto" = "resultado"
+"patrimonio neto" = "patrimonio_neto"
+"total pasivo patrimonio neto" = "total_pasivo_patrimonio"
+"patrimonio neto pasivo" = "total_pasivo_patrimonio"
+"patr neto pasivo tot" = "total_pasivo_patrimonio"
+"inmovilizado material bruto" = "inmovilizado_material_bruto"

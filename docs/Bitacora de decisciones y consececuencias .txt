@@ -1,0 +1,30 @@
+### Decisiones ya tomadas y consecuencias directas en Módulo Otros Proyectos (Matriz 3)
+
+Con las 2 decisiones de **Otros Proyectos** cerradas para la Matriz 3, aislamos los impactos fijos e inamovibles que van directo al formulario **"Presupuestar"** (PyG y Balance):
+
+---
+
+### 📌 1\. Lo que tenemos 100% SEGURO en la Cuenta de Resultados (PyG)
+
+| Casilla del Presupuesto (PyG)         | Cifra / Impacto Confirmado             | Origen / Justificación de la Decisión                                                                                                                       |
+| ------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Resultados Extraordinarios**        | **+195.000 €**                         | Plusvalía contable por la **Venta del Solar Anexo a la Planta** (Oferta de compra `415.000 €` menos Valor en libros de `220.000 €`).                        |
+| **Reducción Coste de Elaboración**    | **\-20%** **en Corbatas y Calcetines** | Ahorro directo en la estructura de confección de la planta por la **Modernización de Fábrica** (Inversión: 250.000 € en Corbatas y 25.000 € en Calcetines). |
+| **Gastos de Depreciación de Fábrica** | **+27.500 €**                          | Amortización anual del 10% sobre el nuevo inmovilizado técnico adquirido (10% de `275.000 €`).                                                              |
+
+---
+
+### 📌 2\. Lo que tenemos 100% SEGURO en el Balance
+
+| Casilla del Presupuesto (Balance)                  | Impacto Neto Confirmado | Origen / Justificación de la Decisión                                                                                                  |
+| -------------------------------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Inyección Líquida de Efectivo (Caja)**           | **+415.000 €**          | Entrada bruta de dinero fresco en cuenta bancaria por la venta del Solar Anexo.                                                        |
+| **Salida del Activo Fijo Bruto (Terrenos)**        | **\-220.000 €**         | Baja contable en libros del Solar Anexo al formalizar la venta.                                                                        |
+| **Incorporación Activo No Corriente (Maquinaria)** | **+275.000 €**          | Alta de inmovilizado técnico en el Activo No Corriente por la **Modernización de Fábrica** (250.000 € Corbatas + 25.000 € Calcetines). |
+| **Depreciación Acumulada del Ejercicio**           | **+27.500 €**           | Imputación de la amortización anual acumulada sobre la nueva maquinaria.                                                               |
+
+#### 💡 Flujo de Caja Neto generado solo por Otros Proyectos (Matriz 3):
+
+* **(+) Entrada por Venta Solar Anexo:** `+415.000 €`
+* **(-) Salida por Modernización de Fábrica (Capex):** `-275.000 €`
+* **(=) Resultado Neto de Liquidez:** **+140.000 €** **de tesorería adicional disponible** en banco para sostener las operaciones y asegurar la liquidez.

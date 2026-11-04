@@ -1,0 +1,121 @@
+{
+  "periodo": 2027,
+  "transicion": "1_a_2",
+  "decisiones": {
+    "ventas": {
+      "precio_unitario": {
+        "corbatas": 17.50,
+        "bufandas": 29.50,
+        "calcetines": 3.45
+      },
+      "promocion_marca": {
+        "corbatas": 120000,
+        "bufandas": 80000,
+        "calcetines": 20000
+      },
+      "incentivo_ventas_pct": {
+        "corbatas": 3.5,
+        "bufandas": 4.0,
+        "calcetines": 3.5
+      },
+      "descuento_canal_pct": 10.0
+    },
+    "producto": {
+      "presupuesto_diseno": {
+        "corbatas": 60000,
+        "bufandas": 40000,
+        "calcetines": 20000
+      },
+      "amplitud_gama": {
+        "corbatas": 15,
+        "bufandas": 8,
+        "calcetines": 5
+      },
+      "proveedor": {
+        "corbatas": "Estandar",
+        "bufandas": "Estandar",
+        "calcetines": "Economica"
+      }
+    },
+    "produccion": {
+      "ampliacion_capacidad_nivel": {
+        "corbatas": 0,
+        "bufandas": 0,
+        "calcetines": 0
+      },
+      "unidades_producir": {
+        "corbatas": 0,
+        "bufandas": 0,
+        "calcetines": 0
+      },
+      "mantenimiento_pct": 1.0
+    },
+    "financiacion": {
+      "prestamo_largo_plazo": 0,
+      "prestamo_corto_plazo": 0,
+      "plazo_cobro_clientes_dias": 45,
+      "plazo_pago_proveedores_dias": 45,
+      "cancelacion_anticipada_lp": 0,
+      "dividendos_pct": 0.0
+    },
+    "inversiones_financieras": {
+      "deuda_publica_cp": {
+        "q1": 0,
+        "q2": 0,
+        "q3": 0,
+        "q4": 0
+      },
+      "deuda_publica_lp": 0
+    },
+    "otros_proyectos": {
+      "digitalizacion_patronaje": {
+        "seleccionado": true,
+        "inversion_eur": 125000,
+        "imputacion_contable": "Activo No Corriente / Intangible",
+        "justificacion_estrategica": "Se toma asumiendo un riesgo medido; reduce un -8% el coste de personal de producción y aporta +1 al nivel de diseño."
+      },
+      "layout_fabrica": {
+        "seleccionado": true,
+        "inversion_eur": 0,
+        "imputacion_contable": "Gastos Generales / Taller",
+        "justificacion_estrategica": "Se toma a coste 0 € para mejorar la eficiencia y reorganizar la planta."
+      },
+      "patronaje_bufandas": {
+        "seleccionado": true,
+        "inversion_eur": 0,
+        "imputacion_contable": "Activo No Corriente",
+        "justificacion_estrategica": "Se toma a coste 0 € para mejorar la eficiencia del corte y confección en la línea de bufandas."
+      },
+      "american_business_vc": {
+        "seleccionado": false,
+        "inversion_eur": 0,
+        "imputacion_contable": "Patrimonio Neto",
+        "justificacion_estrategica": "No se toma para evitar la entrada de socios externos ni dilución de capital."
+      },
+      "mejora_edificio_tejado": {
+        "seleccionado": "ninguna",
+        "inversion_eur": 0,
+        "imputacion_contable": "Activo No Corriente / PyG",
+        "justificacion_estrategica": "No se toma por falta de liquidez en este periodo."
+      },
+      "automatizacion_almacen": {
+        "seleccionado": false,
+        "inversion_eur": 125000,
+        "imputacion_contable": "Activo No Corriente",
+        "justificacion_estrategica": "No se toma por falta de liquidez en este ejercicio."
+      },
+      "gestion_riesgos_inundacion": {
+        "seleccionado": false,
+        "inversion_eur": 265000,
+        "imputacion_contable": "Activo No Corriente",
+        "justificacion_estrategica": "No se toma por falta de liquidez para proteger la caja."
+      },
+      "participacion_tiendas": {
+        "seleccionado": false,
+        "inversion_eur": 0,
+        "imputacion_contable": "Activo No Corriente",
+        "justificacion_estrategica": "No se toma por falta de liquidez en el periodo, evitando requerir financiación bancaria posterior."
+      }
+    }
+  }
+}

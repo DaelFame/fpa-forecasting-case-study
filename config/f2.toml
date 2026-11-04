@@ -1,0 +1,10 @@
+[paths]
+output_dir = "outputs/f2"
+
+[reconciliation]
+exact_tolerance_eur = 0.005
+documented_residual_eur = 1.0
+
+[periods]
+start = 2026
+end = 2027

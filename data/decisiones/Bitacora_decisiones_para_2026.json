@@ -1,0 +1,168 @@
+{
+  "periodo": 2026,
+  "transicion": "0_a_1",
+  "decisiones": {
+    "ventas": {
+      "precio_unitario": {
+        "corbatas": 17.20,
+        "bufandas": 28.90,
+        "calcetines": 3.00
+      },
+      "promocion_marca": {
+        "corbatas": 130000,
+        "bufandas": 40000,
+        "calcetines": 50000
+      },
+      "incentivo_ventas_pct": {
+        "corbatas": 3.5,
+        "bufandas": 3.5,
+        "calcetines": 3.5
+      },
+      "descuento_canal_pct": 15.0
+    },
+    "producto": {
+      "presupuesto_diseno": {
+        "corbatas": 60000,
+        "bufandas": 32000,
+        "calcetines": 64000
+      },
+      "amplitud_gama": {
+        "corbatas": 15,
+        "bufandas": 6,
+        "calcetines": 5
+      },
+      "proveedor": {
+        "corbatas": "Economica",
+        "bufandas": "Economica",
+        "calcetines": "Economica"
+      }
+    },
+    "produccion": {
+      "ampliacion_capacidad_nivel": {
+        "corbatas": 0,
+        "bufandas": 0,
+        "calcetines": 0
+      },
+      "unidades_producir": {
+        "corbatas": 210000,
+        "bufandas": 29000,
+        "calcetines": 33000
+      },
+      "mantenimiento_pct": 3.0
+    },
+    "financiacion": {
+      "prestamo_largo_plazo": 0,
+      "prestamo_corto_plazo": 0,
+      "plazo_cobro_clientes_dias": 45,
+      "plazo_pago_proveedores_dias": 45,
+      "cancelacion_anticipada_lp": 0,
+      "dividendos_pct": 0.0
+    },
+    "inversiones_financieras": {
+      "deuda_publica_cp": {
+        "q1": 125000,
+        "q2": 125000,
+        "q3": 125000,
+        "q4": 125000
+      },
+      "deuda_publica_lp": 200000
+    },
+    "otros_proyectos": {
+      "eficiencia_energetica_fabrica": {
+        "seleccionado": true,
+        "inversion_eur": 125000,
+        "imputacion_contable": "Activo No Corriente",
+        "impacto_pros": "Ahorro energético en fábrica de hasta el 30%",
+        "impacto_contras": "Desembolso de 125.000 € de caja",
+        "justificacion_estrategica": "Inversión industrial prioritaria con rápido retorno vía reducción de costes fijos."
+      },
+      "eficiencia_elaboracion_corbatas": {
+        "seleccionado": true,
+        "inversion_eur": 250000,
+        "imputacion_contable": "Activo No Corriente",
+        "impacto_pros": "Reducción del 25% en el coste directo de elaboración de corbatas",
+        "impacto_contras": "Desembolso de 250.000 € de caja",
+        "justificacion_estrategica": "Afecta al producto estrella, maximizando el margen bruto industrial."
+      },
+      "eficiencia_elaboracion_calcetines": {
+        "seleccionado": true,
+        "inversion_eur": 25000,
+        "imputacion_contable": "Activo No Corriente",
+        "impacto_pros": "Sanea el proceso productivo de la línea de calcetines",
+        "impacto_contras": "Desembolso menor de 25.000 €",
+        "justificacion_estrategica": "Bajo costo para reducir las pérdidas históricas de la línea."
+      },
+      "eficiencia_elaboracion_bufandas": {
+        "seleccionado": false,
+        "inversion_eur": 150000,
+        "imputacion_contable": "Activo No Corriente",
+        "impacto_pros": "Ahorro en costes de confección de bufandas",
+        "impacto_contras": "Exige 150.000 € adicionales de caja",
+        "justificacion_estrategica": "Rechazado porque la línea de bufandas ya operaba con un margen del 35%."
+      },
+      "mejora_calidad_producto": {
+        "seleccionado": true,
+        "inversion_eur": 0,
+        "imputacion_contable": "Cero Coste", "impacto_pros": "Mejora la percepción de calidad en el mercado",
+        "impacto_contras": "Ninguno",
+        "justificacion_estrategica": "Aceptación obligatoria por aportar valor comercial a coste cero."
+      },
+      "mejora_calidad_proceso_produccion": {
+        "seleccionado": true,
+        "inversion_eur": 0,
+        "imputacion_contable": "Cero Coste",
+        "impacto_pros": "Reduce taras, mermas y re-procesos en taller",
+        "impacto_contras": "Ninguno",
+        "justificacion_estrategica": "Permite bajar el coste de no calidad de 64,6k € a 28,6k € sin costo."
+      },
+      "eficiencia_condiciones_laborales": {
+        "seleccionado": true,
+        "inversion_eur": 0,
+        "imputacion_contable": "Cero Coste",
+        "impacto_pros": "Incrementa la productividad y el clima laboral",
+        "impacto_contras": "Ninguno",
+        "justificacion_estrategica": "Optimización operativa a coste cero."
+      },
+      "busqueda_nuevos_proveedores": {
+        "seleccionado": true,
+        "inversion_eur": 0,
+        "imputacion_contable": "Cero Coste",
+        "impacto_pros": "Mejora la posición negociadora en compras",
+        "impacto_contras": "Ninguno",
+        "justificacion_estrategica": "Aceptado a coste cero."
+      },
+      "codigo_conducta_y_esg": {
+        "seleccionado": true,
+        "inversion_eur": 0,
+        "imputacion_contable": "Cero Coste",
+        "impacto_pros": "Fortalece la imagen institucional y valor de marca",
+        "impacto_contras": "Ninguno",
+        "justificacion_estrategica": "Aceptado a coste cero."
+      },
+      "venta_terreno_agricola": {
+        "seleccionado": false,
+        "inversion_eur": -265000,
+        "imputacion_contable": "Pérdidas Extraordinarias (PyG)",
+        "impacto_pros": "Inyección inmediata de 265.000 € de liquidez",
+        "impacto_contras": "Pérdida contable extraordinaria de -110.000 € en PyG por vender bajo valor en libros (375k €)",
+        "justificacion_estrategica": "Rechazado para evitar la destrucción directa del beneficio neto de la empresa."
+      },
+      "american_business_vc": {
+        "seleccionado": false,
+        "inversion_eur": 0,
+        "imputacion_contable": "Patrimonio Neto (Capital Social)",
+        "impacto_pros": "Entrada de capital externo sin generar deuda bancaria",
+        "impacto_contras": "Dilución de la propiedad de los accionistas",
+        "justificacion_estrategica": "Rechazado para preservar la autonomía financiera manteniendo suficiente tesorería."
+      },
+      "mejora_edificio_tejado": {
+        "seleccionado": "ninguna",
+        "inversion_eur": 0,
+        "imputacion_contable": "Activo No Corriente / PyG",
+        "impacto_pros": "Protege la estructura fabril ante eventos climáticos severos",
+        "impacto_contras": "Salida de 30k € a 320k € de caja sin retorno operativo directo",
+        "justificacion_estrategica": "Omitido para priorizar proyectos con retorno comercial e industrial inmediato."
+      }
+    }
+  }
+}
