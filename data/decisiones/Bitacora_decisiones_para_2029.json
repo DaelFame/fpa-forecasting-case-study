@@ -1,0 +1,94 @@
+{
+  "empresa": "Spain10",
+  "periodo": 2029,
+  "ronda": 4,
+  "modulos": {
+    "ventas": {
+      "precios_venta_unitario": {
+        "corbatas_euro": 16.20,
+        "bufandas_euro": 27.00,
+        "calcetines_catalogo_euro": 3.08
+      },
+      "descuento_canal_porcentaje": 10.0,
+      "promocion_marca_euro": {
+        "corbatas": 150000,
+        "bufandas": 100000,
+        "calcetines": 50000,
+        "total_euro": 300000
+      },
+      "incentivos_equipo_ventas_porcentaje": {
+        "corbatas": 4.0,
+        "bufandas": 4.0,
+        "calcetines": 4.0
+      }
+    },
+    "producto": {
+      "gasto_diseno_euro": {
+        "corbatas": 75000,
+        "bufandas": 50000,
+        "calcetines": 25000,
+        "total_euro": 150000
+      },
+      "amplitud_gama_modelos": {
+        "corbatas": 15,
+        "bufandas": 8,
+        "calcetines": 5
+      },
+      "proveedor_materia_prima": {
+        "corbatas": "Estandard",
+        "bufandas": "Estandard",
+        "calcetines": "Economica"
+      }
+    },
+    "produccion": {
+      "ampliacion_capacidad_nivel": {
+        "corbatas": 1,
+        "bufandas": 1,
+        "calcetines": 0,
+        "inversion_total_euro": 260000
+      },
+      "unidades_a_producir": {
+        "corbatas": 255000,
+        "bufandas": 46000,
+        "calcetines": 90000,
+        "total_unidades": 391000
+      },
+      "gasto_mantenimiento_porcentaje": 3.0,
+      "planta_energia_fotovoltaica": "Opción 1 - Inversión 145.000 €"
+    },
+    "otros_proyectos": {
+      "venta_solar_anexo": {
+        "decision": "Aceptar Oferta",
+        "ingreso_caja_euro": 415000,
+        "plusvalia_contable_euro": 195000
+      },
+      "modernizacion_fabrica": {
+        "decision": "Aceptar",
+        "inversion_corbatas_euro": 150000,
+        "inversion_calcetines_euro": 125000,
+        "inversion_total_euro": 275000
+      },
+      "planta_energia_renovable": {
+        "decision": "Aceptar",
+        "inversion_euro": 145000
+      }
+    },
+    "financiacion": {
+      "prestamo_largo_plazo_euro": 0,
+      "prestamo_corto_plazo_euro": 0,
+      "plazo_cobro_clientes_dias": 45,
+      "plazo_pago_proveedores_dias": 45,
+      "cancelacion_anticipada_prestamo_lp_euro": 296649,
+      "distribucion_dividendos_porcentaje": 0.0
+    },
+    "inversiones_financieras": {
+      "compra_deuda_publica_largo_plazo_2_anos_euro": 300000,
+      "compra_deuda_publica_corto_plazo_euro": {
+        "trimestre_1": 0,
+        "trimestre_2": 500000,
+        "trimestre_3": 500000,
+        "trimestre_4": 500000
+      }
+    }
+  }
+}
