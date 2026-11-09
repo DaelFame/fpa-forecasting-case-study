@@ -65,6 +65,13 @@ FOREIGN_KEYS = {
         ("line_item_key", "dim_line_item.csv"),
         ("status_key", "dim_status.csv"),
     ],
+    "fact_backtest.csv": [
+        ("fold_key", "dim_fold.csv"),
+        ("regime_key", "dim_regime.csv"),
+        ("period_key", "dim_period.csv"),
+        ("line_item_key", "dim_line_item.csv"),
+        ("status_key", "dim_status.csv"),
+    ],
 }
 
 # Measures the source only publishes for some periods. Every other measure in
@@ -261,3 +268,72 @@ def test_marts_manifest_describes_the_build(marts) -> None:
     assert manifest["periods"] == sorted(int(y) for y in CLOSED_YEARS)
     assert len(manifest["sources"]) >= 9
     assert all(source["sha256"] for source in manifest["sources"])
+
+
+def test_backtest_covers_every_fold_and_regime(marts) -> None:
+    target, _ = marts
+    rows = _load(target / "fact_backtest.csv")
+    combos = {(row["fold_key"], row["regime_key"]) for row in rows}
+    assert combos == {("F1", "A"), ("F1", "B"), ("F2", "A"), ("F2", "B")}
+    assert {row["period_key"] for row in rows if row["fold_key"] == "F1"} == {"2028"}
+    assert {row["period_key"] for row in rows if row["fold_key"] == "F2"} == {"2029"}
+    assert len(rows) == 4 * 15
+
+
+def test_backtest_metrics_are_internally_consistent(marts) -> None:
+    target, _ = marts
+    for row in _load(target / "fact_backtest.csv"):
+        forecast = float(row["forecast_amount"])
+        actual = float(row["actual_amount"])
+        error = float(row["error_eur"])
+        assert abs(error - (forecast - actual)) < 0.01
+        if row["abs_pct_error"]:
+            assert abs(float(row["abs_pct_error"]) - abs(error) / abs(actual)) < 1e-9
+            assert float(row["bias_pct"]) == error / abs(actual)
+
+
+def test_regime_a_cuts_the_revenue_error_in_the_clean_fold(marts) -> None:
+    target, _ = marts
+    rows = {
+        row["regime_key"]: row
+        for row in _load(target / "fact_backtest.csv")
+        if row["fold_key"] == "F1" and row["line_item_key"] == "revenue_total"
+    }
+    assert float(rows["A"]["abs_pct_error"]) < 0.01
+    assert float(rows["B"]["abs_pct_error"]) > 0.10
+    assert float(rows["A"]["abs_pct_error"]) < float(rows["B"]["abs_pct_error"]) / 10
+
+
+def test_decision_conditional_forecast_beats_the_naive_one_on_the_clean_fold(marts) -> None:
+    target, _ = marts
+    rows = _load(target / "fact_backtest.csv")
+
+    def mape(fold: str, regime: str) -> float:
+        values = [
+            float(row["abs_pct_error"])
+            for row in rows
+            if row["fold_key"] == fold
+            and row["regime_key"] == regime
+            and row["abs_pct_error"]
+        ]
+        return sum(values) / len(values)
+
+    assert mape("F1", "A") < mape("F1", "B")
+    assert mape("F2", "A") < 0.40
+
+
+def test_inconsistent_decision_log_is_flagged_not_hidden(marts) -> None:
+    """The 2029 log records prices the close did not execute; regime A says so."""
+    target, _ = marts
+    rows = _load(target / "fact_backtest.csv")
+    flagged = {
+        (row["fold_key"], row["regime_key"], row["status_key"])
+        for row in rows
+        if row["status_key"] == "pending"
+    }
+    assert flagged == {("F2", "A", "pending")}
+    assert all(
+        row["status_key"] == "inferred_accepted"
+        for row in rows
+        if not (row["fold_key"] == "F2" and row["regime_key"] == "A")
+    )

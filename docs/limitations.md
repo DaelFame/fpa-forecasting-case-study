@@ -180,6 +180,32 @@ being present. When it is missing, the series with the most quarters wins.
 **Impact:** no impact on 2024–2028 under the current sources; a future workbook
 without an annual total would need review.
 
+### L-17 — The 2029 decision log does not reconcile with the close
+
+The 2029 log records list prices of `16.20 / 27.00 / 3.08` and a 10% channel
+discount, which implies a net price near `14.58`. The 2029 close reports unit
+prices of `20.70 / 34.50 / 4.14` and an effective 15% discount, and the committed
+budget revenue (`6,198,132`) matches the close, not the log.
+
+The backtest uses the log on purpose: regime A is "decisions known", and the log is
+the decision record. The contradiction is therefore surfaced as `status_key =
+pending` for every F2-A row instead of being smoothed away, and the 2029 regime-A
+error includes a data defect, not a model defect (L-17).
+
+**Impact:** the F2 comparison A versus B is not a fair model test. The F1 fold,
+where the log matches execution, is the one to read.
+
+### L-18 — Unit costs are not a modelled decision
+
+The decision log publishes prices, volumes, marketing and design, but not unit
+costs. Both regimes therefore carry the last closed year's unit cost. Cost-side
+decisions (factory modernisation, solar energy) are not translated into a cost
+forecast, so they cancel out of the A/B delta and leave regime A with a gross-margin
+error of about 10% in F1 even when its revenue error is 0.3%.
+
+**Impact:** the backtest measures the value of knowing price, volume and marketing
+levers. It does not measure the value of cost decisions.
+
 ## How these limitations are handled
 
 1. Every affected figure carries an explicit status.

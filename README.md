@@ -82,6 +82,27 @@ model that slowly improves.
 **594,748 units of demand were not served** — a capacity constraint, which is what
 makes the capacity-expansion decision a financial decision rather than an operational one.
 
+### Knowing the decisions removes most of the forecasting error
+
+The backtest trains only on closed years and predicts the next one. Two regimes,
+same model, different information:
+
+| 2028 out-of-sample | A — decisions known | B — decisions unknown |
+|---|---:|---:|
+| Revenue error | **0.3%** | 15.7% |
+| Gross profit error | 9.9% | 24.1% |
+| Net income error | 25.5% | 55.0% |
+| Mean MAPE across 15 P&L lines | 26.6% | 32.3% |
+
+Knowing price, volume and marketing decisions cuts the revenue error by **15.4
+points (98%)** and the net-income error by **29.5 points**. The aggregate MAPE moves
+less because it averages lines the decisions cannot inform — financial result,
+extraordinary items, taxes — which are identical in both regimes by construction.
+
+The 2029 fold is exported but flagged: the 2029 decision log records prices the
+close did not execute, so regime A is `pending` there and the comparison is not a
+fair test (L-17). The backtest catches a bad input instead of hiding it.
+
 ## What this project demonstrates
 
 This is not a dashboard exercise. The deliverable is the chain that feeds the
@@ -166,7 +187,7 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 | Annual and quarterly panel, 2024–2029 | Done — annual 2024–2029, quarterly sales 2024–2028 |
 | Market fact: market units, share, demand gap | Done — demand gap 2026–2028 |
 | Variance decomposition engine | Done — budget bridge 2026–2029 in `fact_variance` |
-| Rolling-origin backtest (folds F1, F2) | In progress |
+| Rolling-origin backtest (folds F1, F2) | Done — 2 folds × 2 regimes in `fact_backtest`; 2029 flagged pending (L-17) |
 | Power BI dashboard | Planned |
 
 ## Method notes

@@ -126,13 +126,20 @@ independent cross-check, never as the primary engine.
 
 ### 3.4 Two forecast regimes
 
+Both regimes use the same model. Only the information set changes.
+
 | Regime | Information available | What it measures |
 |---|---|---|
-| **A — decision-conditional** | The actual decisions for that year (price, production, capex, channel discount) | Fidelity of the model to the business mechanics |
-| **B — decision-free** | History and macro indicators only | Predictive power of the historical record |
+| **A — decision-conditional** | Target-year prices, planned production and marketing from the decision log, plus last closed unit costs | Value of knowing the levers |
+| **B — decision-free** | The last closed year, held flat | Power of extrapolating the past |
 
-The gap between A and B is the headline result: it quantifies how much forecast
-accuracy comes from knowing the levers versus from extrapolating the past.
+Unit costs are carried from the last closed year in both regimes, because the log
+does not publish them (L-18). They therefore cancel out of the delta, which measures
+the value of price, volume and marketing decisions.
+
+When a decision log contradicts the committed budget by more than 2% on implied
+revenue, regime A is exported with `status_key = pending` instead of silently
+producing a number that looks trustworthy (L-17).
 
 ### 3.5 Rolling-origin backtest
 
@@ -159,7 +166,7 @@ the backtest circular and invalid.
 Bias is reported alongside MAPE because a correctable systematic bias is a more
 useful finding than a low average error.
 
-### 3.6 Variance decomposition
+### 3.7 Variance decomposition
 
 Budget-vs-actual gaps are decomposed into volume, price, mix, cost and one-off
 effects, so that the bridge closes to the reported figure with no residual. Section

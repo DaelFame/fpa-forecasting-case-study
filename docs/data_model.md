@@ -219,6 +219,26 @@ One row per effect of the budget bridge. Rows of a period add up **exactly** to
 `amount` is always the impact on profit, so a positive number improves profit and a
 waterfall can sum the column directly. The 2026 bridge is `-243,137`, the 61% miss.
 
+### `fact_backtest.csv` — grain: fold × regime × period × line item
+
+| Column | Type | Notes |
+|---|---|---|
+| `fold_key` | text | FK → `dim_fold` (F1 trains ≤2027, F2 trains ≤2028) |
+| `regime_key` | text | FK → `dim_regime` (A decisions known, B decisions unknown) |
+| `period_key` | text | FK → `dim_period`, the target year |
+| `line_item_key` | text | FK → `dim_line_item` |
+| `forecast_amount` | decimal | Model output |
+| `actual_amount` | decimal | Reported outcome |
+| `error_eur` | decimal | `forecast - actual`, signed |
+| `abs_pct_error` | decimal | `abs(error) / abs(actual)`, empty under €1,000 |
+| `bias_pct` | decimal | `error / abs(actual)`, signed; positive means over-forecast |
+| `status_key` | text | `pending` when the decision log contradicts the budget |
+
+60 rows: 2 folds × 2 regimes × 15 P&L lines. MAPE is the mean of `abs_pct_error`
+over the lines you choose to aggregate; bias is the mean of `bias_pct`. The fact
+stores the per-line evidence, so the dashboard decides the aggregation instead of
+inheriting a single pre-chewed number.
+
 ### `fact_forecast.csv` — grain: period × line item × scenario × regime × fold
 
 | Column | Type | Notes |
@@ -271,6 +291,12 @@ dim_period     1 ── *  fact_variance
 dim_driver     1 ── *  fact_variance
 dim_line_item  1 ── *  fact_variance
 dim_status     1 ── *  fact_variance
+
+dim_period     1 ── *  fact_backtest
+dim_line_item  1 ── *  fact_backtest
+dim_fold       1 ── *  fact_backtest
+dim_regime     1 ── *  fact_backtest
+dim_status     1 ── *  fact_backtest
 
 dim_period     1 ── *  fact_forecast
 dim_line_item  1 ── *  fact_forecast
@@ -343,6 +369,7 @@ grains must filter on `dim_period[grain]` first.
 | `fact_product_annual` | Produced — 18 rows |
 | `fact_market` | Produced — 18 rows; demand columns 2026–2028 |
 | `fact_variance` | Produced — 39 rows, 2026–2029, exact to the cent |
+| `fact_backtest` | Produced — 60 rows, folds F1/F2 × regimes A/B |
 | `fact_forecast` | Pending — needs the forecast engine |
 | `fact_sensitivity` | Pending — needs the sensitivity engine |
 

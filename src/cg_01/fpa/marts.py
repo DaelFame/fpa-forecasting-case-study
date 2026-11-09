@@ -22,7 +22,8 @@ from ..f2_engine import F2Result, load_f2_config, run_f2, sheet_role
 from ..models import Observation
 from ..text import period_string
 from .market import build_market
-from .variance import BUDGET_LABELS, annual_units, build_variance, driver_dimension
+from .variance import BUDGET_LABELS, annual_units, budget_values, build_variance, driver_dimension
+from .backtest import build_backtest, summarise
 
 PRODUCTS: dict[str, tuple[str, int]] = {
     "corbatas": ("Neckties", 1),
@@ -459,6 +460,9 @@ def build_marts(f2: F2Result, output_dir: Path | None = None) -> dict[str, int]:
     periods = list(config.periods)
     variance = build_variance(f2, PRODUCTS)
     market = build_market(f2, PRODUCTS)
+    backtest = build_backtest(
+        f2, PRODUCTS, budget=budget_values(f2.pipeline.observations)
+    )
 
     counts: dict[str, int] = {}
     counts["dim_period.csv"] = _write(
@@ -545,11 +549,32 @@ def build_marts(f2: F2Result, output_dir: Path | None = None) -> dict[str, int]:
         ["period_key", "driver_key", "line_item_key", "amount", "status_key"],
         variance,
     )
-    _write_manifest(target, f2, counts)
+    counts["fact_backtest.csv"] = _write(
+        target / "fact_backtest.csv",
+        [
+            "fold_key",
+            "regime_key",
+            "period_key",
+            "line_item_key",
+            "forecast_amount",
+            "actual_amount",
+            "error_eur",
+            "abs_pct_error",
+            "bias_pct",
+            "status_key",
+        ],
+        backtest,
+    )
+    _write_manifest(target, f2, counts, summarise(backtest))
     return counts
 
 
-def _write_manifest(target: Path, f2: F2Result, counts: dict[str, int]) -> None:
+def _write_manifest(
+    target: Path,
+    f2: F2Result,
+    counts: dict[str, int],
+    backtest_summary: dict[str, dict[str, float]],
+) -> None:
     """Build stamp for the dashboard: when, from which sources, how many rows.
 
     Deliberately not versioned: it changes on every run. Power BI reads it to show
@@ -560,6 +585,7 @@ def _write_manifest(target: Path, f2: F2Result, counts: dict[str, int]) -> None:
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "periods": list(f2.f2_config.periods),
         "row_counts": counts,
+        "backtest_summary": backtest_summary,
         "sources": [
             {
                 "source_id": source.source_id,
@@ -603,7 +629,16 @@ def main(argv: list[str] | None = None) -> int:
             f"Marts completados: {len(result.rows)} filas F2, "
             f"{sum(counts.values())} filas en {len(counts)} tablas."
         )
-        print(f"Salida: {args.output or f2_config.project_root / 'data' / 'processed'}")
+        target = args.output or f2_config.project_root / "data" / "processed"
+        manifest = json.loads((target / "_manifest.json").read_text(encoding="utf-8"))
+        summary = manifest.get("backtest_summary", {})
+        if summary:
+            parts = [
+                f"{key} MAPE {value['mape'] * 100:.1f}% (bias {value['bias'] * 100:+.1f}%)"
+                for key, value in sorted(summary.items())
+            ]
+            print("Backtest: " + " | ".join(parts))
+        print(f"Salida: {target}")
     return 0
 
 

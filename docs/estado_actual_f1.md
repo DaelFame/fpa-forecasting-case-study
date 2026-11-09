@@ -355,3 +355,51 @@ cuatro trimestres suman el total anual del mismo libro (L-16).
 
 `uv run pytest -q` → **64 passed**. `fact_variance` incluye una prueba que exige que
 la cascada cuadre al céntimo en los cuatro años.
+
+---
+
+## 12. Backtest rolling-origin (2026-11-09)
+
+`fact_backtest`: 60 filas (2 folds × 2 regímenes × 15 líneas de P&L). Cada fila
+guarda pronóstico, real, error firmado, error porcentual absoluto y sesgo. MAPE y
+sesgo se agregan en el dashboard, no se congelan en el hecho.
+
+Modelo: mismo motor en ambos regímenes; solo cambia la información disponible.
+
+- **A (con decisiones)**: precios, producción planificada y marketing del año
+  objetivo desde la bitácora; coste unitario del último año cerrado.
+- **B (sin decisiones)**: último año cerrado, plano.
+
+El coste unitario no está en la bitácora, así que se arrastra en ambos regímenes y
+se cancela en el delta (L-18).
+
+### Resultados
+
+| Fold | Objetivo | MAPE A | MAPE B | Delta |
+|---|---|---:|---:|---:|
+| F1 | 2028 | 26,6 % | 32,3 % | −5,7 pp |
+| F2 | 2029 | 33,1 % | 32,1 % | +1,0 pp |
+
+Por línea, en el fold limpio (F1):
+
+| Línea | Error A | Error B |
+|---|---:|---:|
+| Ingresos | 0,3 % | 15,7 % |
+| Margen bruto | 9,9 % | 24,1 % |
+| Resultado neto | 25,5 % | 55,0 % |
+
+### El log de 2029 no cuadra
+
+La bitácora de 2029 registra precios de 16,20 / 27,00 / 3,08 con 10 % de descuento;
+la matriz publica 20,70 / 34,50 / 4,14 y el descuento efectivo es del 15 %. El
+presupuesto de ingresos (6.198.132) coincide con el cierre, no con la bitácora.
+
+Regime A usa la bitácora por definición. Por eso todas las filas F2-A se exportan
+con `status_key = pending`: el error de 2029 mide un defecto del dato, no del
+modelo (L-17). El backtest detecta el input malo en lugar de esconderlo.
+
+### Verificación
+
+`uv run pytest -q` → **71 passed**. Incluye: cobertura de folds y regímenes,
+consistencia de error/porcentaje/sesgo, que A bata a B en el fold limpio y que el
+log inconsistente quede marcado.
