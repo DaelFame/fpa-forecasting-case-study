@@ -13,6 +13,7 @@ class SourceInfo:
     kind: str
     sha256_before: str
     size_bytes: int
+    source_key: str = ""
     sha256_after: str | None = None
     sheets: list[str] = field(default_factory=list)
     periods: list[str] = field(default_factory=list)
@@ -33,6 +34,7 @@ class SourceInfo:
     def to_dict(self) -> dict[str, Any]:
         return {
             "source_id": self.source_id,
+            "source_key": self.source_key,
             "path": self.path,
             "relative_path": self.relative_path,
             "source_type": self.source_type,

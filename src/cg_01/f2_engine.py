@@ -3,13 +3,13 @@ from __future__ import annotations
 import argparse
 import json
 import tomllib
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
 from .config import F1Config, PROJECT_ROOT, load_config
-from .models import Anomaly, Observation
+from .models import Anomaly, Observation, SourceInfo
 from .pipeline import PipelineResult, run_pipeline
 from .text import normalize_label
 
@@ -158,6 +158,44 @@ def _sheet_key(sheet: str) -> str:
 def sheet_role(sheet: str, source_id: str, aliases: dict[str, dict[str, str]]) -> str:
     """Resolve the business role of a sheet, honouring per-source aliases."""
     return aliases.get(source_id, {}).get(normalize_label(sheet), _sheet_key(sheet))
+
+
+def bind_sources(
+    config: F2Config, sources: list[SourceInfo]
+) -> tuple[dict[int, dict[str, int]], dict[str, dict[str, str]], list[str]]:
+    """Resolve config bindings against stable source keys.
+
+    `config/f2.toml` addresses a workbook by its stable `source_key`, derived
+    from the file path inside `data/`. Enumerated `source_id` values are
+    deliberately *not* accepted: after a renumbering they would rebind to a
+    different workbook while still looking valid. Unknown keys are returned so
+    the manifest can surface them instead of silently ignoring the binding.
+    """
+    key_to_id = {source.source_key: source.source_id for source in sources if source.source_key}
+    unresolved: list[str] = []
+
+    def resolve(token: str) -> str | None:
+        source_id = key_to_id.get(token)
+        if source_id is None:
+            unresolved.append(token)
+        return source_id
+
+    precedence: dict[int, dict[str, int]] = {}
+    for period, by_source in config.precedence.items():
+        resolved = {}
+        for token, rank in by_source.items():
+            source_id = resolve(token)
+            if source_id is not None:
+                resolved[source_id] = rank
+        precedence[period] = resolved
+
+    aliases: dict[str, dict[str, str]] = {}
+    for token, mapping in config.sheet_aliases.items():
+        source_id = resolve(token)
+        if source_id is not None:
+            aliases[source_id] = mapping
+
+    return precedence, aliases, sorted(set(unresolved))
 
 
 def _source(observation: Observation | None) -> str:
@@ -1120,7 +1158,11 @@ def run_f2(
     resolved_f1 = f1_config or load_config()
     resolved_f2 = f2_config or load_f2_config(project_root=resolved_f1.project_root)
     pipeline = run_pipeline(resolved_f1)
-    builder = Builder(pipeline, resolved_f2)
+    precedence, sheet_aliases, unresolved = bind_sources(resolved_f2, pipeline.sources)
+    bound_config = replace(
+        resolved_f2, precedence=precedence, sheet_aliases=sheet_aliases
+    )
+    builder = Builder(pipeline, bound_config)
     rows = builder.build()
     anomalies = _balance_anomaly_records(pipeline)
     counts: dict[str, int] = {}
@@ -1134,6 +1176,7 @@ def run_f2(
         "config": {
             "exact_tolerance_eur": resolved_f2.exact_tolerance_eur,
             "documented_residual_eur": resolved_f2.documented_residual_eur,
+            "unresolved_source_bindings": unresolved,
         },
         "sources": [source.to_dict() for source in pipeline.sources],
         "summary": {
@@ -1156,7 +1199,7 @@ def run_f2(
     }
     return F2Result(
         f1_config=resolved_f1,
-        f2_config=resolved_f2,
+        f2_config=bound_config,
         pipeline=pipeline,
         rows=rows,
         balance_anomalies=anomalies,

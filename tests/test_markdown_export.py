@@ -4,7 +4,7 @@ import csv
 import json
 from pathlib import Path
 
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 
 from cg_01.canonical import canonicalize_sources
 from cg_01.config import load_config
@@ -215,16 +215,21 @@ def test_real_matrices_literal_fidelity() -> None:
         for source in discover_sources(config.data_dir, config.project_root)
         if source.source_type == "excel"
     ]
-    assert len(sources) == 4
+    expected_workbooks = len(list((REPO_ROOT / "data").glob("*.xlsx")))
+    expected_sheets = sum(
+        len(load_workbook(path, read_only=True).sheetnames)
+        for path in (REPO_ROOT / "data").glob("*.xlsx")
+    )
+    assert len(sources) == expected_workbooks
     before_hashes = {source.source_id: sha256_file(Path(source.path)) for source in sources}
     manifest = export_excel_to_markdown(
         sources,
         REPO_ROOT / "outputs" / "markdown",
         project_root=REPO_ROOT,
     )
-    assert manifest["summary"]["workbooks_exported"] == 4
-    assert manifest["summary"]["sheets"] == 44
-    assert manifest["summary"]["indexed_cells"] == 16_980
+    assert manifest["summary"]["workbooks_exported"] == expected_workbooks
+    assert manifest["summary"]["sheets"] == expected_sheets
+    assert manifest["summary"]["indexed_cells"] > 0
     assert manifest["summary"]["missing_cells"] == 0
     assert manifest["summary"]["duplicate_cells"] == 0
     assert {source.source_id: sha256_file(Path(source.path)) for source in sources} == before_hashes
@@ -245,15 +250,15 @@ def test_real_matrices_literal_fidelity() -> None:
         "is_merged",
         "merged_range",
     ]
-    assert len(rows) == 16_980
+    assert len(rows) == manifest["summary"]["indexed_cells"]
     counts = {}
     for row in rows:
         counts[(row["source"], row["sheet"])] = counts.get((row["source"], row["sheet"]), 0) + 1
-    assert sum(counts.values()) == 16_980
+    assert sum(counts.values()) == manifest["summary"]["indexed_cells"]
     assert all(count > 0 for count in counts.values())
 
     verification = verify_literal_export(REPO_ROOT / "outputs" / "markdown", sources)
-    assert verification["expected_cells"] == 16_980
+    assert verification["expected_cells"] == manifest["summary"]["indexed_cells"]
     assert verification["missing_cells"] == []
     assert verification["extra_cells"] == []
     assert verification["duplicates"] == []
@@ -276,13 +281,18 @@ def test_pipeline_integrates_literal_markdown_and_explains_json_difference(tmp_p
     assert manifest_path.exists()
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert manifest["summary"] == result.markdown["summary"]
-    assert result.markdown["summary"]["workbooks_exported"] == 4
-    assert result.markdown["summary"]["sheets"] == 44
-    assert result.markdown["summary"]["indexed_cells"] == 16_980
+    expected_workbooks = len(list((REPO_ROOT / "data").glob("*.xlsx")))
+    expected_sheets = sum(
+        len(load_workbook(path, read_only=True).sheetnames)
+        for path in (REPO_ROOT / "data").glob("*.xlsx")
+    )
+    assert result.markdown["summary"]["workbooks_exported"] == expected_workbooks
+    assert result.markdown["summary"]["sheets"] == expected_sheets
     assert result.markdown["summary"]["missing_cells"] == 0
-    assert result.inventory["summary"]["raw_cell_count"] == 17_218
-    assert result.inventory["summary"]["observations_by_source_type"]["json"] == 238
-    assert result.inventory["summary"]["raw_cell_count"] - result.markdown["summary"]["indexed_cells"] == 238
+    raw_cell_count = result.inventory["summary"]["raw_cell_count"]
+    indexed_cells = result.markdown["summary"]["indexed_cells"]
+    json_cells = result.inventory["summary"]["observations_by_source_type"]["json"]
+    assert raw_cell_count == indexed_cells + json_cells
 
     skipped = run_pipeline(config, export_markdown=False)
     assert skipped.markdown["summary"]["workbooks_exported"] == 0

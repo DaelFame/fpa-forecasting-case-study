@@ -11,6 +11,16 @@ from cg_01.fpa.marts import build_marts
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+DATA_ROOT = REPO_ROOT / "data"
+CLOSED_YEARS = {
+    str(year)
+    for year in load_f2_config(
+        REPO_ROOT / "config" / "f2.toml", project_root=REPO_ROOT
+    ).periods
+}
+BUDGET_YEARS = {
+    path.stem[-4:] for path in (DATA_ROOT / "decisiones").glob("*.json")
+}
 
 DIMENSIONS = {
     "dim_period.csv": "period_key",
@@ -105,18 +115,27 @@ def test_financials_cover_every_year_in_both_scenarios(marts) -> None:
     rows = _load(target / "fact_financials.csv")
     actual_years = {row["period_key"] for row in rows if row["scenario_key"] == "actual"}
     budget_years = {row["period_key"] for row in rows if row["scenario_key"] == "budget"}
-    assert actual_years == {"2024", "2025", "2026", "2027", "2028"}
-    assert budget_years == {"2026", "2027", "2028"}
+    assert actual_years == CLOSED_YEARS
+    assert budget_years == BUDGET_YEARS
 
 
 def test_sales_fact_is_quarterly_by_product(marts) -> None:
     target, _ = marts
     rows = _load(target / "fact_sales.csv")
-    assert len(rows) == 60
     periods = {row["period_key"] for row in rows}
-    assert len(periods) == 20
+    assert len(periods) % 4 == 0
+    assert len(rows) == 3 * len(periods)
     assert all("-Q" in period for period in periods)
     assert {row["product_key"] for row in rows} == {"corbatas", "bufandas", "calcetines"}
+
+
+def test_sales_fact_keeps_its_grain_when_units_are_annual_only(marts) -> None:
+    target, _ = marts
+    sales = _load(target / "fact_sales.csv")
+    annual = _load(target / "fact_product_annual.csv")
+    assert not any(row["period_key"].startswith("2029") for row in sales)
+    assert any(row["period_key"] == "2029" for row in annual)
+    assert all(row["units_sold"] and row["revenue"] for row in sales)
 
 
 def test_period_dimension_keeps_gauges_separate(marts) -> None:
@@ -124,6 +143,7 @@ def test_period_dimension_keeps_gauges_separate(marts) -> None:
     rows = _load(target / "dim_period.csv")
     annual = {row["period_key"] for row in rows if row["grain"] == "year"}
     quarterly = {row["period_key"] for row in rows if row["grain"] == "quarter"}
-    assert annual == {"2024", "2025", "2026", "2027", "2028"}
-    assert len(quarterly) == 20
+    sales_periods = {row["period_key"] for row in _load(target / "fact_sales.csv")}
+    assert annual == CLOSED_YEARS
+    assert quarterly == sales_periods
     assert not annual & quarterly

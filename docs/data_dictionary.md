@@ -17,10 +17,10 @@ seasonality and volume analysis only.
 
 | Type | Meaning | Years |
 |---|---|---|
-| `real` | Reported outcome after the period closed | 2024–2028 |
-| `budget` | Plan committed before the period was resolved | 2026–2028 |
-| `decision` | Inputs chosen by management for the period | 2026–2028 |
-| `scenario` | Macro assumptions for future years | 2029–2031 |
+| `real` | Reported outcome after the period closed | 2024–2029 |
+| `budget` | Plan committed before the period was resolved | 2026–2029 |
+| `decision` | Inputs chosen by management for the period | 2026–2029 |
+| `scenario` | Macro assumptions for future years | 2029–2032 |
 
 A budget and its corresponding real value are a matched pair. Comparing them is
 the core of the variance analysis; comparing figures of different types is a

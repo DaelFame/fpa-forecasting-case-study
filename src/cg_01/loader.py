@@ -4,14 +4,14 @@ import hashlib
 import json
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 from openpyxl import load_workbook
 
 from .config import F1Config
 from .markdown import parse_frontmatter, parse_markdown_tables
 from .models import DecisionSummary, RawCell, SourceInfo
-from .text import json_safe, value_type
+from .text import json_safe, normalize_label, value_type
 
 
 def _is_blank(value: Any) -> bool:
@@ -33,6 +33,31 @@ def _relative(path: Path, root: Path) -> str:
         return path.name
 
 
+def _source_key(path: Path, data_dir: Path) -> str:
+    """Stable, position-independent identity of a source.
+
+    Derived from the path relative to ``data_dir`` so that adding or renaming
+    another workbook never renumbers it. Config bindings (precedence, sheet
+    aliases) key on this value, never on the enumerated ``source_id``.
+    """
+    try:
+        relative = path.resolve().relative_to(data_dir.resolve())
+    except ValueError:
+        relative = Path(path.name)
+    parts = [normalize_label(part) for part in relative.with_suffix("").parts]
+    return "/".join(part.replace(" ", "_") for part in parts if part)
+
+
+def _sorted_paths(paths: Iterable[Path]) -> list[Path]:
+    """Deterministic, case-insensitive order.
+
+    Plain ``sorted()`` compares case-sensitively, so ``Matriz_General_4.xlsx``
+    sorted before ``Matriz_general_2.xlsx`` and silently renumbered every
+    ``source_id`` when it landed.
+    """
+    return sorted(paths, key=lambda path: str(path).casefold())
+
+
 def _kind(path: Path, source_type: str) -> str:
     if source_type == "markdown":
         return "captured"
@@ -47,18 +72,18 @@ def discover_sources(data_dir: Path, project_root: Path) -> list[SourceInfo]:
     if not data_dir.exists():
         raise FileNotFoundError(f"No existe el directorio de datos: {data_dir}")
 
-    excel_paths = sorted(
+    excel_paths = _sorted_paths(
         path
         for path in data_dir.rglob("*.xlsx")
         if path.is_file() and not path.name.startswith("~$") and not path.name.startswith(".")
     )
-    json_paths = sorted(
+    json_paths = _sorted_paths(
         path
         for path in data_dir.rglob("*.json")
         if path.is_file() and not path.name.startswith(".")
     )
     manual_dir = data_dir / "manual"
-    markdown_paths = sorted(
+    markdown_paths = _sorted_paths(
         path
         for path in manual_dir.rglob("*.md")
         if path.is_file()
@@ -73,6 +98,7 @@ def discover_sources(data_dir: Path, project_root: Path) -> list[SourceInfo]:
         sources.append(
             SourceInfo(
                 source_id=f"SRC-XLSX-{index:03d}",
+                source_key=_source_key(path, data_dir),
                 path=str(path.resolve()),
                 relative_path=_relative(path, project_root),
                 source_type=source_type,
@@ -86,6 +112,7 @@ def discover_sources(data_dir: Path, project_root: Path) -> list[SourceInfo]:
         sources.append(
             SourceInfo(
                 source_id=f"SRC-JSON-{index:03d}",
+                source_key=_source_key(path, data_dir),
                 path=str(path.resolve()),
                 relative_path=_relative(path, project_root),
                 source_type=source_type,
@@ -100,6 +127,7 @@ def discover_sources(data_dir: Path, project_root: Path) -> list[SourceInfo]:
         sources.append(
             SourceInfo(
                 source_id=f"SRC-MD-{index:03d}",
+                source_key=_source_key(path, data_dir),
                 path=str(path.resolve()),
                 relative_path=_relative(path, project_root),
                 source_type=source_type,

@@ -364,18 +364,24 @@ def test_real_pipeline_generates_four_outputs(tmp_path: Path) -> None:
     for name in ("inventory.json", "canonical_points.csv", "anomalies.csv", "report.md"):
         assert (tmp_path / "outputs" / name).exists()
     assert (tmp_path / "outputs" / "markdown" / "manifest.json").exists()
-    assert result.markdown["summary"]["workbooks_exported"] == 4
 
-    assert len(result.sources) == 7
+    data_dir = REPO_ROOT / "data"
+    workbooks = len(list(data_dir.glob("*.xlsx")))
+    json_sources = len(list(data_dir.rglob("*.json")))
+    assert result.markdown["summary"]["workbooks_exported"] == workbooks
+
+    assert len(result.sources) == workbooks + json_sources
     assert result.inventory["summary"]["all_hashes_unchanged"] is True
-    assert result.inventory["summary"]["latest_real_year"] == 2028
-    assert result.inventory["summary"]["latest_decision_year"] == 2028
+    assert result.inventory["summary"]["latest_real_year"] == 2029
+    assert result.inventory["summary"]["latest_decision_year"] == 2029
     assert result.observations
     assert result.anomalies
     assert any(obs.data_type == "decision" and obs.year == 2027 for obs in result.observations)
     assert any(obs.data_type == "real" and obs.year == 2027 for obs in result.observations)
     assert any(obs.data_type == "budget" and obs.year == 2026 for obs in result.observations)
     assert any(obs.data_type == "budget" and obs.year == 2027 for obs in result.observations)
+    assert any(obs.data_type == "decision" and obs.year == 2029 for obs in result.observations)
+    assert any(obs.data_type == "real" and obs.year == 2029 for obs in result.observations)
     assert any(
         obs.data_type == "budget"
         and obs.year == 2026

@@ -1,6 +1,6 @@
 # FP&A Analytics — Fashion Accessories Manufacturer
 
-A financial analytics case study built on five years of statements (2024–2028) for a
+A financial analytics case study built on six years of statements (2024–2029) for a
 mid-size European manufacturer of neckties, scarves and socks: canonical data layer,
 budget-vs-actual reconciliation, driver-based forecasting and scenario analysis.
 
@@ -15,7 +15,7 @@ budget-vs-actual reconciliation, driver-based forecasting and scenario analysis.
 
 ## The business problem
 
-The company entered 2024 loss-making and margin-poor, and exited 2028 profitable and
+The company entered 2024 loss-making and margin-poor, and exited 2029 profitable and
 structurally stronger. Between those two points sit four annual planning cycles,
 each one a committed budget that was later measured against the real outcome.
 
@@ -28,14 +28,14 @@ It is:
 
 ## Key findings (verified against source)
 
-### Margin expansion of 21.5 points, driven by price and product mix
+### Margin expansion of 27.1 points, driven by price and product mix
 
-| EUR | 2024 | 2025 | 2026 | 2027 | 2028 |
-|---|---:|---:|---:|---:|---:|
-| Revenue | 3,274,513 | 3,346,747 | 3,861,039 | 4,304,333 | 5,107,811 |
-| Gross margin | 1,157,881 | 1,088,267 | 1,812,296 | 2,205,670 | 2,907,215 |
-| Gross margin % | 35.4% | 32.5% | 46.9% | 51.2% | 56.9% |
-| Net income | (196,177) | (105,110) | 154,951 | 629,093 | 1,239,865 |
+| EUR | 2024 | 2025 | 2026 | 2027 | 2028 | 2029 |
+|---|---:|---:|---:|---:|---:|---:|
+| Revenue | 3,274,513 | 3,346,747 | 3,861,039 | 4,304,333 | 5,107,811 | 6,206,657 |
+| Gross margin | 1,157,881 | 1,088,267 | 1,812,296 | 2,205,670 | 2,907,215 | 3,879,909 |
+| Gross margin % | 35.4% | 32.5% | 46.9% | 51.2% | 56.9% | 62.5% |
+| Net income | (196,177) | (105,110) | 154,951 | 557,448 | 1,239,865 | 1,788,820 |
 
 ### The 2026 miss was operational, not commercial
 
@@ -54,8 +54,14 @@ Revenue landed within **0.9%** of budget, yet net income missed by **61.1%**.
 | **Net variance** | **(243,137)** |
 
 The entire miss sits in operating expense discipline, and `150,000` of the general
-expense overrun has no documentary support (L-02). Budget accuracy then improved
-from **−61.1% (2026)** to **+127.0% (2027)** to **+7.5% (2028)**.
+expense overrun has no documentary support (L-02). Budget accuracy on profit before
+taxes then moved from **−61.1% (2026)** to **+127.0% (2027)**, **+43.3% (2028)** and
+**+12.2% (2029)**. The 2026 miss is a one-off control failure, not a forecasting
+model that slowly improves.
+
+> Note on basis. The simulator budgets profit **before taxes**, and only the 2026–2029
+> budgets expose that line. Every accuracy figure above is measured before taxes;
+> comparing an after-tax actual with a pre-tax budget would overstate accuracy.
 
 ### Demand exceeds capacity, not price
 
@@ -100,6 +106,7 @@ src/cg_01/
   canonical.py       Period and metric classification
   validation.py      Accounting identities and business rules
   f2_engine.py       Financial statement construction and reconciliation
+  fpa/marts.py       Galaxy schema exported to data/processed (Power BI source)
   model/             Reconstructed deterministic driver model
 tests/               Test suite, including literal-fidelity checks
 ```
@@ -110,7 +117,8 @@ tests/               Test suite, including literal-fidelity checks
 
 ```bash
 uv sync --group dev
-uv run python -m cg_01
+uv run python -m cg_01            # canonical layer + literal markdown
+uv run python -m cg_01.fpa.marts  # statements (outputs/f2) + marts (data/processed)
 uv run pytest -q
 ```
 
@@ -121,10 +129,10 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 | Component | Status |
 |---|---|
 | Literal extraction, canonical layer, validation | Done |
-| Income statement, balance, debt, cash flow reconciliation | Done — 2024–2028 (2024 cash flow partial: no 2023 opening balance) |
+| Income statement, balance, debt, cash flow reconciliation | Done — 2024–2029 (2024 cash flow partial: no 2023 opening balance) |
 | Dual decision-schema normalisation | Done |
 | Deterministic driver model | Done — reconstructed from 2024–2028 |
-| Annual and quarterly panel, 2024–2029 | In progress |
+| Annual and quarterly panel, 2024–2029 | Done — annual 2024–2029, quarterly sales 2024–2028 |
 | Rolling-origin backtest (folds F1, F2) | In progress |
 | Variance decomposition engine | In progress |
 | Power BI dashboard | Planned |

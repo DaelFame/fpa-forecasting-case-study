@@ -14,6 +14,18 @@ reproduce the result or challenge the assumptions.
 The foundation never interprets business meaning; the FP&A layer never reads raw
 workbooks directly. Every number has a `source_id`, a sheet and a cell.
 
+Two identities travel with each source, and they answer different questions:
+
+| Field | Stable? | Used for |
+|---|---|---|
+| `source_id` (`SRC-XLSX-004`) | No — enumerated in discovery order | Human-readable references in reports |
+| `source_key` (`matriz_general_3`) | Yes — derived from the path inside `data/` | Precedence and sheet aliases in `config/f2.toml` |
+
+Configuration never binds to the enumerated id. When a new closing workbook lands,
+discovery is case-insensitive and every binding resolves through `source_key`, so an
+existing workbook keeps its role. Unresolvable keys are reported in the F2 manifest
+rather than silently dropped; `tests/test_source_identity.py` pins the contract.
+
 ## 2. Data foundation
 
 ### 2.1 Literal extraction
@@ -74,9 +86,10 @@ movements and comparing the closing cash balance.
 
 ### 3.1 Panel construction
 
-Annual panel (2024–2028) and quarterly panel (20 quarters) at product level.
-Quarterly granularity is used for volume and revenue only; the full P&L is annual,
-because quarterly statement depth is not available for the earliest years.
+Annual panel (2024–2029) and quarterly panel (20 quarters, 2024–2028) at product
+level. Quarterly granularity is used for volume and revenue only; the full P&L is
+annual, because quarterly statement depth is not available for the earliest years,
+and 2029 has no quarterly sales sheet at all (L-12).
 
 ### 3.2 Driver-based forecasting
 

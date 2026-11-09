@@ -2,16 +2,22 @@
 
 Facts and dimensions are written to ``data/processed`` as CSV. The shape follows
 ``docs/data_model.md``.
+
+Run ``uv run python -m cg_01.fpa.marts`` to rebuild ``outputs/f2`` and
+``data/processed`` from the raw sources in one deterministic step.
 """
 
 from __future__ import annotations
 
+import argparse
 import csv
+import sys
 from datetime import date
 from pathlib import Path
 from typing import Any, Iterable
 
-from ..f2_engine import F2Result, sheet_role
+from ..config import load_config
+from ..f2_engine import F2Result, load_f2_config, run_f2, sheet_role
 from ..models import Observation
 
 PRODUCTS: dict[str, tuple[str, int]] = {
@@ -398,13 +404,13 @@ def _fact_sales(f2: F2Result, aliases: dict[str, dict[str, str]]) -> list[dict[s
             continue
         revenue[(observation.period, observation.label_normalized)] = observation.numeric_value
 
-    keys = sorted(set(units) | set(revenue))
+    keys = sorted(set(units) & set(revenue))
     return [
         {
             "period_key": period,
             "product_key": product,
-            "units_sold": units.get((period, product), ""),
-            "revenue": revenue.get((period, product), ""),
+            "units_sold": units[(period, product)],
+            "revenue": revenue[(period, product)],
         }
         for period, product in keys
     ]
@@ -510,3 +516,39 @@ def build_marts(f2: F2Result, output_dir: Path | None = None) -> dict[str, int]:
         _fact_product_annual(f2),
     )
     return counts
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        prog="cg_01.fpa.marts",
+        description="Rebuild outputs/f2 and the analytics marts in data/processed.",
+    )
+    parser.add_argument("--config", type=Path, default=None, help="Ruta a config/f1.toml.")
+    parser.add_argument("--f2-config", type=Path, default=None, help="Ruta a config/f2.toml.")
+    parser.add_argument("--output", type=Path, default=None, help="Directorio de los marts.")
+    parser.add_argument("--quiet", action="store_true")
+    args = parser.parse_args(argv)
+
+    f1_config = load_config(args.config)
+    f2_config = load_f2_config(
+        args.f2_config,
+        output_dir=None,
+        project_root=f1_config.project_root,
+    )
+    result = run_f2(f1_config, f2_config)
+
+    from ..f2_report import write_f2_outputs
+
+    write_f2_outputs(result, f2_config.output_dir)
+    counts = build_marts(result, args.output)
+    if not args.quiet:
+        print(
+            f"Marts completados: {len(result.rows)} filas F2, "
+            f"{sum(counts.values())} filas en {len(counts)} tablas."
+        )
+        print(f"Salida: {args.output or f2_config.project_root / 'data' / 'processed'}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -21,12 +21,14 @@ and citeable directly.
 | `Matriz_General_1.xlsx` | Round workbook | Close 2026, budget 2026 |
 | `Matriz_general_2.xlsx` | Round workbook | Close 2027, budget 2027 |
 | `Matriz_general_3.xlsx` | Round workbook | Close 2028, budget 2028 |
+| `Matriz_General_4.xlsx` | Round workbook | Close 2029, budget 2029, scenario 2030/2032 |
 | `Bitacora_decisiones_para_2026.json` | Decision log | Inputs for 2026 |
 | `Bitacora_decisiones_para_2027.json` | Decision log | Inputs for 2027 |
 | `Bitacora_decisiones_para_2028.json` | Decision log | Inputs for 2028 |
+| `Bitacora_decisiones_para_2029.json` | Decision log | Inputs for 2029 |
 
-Verified coverage: `real` 2024–2028 (annual and quarterly), `budget` 2026–2028,
-`decision` 2026–2028, `scenario` 2029–2031. Summary available in
+Verified coverage: `real` 2024–2029 (annual and quarterly), `budget` 2026–2029,
+`decision` 2026–2029, `scenario` 2029–2032. Summary available in
 `outputs/f1/inventory.json` after a pipeline run.
 
 ### "Matriz" and "bitácora"

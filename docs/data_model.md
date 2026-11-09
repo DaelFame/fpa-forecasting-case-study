@@ -136,7 +136,8 @@ Sensitivity drivers.
 | `amount` | decimal | Signed EUR |
 | `status_key` | text | FK → `dim_status` |
 
-Annual grain. ~435 rows for 2024–2028 (29 line items × 5 years × 3 scenarios).
+Annual grain: actual for 2024–2029 plus budget for 2026–2029 (218 rows in the
+current build).
 
 ### `fact_balance.csv` — grain: period × account
 

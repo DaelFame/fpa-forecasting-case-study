@@ -1,8 +1,8 @@
 # Estado actual de Fase 1 (cerrada) — cg_01
 
-Fecha: 2026-10-23  
-Estado: F1.1, F1.2 literal y F1.3 aceptadas; F1.4 aprobada; F2.1 aprobada.  
-Alcance: Fase 1 cerrada. F2.1 aprobada; F2.2 pendiente de aprobación de alcance; Monte Carlo y optimización no iniciados.
+Fecha: 2026-10-23 (actualizado 2026-11-09 con el cierre de 2029)  
+Estado: F1.1, F1.2 literal y F1.3 aceptadas; F1.4 aprobada; F2.1 aprobada; cierre 2029 integrado.  
+Alcance: Fase 1 cerrada. F2 cubre 2024–2029; backtest, varianza y forecast 2030 pendientes.
 
 ---
 
@@ -244,3 +244,66 @@ Resultados de la entrega:
 - F2.1 aprobada por el usuario. F2.2 tiene página de alcance en `docs/f2_2_scope.md`, pendiente de aprobación.
 
 No se inicia Monte Carlo ni optimización.
+
+---
+
+## 10. Actualización 2026-11-09 — cierre de 2029 integrado
+
+### Fuentes
+
+| Fuente | Periodo | Estado |
+|---|---|---|
+| `data/Matriz_General_0.xlsx` … `Matriz_General_1.xlsx` | 2024–2026 | sin cambios |
+| `data/Matriz_general_2.xlsx` | 2024–2027 | sin cambios |
+| `data/Matriz_general_3.xlsx` | 2024–2028 | sin cambios |
+| `data/Matriz_General_4.xlsx` | 2024–2029 + escenarios 2030/2032 | nueva |
+| `data/decisiones/Bitacora_decisiones_para_2029.json` | 2029 | nueva |
+
+El pipeline procesa 9 fuentes, 22.586 celdas no vacías y 11.743 observaciones
+canónicas; los hashes permanecen estables. La capa F1 detecta 2029 y sus cuatro
+trimestres, y conserva los bloques de escenario 2030/2032 del simulador.
+
+### Motor F2
+
+- Cobertura: **2024–2029** (`config/f2.toml`, `end = 2029`).
+- 492 filas: 284 `confirmed`, 59 `inferred_accepted`, 53 `pending`, 96 `unreconciled`.
+- 142 anomalías de balance, 25 críticas, todas `unreconciled`.
+- 2029: ingresos 6.206.657 €; margen bruto 62,5 %; resultado después de impuestos 1.788.820 €.
+
+### Identidad de fuentes (corrección)
+
+Los `source_id` se enumeran por orden de descubrimiento. Al entrar
+`Matriz_General_4.xlsx`, el orden sensible a mayúsculas renumeró las matrices y dejó
+la precedencia y los alias de `config/f2.toml` apuntando a otro libro.
+
+Corregido en dos capas:
+
+1. Descubrimiento en orden insensible a mayúsculas: `matriz_general_3` vuelve a
+   `SRC-XLSX-004` y `matriz_general_4` recibe `SRC-XLSX-005`.
+2. Cada fuente expone un `source_key` estable (ruta relativa a `data/`). La
+   precedencia y los alias se declaran con esa clave y `bind_sources()` los resuelve
+   contra el `source_id` vigente. Las claves desconocidas se informan en el manifiesto
+   F2 (`unresolved_source_bindings`) en vez de ignorarse.
+
+Prueba de regresión: `tests/test_source_identity.py` fija el `source_id` publicado de
+cada matriz y demuestra que la clave sobrevive a una renumeración.
+
+### Capa analítica
+
+- `uv run python -m cg_01.fpa.marts` reconstruye `outputs/f2` y `data/processed` en un
+  solo paso reproducible (antes solo lo hacían los tests).
+- 13 tablas, 532 filas. `dim_period` cubre 2024–2029 anual y 2024-Q1…2028-Q4 trimestral.
+- `fact_sales` mantiene granularidad trimestral 2024–2028; 2029 no tiene ventas
+  trimestrales en la fuente (limitación L-12). El volumen anual de 2029 está en
+  `fact_product_annual`.
+
+### Verificación
+
+`uv run pytest -q` → **56 passed**. El CI de GitHub vuelve a verde.
+
+### Pendiente
+
+1. Motor de varianza (bridge 2026 y accuracy 2026–2029) reproducible.
+2. Backtest rolling-origin F1/F2 con Régimen A y B.
+3. Forecast 2030.
+4. Dashboard Power BI y capturas (fuera de alcance de esta sesión).

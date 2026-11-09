@@ -8,19 +8,22 @@ documented_residual_eur = 1.0
 # Every year with a reported close. Add the new year here when a workbook lands.
 [periods]
 start = 2024
-end = 2028
+end = 2029
 
 # Which workbook wins when several restate the same year, most authoritative first.
+# Keys are stable source keys (file path relative to data/), never the enumerated
+# SRC-XLSX-nnn ids: those depend on discovery order and shift when a file lands.
 [precedence]
-"2024" = ["SRC-XLSX-003", "SRC-XLSX-002", "SRC-XLSX-001"]
-"2025" = ["SRC-XLSX-003", "SRC-XLSX-002", "SRC-XLSX-001"]
-"2026" = ["SRC-XLSX-003", "SRC-XLSX-002", "SRC-XLSX-001"]
-"2027" = ["SRC-XLSX-003"]
-"2028" = ["SRC-XLSX-004"]
+"2024" = ["matriz_general_2", "matriz_general_1", "matriz_general_0"]
+"2025" = ["matriz_general_2", "matriz_general_1", "matriz_general_0"]
+"2026" = ["matriz_general_2", "matriz_general_1", "matriz_general_0"]
+"2027" = ["matriz_general_2"]
+"2028" = ["matriz_general_3"]
+"2029" = ["matriz_general_4"]
 
 # Source workbooks do not agree on sheet names. Roles are resolved through this
 # map instead of renaming sheets in the original file, which stays immutable.
-[sheet_aliases.SRC-XLSX-004]
+[sheet_aliases.matriz_general_3]
 "Hoja 1" = "valor de la compania"
 "Hoja 2" = "indicadores clave"
 "Hoja 3" = "marketing"

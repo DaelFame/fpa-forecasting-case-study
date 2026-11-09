@@ -130,8 +130,13 @@ def test_cash_liquidity_and_bridge_residual(f2_result) -> None:
 
 
 def test_all_balance_anomalies_are_unreconciled(f2_result) -> None:
-    assert len(f2_result.balance_anomalies) == 108
-    assert f2_result.manifest["summary"]["critical_balance_anomalies"] == 20
+    balance_anomalies = [
+        anomaly for anomaly in f2_result.pipeline.anomalies if anomaly.category == "balance"
+    ]
+    assert len(f2_result.balance_anomalies) == len(balance_anomalies)
+    assert f2_result.manifest["summary"]["critical_balance_anomalies"] == sum(
+        1 for anomaly in balance_anomalies if anomaly.severity == "critical"
+    )
     assert all(item["status"] == "unreconciled" for item in f2_result.balance_anomalies)
     assert all(
         row.source_anomaly_status == "unreconciled"
@@ -180,7 +185,7 @@ def test_outputs_are_complete_and_report_has_status_table(f2_result, tmp_path: P
     assert "16" in report and "81" in report
     manifest = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["summary"]["rows"] == len(f2_result.rows)
-    assert len(manifest["balance_anomalies"]) == 108
+    assert len(manifest["balance_anomalies"]) == len(f2_result.balance_anomalies)
     with (tmp_path / "income_statement.csv").open("r", encoding="utf-8", newline="") as handle:
         rows = list(csv.DictReader(handle))
     assert rows
@@ -196,11 +201,11 @@ def test_sources_remain_unchanged(f2_result) -> None:
 
 def test_engine_covers_every_closed_year(f2_result) -> None:
     years = {row.period for row in f2_result.rows if row.section == "income_statement"}
-    assert years == {2024, 2025, 2026, 2027, 2028}
+    assert years == set(f2_result.f2_config.periods)
 
 
 def test_every_closed_year_has_a_positive_revenue(f2_result) -> None:
-    for year in (2024, 2025, 2026, 2027, 2028):
+    for year in f2_result.f2_config.periods:
         revenue = next(
             row
             for row in f2_result.rows

@@ -74,9 +74,14 @@ other years or lines.
 
 ### L-07 — Balance sheet anomalies
 
-`108` balance-sheet anomalies are detected, `20` of them critical. All are marked
+`142` balance-sheet anomalies are detected, `25` of them critical. All are marked
 `unreconciled` and carried forward. The balance sheet is therefore usable for
 structural analysis and trend, but is not an audited statement.
+
+The critical ones are a property of the simulator, not of the parser: the source
+reports `total assets ≠ non-current + current` in every workbook from 2024 to 2029.
+It is reproduced identically across five independent files, which rules out a
+transcription error on our side.
 
 **Impact:** measures that depend on equity or total assets inherit the flag.
 
@@ -110,6 +115,45 @@ complete.
 
 **Impact:** cash-flow trend analysis starts in 2025. 2024 is used for revenue,
 margin and balance structure only.
+
+### L-12 — 2029 sales are reported annually, not quarterly
+
+The 2029 closing workbook reports units sold per product **per year only**; the
+quarterly sales sheet stops at 2028. The `2029-Q1..Q4` revenue per product does
+exist, in the `Ingresos` sheet of the 2029 workbook.
+
+`fact_sales` is the quarter × product fact and must carry both units and revenue, so
+it keeps its grain for 2024–2028 only. Emitting 2029 revenue rows with empty units
+would inject nulls into the fact; emitting units by assumption would invent data.
+The 12 real 2029 quarterly revenue rows are therefore **deliberately excluded** from
+that fact and the 2029 product volume, revenue and margin live in
+`fact_product_annual` at year × product grain.
+
+**Impact:** quarterly seasonality cannot be measured for 2029, and 2029 quarterly
+revenue is available in `outputs/f1/canonical_points.csv` but not in the mart. Any
+2029 quarter figure in a report must come from the canonical layer, not `fact_sales`.
+
+### L-13 — Repeated reported-equity residual in 2028 and 2029
+
+The gap between reported equity and the detailed equity block is exactly
+`−246,390` in both 2028 and 2029. An identical residual in two different years is
+either a simulator carry-forward or a stale cell in the source. It is retained as
+`unreconciled` and flagged for verification against the raw sheets.
+
+**Impact:** reported equity in 2028–2029 is not used for ratios; detailed equity is.
+
+### L-14 — Source identity must not depend on discovery order
+
+Source ids (`SRC-XLSX-001…`) are enumerated in discovery order and shift when a new
+workbook lands. Adding `Matriz_General_4.xlsx` in November 2026 renumbered the
+existing matrices because plain filename sorting is case-sensitive.
+
+Two guards now prevent it: discovery sorts case-insensitively, and every config
+binding (`precedence`, `sheet_aliases`) keys on a stable `source_key` derived from
+the file path. Unknown keys are reported in the F2 manifest instead of being
+silently ignored, and a regression test pins the published id of each matrix.
+
+**Impact:** none on the figures; it protects traceability across future close files.
 
 ## How these limitations are handled
 

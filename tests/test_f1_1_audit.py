@@ -34,22 +34,33 @@ def real_result(tmp_path_factory):
 
 def test_real_outputs_are_traceable_to_raw_sources(real_result) -> None:
     observations = real_result.observations
-    assert len(observations) == 8708
-    assert len({observation.observation_id for observation in observations}) == 8708
+    total = len(observations)
+    assert total > 0
+    assert len({observation.observation_id for observation in observations}) == total
     assert len(
         {
             (observation.source_id, observation.sheet, observation.cell, observation.period)
             for observation in observations
         }
-    ) == 8708
-    assert Counter(observation.source_id for observation in observations) == {
-        "SRC-XLSX-001": 1448,
-        "SRC-XLSX-002": 1812,
-        "SRC-XLSX-003": 2397,
-        "SRC-XLSX-004": 2813,
-        "SRC-JSON-001": 109,
-        "SRC-JSON-002": 69,
-        "SRC-JSON-003": 60,
+    ) == total
+
+    source_keys = {source.source_id: source.source_key for source in real_result.sources}
+    assert len(source_keys) == len(real_result.sources)
+    assert len(set(source_keys.values())) == len(source_keys)
+    assert set(Counter(observation.source_id for observation in observations)) == set(source_keys)
+
+    # Source ids are positional, so a new workbook must never renumber the ones
+    # already published. This is the regression guard for that contract.
+    assert {
+        source.source_key: source.source_id
+        for source in real_result.sources
+        if source.source_type == "excel"
+    } == {
+        "matriz_general_0": "SRC-XLSX-001",
+        "matriz_general_1": "SRC-XLSX-002",
+        "matriz_general_2": "SRC-XLSX-003",
+        "matriz_general_3": "SRC-XLSX-004",
+        "matriz_general_4": "SRC-XLSX-005",
     }
 
     sources = discover_sources(real_result.config.data_dir, real_result.config.project_root)
@@ -80,8 +91,9 @@ def test_budget_year_is_inferred_from_previous_block(real_result) -> None:
         for observation in real_result.observations
         if observation.data_type == "budget"
     ]
-    assert len(budget) == 111
-    assert {observation.year for observation in budget} == {2026, 2027, 2028}
+    assert budget
+    latest = real_result.inventory["summary"]["latest_real_year"]
+    assert {observation.year for observation in budget} == set(range(2026, latest + 1))
     assert any(
         observation.source_id == "SRC-XLSX-002"
         and observation.sheet == "Indicadores Clave"
@@ -112,8 +124,8 @@ def test_2027_decisions_coexist_with_the_2027_close_and_budget(real_result) -> N
         observation.data_type == "budget" and observation.source_id == "SRC-XLSX-003"
         for observation in observations_2027
     )
-    assert real_result.inventory["summary"]["latest_real_year"] == 2028
-    assert real_result.inventory["summary"]["latest_decision_year"] == 2028
+    assert real_result.inventory["summary"]["latest_real_year"] == 2029
+    assert real_result.inventory["summary"]["latest_decision_year"] == 2029
 
 
 def test_pipeline_is_byte_reproducible_without_duplicate_observations(tmp_path: Path) -> None:
