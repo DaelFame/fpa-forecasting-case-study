@@ -1,1 +1,5 @@
 expression pDataFolder = "D:\Proyectos\cg_01\data\processed" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: dfdb5971-fa27-469a-8431-56993c5dd289
+
+	annotation PBI_ResultType = Text
+

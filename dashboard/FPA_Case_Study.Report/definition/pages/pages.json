@@ -1,7 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
   "pageOrder": [
-    "4d804dfcc8d2d6986002"
+    "4d804dfcc8d2d6986002",
+    "p2Profitability",
+    "p3BudgetVsActual",
+    "p4ForecastAccuracy",
+    "p5MarketCapacity"
   ],
   "activePageName": "4d804dfcc8d2d6986002"
 }

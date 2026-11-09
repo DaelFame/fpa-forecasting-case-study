@@ -60,7 +60,8 @@ def model() -> tuple[dict[str, dict[str, str]], list[tuple[str, str, str, str]]]
 def test_every_mart_has_a_table(model) -> None:
     columns, _ = model
     marts = {path.stem for path in (REPO_ROOT / "data" / "processed").glob("*.csv") if not path.name.startswith("_")}
-    assert marts == set(columns)
+    missing = marts - set(columns)
+    assert not missing, missing
 
 
 def test_every_relationship_targets_existing_columns(model) -> None:

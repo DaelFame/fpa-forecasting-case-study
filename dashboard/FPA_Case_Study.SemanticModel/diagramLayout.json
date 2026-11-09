@@ -7,9 +7,214 @@
         "x": 0,
         "y": 0
       },
-      "nodes": [],
+      "nodes": [
+        {
+          "location": {
+            "x": 512.93977241829509,
+            "y": -50
+          },
+          "nodeIndex": "dim_account",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 805.98163503772582,
+            "y": 13.405515815519038
+          },
+          "nodeIndex": "dim_driver",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1131.3776201440151,
+            "y": 1231.4917052240592
+          },
+          "nodeIndex": "dim_fold",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1606.3299513060963,
+            "y": 310.73038773275925
+          },
+          "nodeIndex": "dim_line_item",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 714.79961848928906,
+            "y": 671.08824234103076
+          },
+          "nodeIndex": "dim_period",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": 808.63461322940816
+          },
+          "nodeIndex": "dim_product",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1424.222511257952,
+            "y": 1203.5060355731284
+          },
+          "nodeIndex": "dim_regime",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1875.0867709585177,
+            "y": 616.873022719244
+          },
+          "nodeIndex": "dim_scenario",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1007.6277297107058,
+            "y": 572.76052443889307
+          },
+          "nodeIndex": "dim_status",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1126.4566591914934,
+            "y": 872.50278103493156
+          },
+          "nodeIndex": "fact_backtest",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 513.01822250568819,
+            "y": 220.2763289568627
+          },
+          "nodeIndex": "fact_balance",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1299.0450420972231,
+            "y": 613.30350355421092
+          },
+          "nodeIndex": "fact_financials",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1585.6564106158739,
+            "y": 637.45867053402958
+          },
+          "nodeIndex": "fact_forecast",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 342.83139988131455,
+            "y": 657.87429545025225
+          },
+          "nodeIndex": "fact_market",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 421.91171543369092,
+            "y": 988.70496945397053
+          },
+          "nodeIndex": "fact_product_annual",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 219.98048531358103,
+            "y": 423.394635490416
+          },
+          "nodeIndex": "fact_sales",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1421.4659429052481,
+            "y": 52.186550488857165
+          },
+          "nodeIndex": "fact_variance",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
       "name": "Todas las tablas",
-      "zoomValue": 100,
+      "zoomValue": 50.346892102823261,
       "pinKeyFieldsToTop": false,
       "showExtraHeaderInfo": false,
       "hideKeyFieldsWhenCollapsed": false,

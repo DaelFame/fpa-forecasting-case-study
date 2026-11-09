@@ -11,8 +11,11 @@ annotation __PBI_TimeIntelligenceEnabled = 1
 
 annotation PBI_ProTooling = ["DevMode"]
 
+annotation PBI_QueryOrder = ["dim_product","dim_account","dim_driver","dim_fold","dim_line_item","dim_period","dim_regime","dim_scenario","dim_status","fact_backtest","fact_balance","fact_financials","fact_forecast","fact_market","fact_product_annual","fact_sales","fact_variance","pDataFolder"]
+
 ref cultureInfo es-PE
 
+ref table _Measures
 ref table dim_account
 ref table dim_driver
 ref table dim_fold
