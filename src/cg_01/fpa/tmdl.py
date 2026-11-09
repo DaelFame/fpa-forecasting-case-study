@@ -67,6 +67,9 @@ INT_PATTERN = re.compile(r"^-?\d+$")
 FLOAT_PATTERN = re.compile(r"^-?\d+\.\d+$")
 DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
+COLUMN_LINE = re.compile(r"^\tcolumn (.+)$")
+TYPE_LINE = re.compile(r"^\t\tdataType: (\S+)$")
+
 # Primary key of each dimension. Hidden, and its type is authoritative for the
 # matching foreign key, otherwise the relationship is rejected for type mismatch.
 DIM_KEYS: dict[str, str] = {
@@ -102,6 +105,39 @@ def _classify(values: list[str]) -> tuple[str, str]:
     if all(DATE_PATTERN.match(value) for value in present):
         return "dateTime", "type date"
     return "string", "type text"
+
+
+def _resolve_types(
+    table: str,
+    columns: list[str],
+    rows: list[dict[str, str]],
+    declared: dict[str, dict[str, tuple[str, str]]],
+) -> list[tuple[str, str, str]]:
+    """Resolve (column, TMDL type, M type), inheriting the dimension's type for keys."""
+    chart = FOREIGN_KEYS.get(table, {})
+    resolved: list[tuple[str, str, str]] = []
+    for column in columns:
+        data_type, m_type = _classify([row[column] for row in rows])
+        dimension = chart.get(column)
+        if dimension and column in declared.get(dimension, {}):
+            data_type, m_type = declared[dimension][column]
+        resolved.append((column, data_type, m_type))
+    return resolved
+
+
+def _existing_schema(path: Path) -> dict[str, str]:
+    """Column name -> declared dataType, read back from an existing TMDL table."""
+    schema: dict[str, str] = {}
+    current: str | None = None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if match := COLUMN_LINE.match(line):
+            current = match.group(1)
+            schema[current] = ""
+        elif current and (match := TYPE_LINE.match(line)):
+            schema[current] = match.group(1)
+        elif line.startswith("\tpartition"):
+            current = None
+    return schema
 
 
 def _column_block(name: str, data_type: str, *, hidden: bool, sort_by: str | None) -> str:
@@ -143,14 +179,9 @@ def _table_tmdl(
     blocks: list[str] = []
     types: list[str] = []
     empty_columns: list[str] = []
-    for column in columns:
-        values = [row[column] for row in rows]
-        data_type, m_type = _classify(values)
-        dimension = chart.get(column)
-        if dimension and column in declared.get(dimension, {}):
-            data_type, m_type = declared[dimension][column]
+    for column, data_type, m_type in _resolve_types(table, columns, rows, declared):
         types.append(f'{{"{column}", {m_type}}}')
-        if any(value == "" for value in values) and data_type != "string":
+        if data_type != "string" and any(row[column] == "" for row in rows):
             empty_columns.append(column)
         hidden = column in chart or column == sort_column or column == own_key
         sort_by = sort_column if column == label_column else None
@@ -222,14 +253,26 @@ def build(data_dir: Path, model_dir: Path) -> dict[str, int]:
 
     for table, (columns, rows) in loaded.items():
         columns_by_table[table] = columns
-        (tables_dir / f"{table}.tmdl").write_text(
+        path = tables_dir / f"{table}.tmdl"
+        expected = {
+            column: data_type
+            for column, data_type, _ in _resolve_types(table, columns, rows, declared)
+        }
+        # Power BI rewrites the file on save: it adds lineageTag and reorders
+        # properties. Rewriting an unchanged schema would destroy those tags and
+        # produce a diff on every open, so the file is left alone unless the
+        # columns or their types actually changed.
+        if path.exists() and _existing_schema(path) == expected:
+            continue
+        path.write_text(
             _table_tmdl(table, columns, rows, declared), encoding="utf-8"
         )
 
     relationships = _relationships(columns_by_table)
-    (model_dir / "definition" / "relationships.tmdl").write_text(
-        relationships, encoding="utf-8"
-    )
+    rel_path = model_dir / "definition" / "relationships.tmdl"
+    previous = rel_path.read_text(encoding="utf-8") if rel_path.exists() else ""
+    if previous.strip() != relationships.strip():
+        rel_path.write_text(relationships, encoding="utf-8")
 
     # Tables that are authored by hand (the measures table) are not derived from a
     # CSV, so they must survive regeneration and stay declared in the model.
@@ -246,10 +289,11 @@ def build(data_dir: Path, model_dir: Path) -> dict[str, int]:
         if path.stem not in columns_by_table
     )
     model_path = model_dir / "definition" / "model.tmdl"
-    model_path.write_text(
-        _model_tmdl(sorted(list(columns_by_table) + hand_written), model_path.read_text(encoding="utf-8")),
-        encoding="utf-8",
-    )
+    existing = model_path.read_text(encoding="utf-8")
+    desired = sorted(list(columns_by_table) + hand_written)
+    current = sorted(re.findall(r"^ref table (.+)$", existing, re.MULTILINE))
+    if current != desired:
+        model_path.write_text(_model_tmdl(desired, existing), encoding="utf-8")
 
     return {
         "tables": len(columns_by_table) + len(hand_written),
