@@ -112,19 +112,18 @@ def test_no_unsupported_description_property() -> None:
     assert not offenders, offenders
 
 
-def test_multiline_dax_is_fenced() -> None:
-    """A multi-line measure must be fenced, or TMDL swallows the next property as DAX.
+def test_measure_properties_are_not_nested() -> None:
+    """A property three tabs deep sits inside the DAX body, not beside it.
 
-    Without the fences, `formatString:` is parsed as part of the expression and the
-    whole table fails to compile.
+    When that happens TMDL swallows `formatString:` into the expression, the measure
+    fails to compile and the whole table breaks on open.
     """
+    properties = {"formatString", "displayFolder", "lineageTag", "dataType", "summarizeBy"}
     offenders = []
     for path in sorted(TABLES_DIR.glob("*.tmdl")):
-        lines = path.read_text(encoding="utf-8").splitlines()
-        for number, line in enumerate(lines):
-            if not re.match(r"^\tmeasure .* =$", line):
+        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+            if not line.startswith("\t\t\t"):
                 continue
-            following = next((item for item in lines[number + 1:] if item.strip()), "")
-            if following.strip() != "```":
-                offenders.append(f"{path.name}:{number + 1}")
+            if line.strip().split(":")[0] in properties:
+                offenders.append(f"{path.name}:{number}: {line.strip()[:50]}")
     assert not offenders, offenders
