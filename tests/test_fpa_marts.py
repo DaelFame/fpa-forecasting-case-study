@@ -159,7 +159,7 @@ def test_variance_bridge_ties_to_the_profit_change(marts) -> None:
     actual = {
         row["period_key"]: float(row["amount"])
         for row in financials
-        if row["line_item_key"] == "net_result_after_taxes" and row["scenario_key"] == "actual"
+        if row["line_item_key"] == "net_result_before_taxes" and row["scenario_key"] == "actual"
     }
     budget = {
         row["period_key"]: float(row["amount"])
@@ -308,6 +308,31 @@ def test_backtest_metrics_are_internally_consistent(marts) -> None:
         if row["abs_pct_error"]:
             assert abs(float(row["abs_pct_error"]) - abs(error) / abs(actual)) < 1e-9
             assert float(row["bias_pct"]) == error / abs(actual)
+
+
+def test_backtest_summary_uses_weighted_errors(marts) -> None:
+    target, _ = marts
+    manifest = json.loads((target / "_manifest.json").read_text(encoding="utf-8"))
+    rows = _load(target / "fact_backtest.csv")
+    assert manifest["backtest_summary"]
+    for key, summary in manifest["backtest_summary"].items():
+        fold, regime = key.split("-")
+        items = [row for row in rows if row["fold_key"] == fold and row["regime_key"] == regime]
+        base = sum(abs(float(row["actual_amount"])) for row in items)
+        expected = sum(abs(float(row["error_eur"])) for row in items) / base
+        assert abs(summary["mape"] - expected) < 1e-9, key
+        assert summary["method"] == "weighted", key
+
+
+def test_detailed_equity_closes_the_balance_sheet(marts) -> None:
+    target, _ = marts
+    accounts: dict[str, dict[str, float]] = {}
+    for row in _load(target / "fact_balance.csv"):
+        accounts.setdefault(row["period_key"], {})[row["account_key"]] = float(row["amount"])
+    assert accounts
+    for period, values in accounts.items():
+        expected = values["total_liabilities"] + values["detailed_equity"]
+        assert abs(values["total_assets"] - expected) <= 1.0, period
 
 
 def test_regime_a_cuts_the_revenue_error_in_the_clean_fold(marts) -> None:

@@ -314,17 +314,23 @@ def build_backtest(
 
 
 def summarise(rows: Iterable[dict[str, Any]]) -> dict[str, dict[str, float]]:
-    """Mean absolute percentage error and mean bias per fold and regime."""
+    """Weighted percentage error and weighted bias per fold and regime.
+
+    Error is aggregated as a ratio of sums, never as an average of ratios: a small
+    line item with a large relative error must not dominate the headline number.
+    """
     grouped: dict[tuple[str, str], list[dict[str, Any]]] = {}
     for row in rows:
-        if row["abs_pct_error"] is None:
+        if row["abs_pct_error"] is None or row["error_eur"] is None or row["actual_amount"] is None:
             continue
         grouped.setdefault((row["fold_key"], row["regime_key"]), []).append(row)
     summary: dict[str, dict[str, float]] = {}
     for (fold, regime), items in sorted(grouped.items()):
+        base = sum(abs(item["actual_amount"]) for item in items)
         summary[f"{fold}-{regime}"] = {
-            "mape": sum(item["abs_pct_error"] for item in items) / len(items),
-            "bias": sum(item["bias_pct"] for item in items) / len(items),
+            "mape": sum(abs(item["error_eur"]) for item in items) / base if base else 0.0,
+            "bias": sum(item["error_eur"] for item in items) / base if base else 0.0,
             "lines": len(items),
+            "method": "weighted",
         }
     return summary

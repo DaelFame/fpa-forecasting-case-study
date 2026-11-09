@@ -6,5 +6,4 @@ unit_cost,Unit cost,percent
 opex,Operating expenses,percent
 financial_result,Financial result,percent
 extraordinary_result,Extraordinary result,percent
-taxes,Taxes,percent
 rounding,Rounding,percent

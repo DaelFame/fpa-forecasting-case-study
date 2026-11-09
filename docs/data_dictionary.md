@@ -9,9 +9,10 @@ Conventions for every figure produced by this repository.
 | `YYYY` | `2026` | Annual |
 | `YYYY-Qn` | `2026-Q3` | Quarterly |
 
-Annual values are not the sum of quarterly values in the source. Where both exist,
-the annual figure is authoritative for statements; quarterly figures are used for
-seasonality and volume analysis only.
+Quarterly values reconcile to the annual figure within €1 in every closed year
+(verified for 2024–2028). The annual figure remains authoritative for statements
+because it is the reported total; quarterly figures are used for seasonality and
+volume analysis.
 
 ## Data types
 

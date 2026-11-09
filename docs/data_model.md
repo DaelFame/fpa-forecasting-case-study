@@ -342,6 +342,19 @@ DIVIDE (
 Averaging a column of percentages is the single most common error in forecast
 accuracy reporting.
 
+## Basis decisions
+
+Two choices are fixed here so the report cannot mix bases:
+
+- **Variance is pre-tax.** The budget carries no tax line, so comparing an
+  after-tax actual against a pre-tax budget mixes two bases. `fact_variance`
+  decomposes the pre-tax gap and closes to `net_result_before_taxes` exactly in
+  every year. The tax effect is reported separately in the P&L.
+- **Equity uses `detailed_equity`.** `reported_equity` carries a constant
+  €246,390 with no counterpart in the detail, so total assets never equal total
+  liabilities plus reported equity. `detailed_equity` balances the sheet within
+  €1 in every year, and that is the line the model must use.
+
 ## Traps to avoid
 
 **Chasm trap.** `fact_financials` (period × line item) and `fact_sales`
@@ -356,10 +369,12 @@ produces double counting.
 
 ## Annual vs quarterly
 
-The annual figure is authoritative and is **not** the sum of its quarters in this
-dataset. Both grains are stored in `dim_period` with an explicit `grain` column so
-that a filter can never silently mix them. Any measure that aggregates across
-grains must filter on `dim_period[grain]` first.
+The quarterly series reconciles to the annual figure within €1 in every closed year
+(2024–2028). Both grains are still stored in `dim_period` with an explicit `grain`
+column, because they are different aggregation levels: a sum across grains would
+double count, and balance-sheet amounts are semi-additive regardless of grain.
+
+Filter on `dim_period[grain]` before aggregating.
 
 ## Implementation status
 

@@ -21,7 +21,6 @@ period_key,driver_key,line_item_key,amount,status_key
 2027,opex,general_expenses,-71282,inferred_accepted
 2027,financial_result,financial_result,16813,inferred_accepted
 2027,extraordinary_result,extraordinary_result,18000,inferred_accepted
-2027,taxes,taxes,-71645,inferred_accepted
 2028,volume,gross_profit,-15446.763933884295,inferred_accepted
 2028,price,revenue_total,83123.72261157096,inferred_accepted
 2028,unit_cost,cost_of_sales_total,3335.0413223142386,inferred_accepted
@@ -33,7 +32,6 @@ period_key,driver_key,line_item_key,amount,status_key
 2028,opex,general_expenses,40010,inferred_accepted
 2028,financial_result,financial_result,-9493,inferred_accepted
 2028,extraordinary_result,extraordinary_result,323000,inferred_accepted
-2028,taxes,taxes,-413288,inferred_accepted
 2029,volume,gross_profit,190503.3527877238,inferred_accepted
 2029,price,revenue_total,-293393.1920000003,inferred_accepted
 2029,unit_cost,cost_of_sales_total,71908.83921227616,inferred_accepted
@@ -45,5 +43,4 @@ period_key,driver_key,line_item_key,amount,status_key
 2029,opex,general_expenses,35236,inferred_accepted
 2029,financial_result,financial_result,19739,inferred_accepted
 2029,extraordinary_result,extraordinary_result,213000,inferred_accepted
-2029,taxes,taxes,-596273,inferred_accepted
-2029,rounding,net_result_after_taxes,-1,inferred_accepted
+2029,rounding,net_result_before_taxes,-1,inferred_accepted

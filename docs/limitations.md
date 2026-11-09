@@ -133,14 +133,18 @@ that fact and the 2029 product volume, revenue and margin live in
 revenue is available in `outputs/f1/canonical_points.csv` but not in the mart. Any
 2029 quarter figure in a report must come from the canonical layer, not `fact_sales`.
 
-### L-13 — Repeated reported-equity residual in 2028 and 2029
+### L-13 — Reported equity carries a constant €246,390 gap
 
-The gap between reported equity and the detailed equity block is exactly
-`−246,390` in both 2028 and 2029. An identical residual in two different years is
-either a simulator carry-forward or a stale cell in the source. It is retained as
-`unreconciled` and flagged for verification against the raw sheets.
+The gap between reported equity and the detailed equity block is exactly `−246,390`
+in **every** closed year, 2024–2029, not only in the last two. A residual identical
+across six years is a fixed item, not accumulated error, and it has no counterpart in
+the account detail (`balance_detail_residual` is 0 ± €1).
 
-**Impact:** reported equity in 2028–2029 is not used for ratios; detailed equity is.
+`detailed_equity` is the line that balances the sheet within €1. The model uses that
+account; `reported_equity` is kept only for traceability.
+
+**Impact:** any visual that pairs `total_assets` with `reported_equity` shows a
+€246,390 discrepancy. It is disclosed deliberately rather than smoothed away.
 
 ### L-14 — Source identity must not depend on discovery order
 

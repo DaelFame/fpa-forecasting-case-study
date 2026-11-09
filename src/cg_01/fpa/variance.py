@@ -260,11 +260,11 @@ def build_variance(
             if abs(amount) > 1e-9:
                 effects.append((driver, line, amount))
 
-        taxes = actual.get("taxes", 0.0) - budget.get((period, "taxes"), 0.0)
-        if abs(taxes) > 1e-9:
-            effects.append(("taxes", "taxes", -taxes))
-
-        net_actual = actual.get("net_result_after_taxes")
+        # La varianza se mide antes de impuestos: el presupuesto no modela
+        # impuestos, así que comparar el resultado después de impuestos contra un
+        # presupuesto pre-tax mezclaría dos bases distintas y el puente no cerraría
+        # sobre el número que se reporta.
+        net_actual = actual.get("net_result_before_taxes")
         net_budget = budget.get((period, "net_result_before_taxes"), 0.0)
         expected = None if net_actual is None else net_actual - net_budget
         total = sum(amount for _, _, amount in effects)
@@ -275,7 +275,7 @@ def build_variance(
             )
         residual = expected - total
         if abs(residual) > 0.005:
-            effects.append(("rounding", "net_result_after_taxes", residual))
+            effects.append(("rounding", "net_result_before_taxes", residual))
 
         for driver, line, amount in effects:
             rows.append(
