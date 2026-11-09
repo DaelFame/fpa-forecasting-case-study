@@ -76,6 +76,26 @@ model that slowly improves.
 **594,748 units of demand were not served** — a capacity constraint, which is what
 makes the capacity-expansion decision a financial decision rather than an operational one.
 
+## What this project demonstrates
+
+This is not a dashboard exercise. The deliverable is the chain that feeds the
+dashboard, and every link is testable:
+
+- **Financial modelling** — income statement, balance sheet, debt and cash flow
+  rebuilt from raw cells, then reconciled line by line with an explicit residual.
+- **Variance analysis** — budget versus actual with a bridge that attributes the gap
+  to named drivers instead of a single unexplained number.
+- **Forecasting discipline** — out-of-sample backtest with rolling origin, and two
+  regimes: decisions known versus decisions unknown.
+- **Data engineering** — immutable sources with verified hashes, stable source
+  identity, status propagation and referential-integrity tests on every mart.
+
+## Documentation
+
+Start at [`docs/README.md`](docs/README.md) for the index, or jump straight to the
+[methodology](docs/methodology.md), the [data model](docs/data_model.md) and the
+[known limitations](docs/limitations.md).
+
 ## How it works
 
 ```
@@ -97,10 +117,13 @@ into place.
 ## Repository layout
 
 ```
-config/              Analysis parameters and tolerances
+config/              Analysis parameters and tolerances (f1.toml, f2.toml)
 data/                Immutable sources: workbooks, decision logs
-docs/                Methodology, data dictionary, limitations
+data/processed/      Analytics marts (galaxy schema) exported for Power BI
+docs/                Case-study documentation — see docs/README.md for the index
+dashboard/           Power BI project (.pbip, TMDL) — scaffold, no tables yet
 notebooks/           Exploratory review of the source matrices (01_revision_matrices.ipynb)
+specs/ .specify/     Specification, plan and task log for the delivery process
 src/cg_01/
   loader.py          Source discovery, hashing, decision-log normalisation
   canonical.py       Period and metric classification
@@ -111,7 +134,9 @@ src/cg_01/
 tests/               Test suite, including literal-fidelity checks
 ```
 
-`outputs/` is generated and excluded from version control.
+`outputs/` is generated and excluded from version control. Everything in
+`data/processed/` is rebuilt with a single command (see Quickstart) and committed so
+the dashboard can be opened without running Python.
 
 ## Quickstart
 

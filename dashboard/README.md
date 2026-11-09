@@ -2,6 +2,12 @@
 
 This folder holds the Power BI project for the FP&A case study.
 
+> **Status: scaffold.** The `.pbip` project, the semantic model container and the
+> `pDataFolder` parameter exist. No table, relationship or DAX measure has been
+> authored yet — the model is deliberately empty until the backend facts
+> (`fact_market`, `fact_variance`, `fact_forecast`) exist, so the report is never
+> built twice.
+
 ## Format: `.pbip`, never `.pbix`
 
 The dashboard is versioned as a **Power BI Project (`.pbip`)**. The semantic model
