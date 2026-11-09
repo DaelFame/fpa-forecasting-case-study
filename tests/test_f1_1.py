@@ -367,7 +367,13 @@ def test_real_pipeline_generates_four_outputs(tmp_path: Path) -> None:
 
     data_dir = REPO_ROOT / "data"
     workbooks = len(list(data_dir.glob("*.xlsx")))
-    json_sources = len(list(data_dir.rglob("*.json")))
+    json_sources = len(
+        [
+            path
+            for path in data_dir.rglob("*.json")
+            if not path.name.startswith("_") and "processed" not in path.parts
+        ]
+    )
     assert result.markdown["summary"]["workbooks_exported"] == workbooks
 
     assert len(result.sources) == workbooks + json_sources

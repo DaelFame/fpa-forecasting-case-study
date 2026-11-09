@@ -14,6 +14,9 @@ wheels/
 # Generated artifacts — regenerable with `uv run python -m cg_01`
 outputs/
 
+# Build stamp for the analytics marts (freshness for the dashboard)
+data/processed/_manifest.json
+
 # Power BI local artifacts (the .pbip project itself IS versioned)
 *.pbix
 *.pbix.lock

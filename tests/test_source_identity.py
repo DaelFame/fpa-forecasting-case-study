@@ -144,3 +144,16 @@ def test_shipped_config_survives_an_earlier_workbook(tmp_path: Path) -> None:
     assert [keys[source_id] for source_id in precedence[2028]] == ["matriz_general_3"]
     assert [keys[source_id] for source_id in precedence[2029]] == ["matriz_general_4"]
     assert [keys[source_id] for source_id in aliases] == ["matriz_general_3"]
+
+
+def test_generated_marts_are_not_sources(tmp_path: Path) -> None:
+    """data/processed is an output; reading it back would make the build circular."""
+    data_dir = tmp_path / "data"
+    _workbook(data_dir / "Matriz_general_2.xlsx")
+    processed = data_dir / "processed"
+    processed.mkdir(parents=True)
+    (processed / "_manifest.json").write_text("{}", encoding="utf-8")
+    (processed / "fact_sales.csv").write_text("period_key\n", encoding="utf-8")
+
+    sources = discover_sources(data_dir, tmp_path)
+    assert [source.source_key for source in sources] == ["matriz_general_2"]

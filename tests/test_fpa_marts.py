@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import json
 from pathlib import Path
 
 import pytest
@@ -250,3 +251,13 @@ def test_period_dimension_keeps_gauges_separate(marts) -> None:
     assert annual == CLOSED_YEARS
     assert quarterly == sales_periods
     assert not annual & quarterly
+
+
+def test_marts_manifest_describes_the_build(marts) -> None:
+    target, counts = marts
+    manifest = json.loads((target / "_manifest.json").read_text(encoding="utf-8"))
+    assert manifest["schema_version"] == "marts.1"
+    assert manifest["row_counts"] == counts
+    assert manifest["periods"] == sorted(int(y) for y in CLOSED_YEARS)
+    assert len(manifest["sources"]) >= 9
+    assert all(source["sha256"] for source in manifest["sources"])

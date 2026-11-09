@@ -11,8 +11,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import sys
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -544,7 +545,34 @@ def build_marts(f2: F2Result, output_dir: Path | None = None) -> dict[str, int]:
         ["period_key", "driver_key", "line_item_key", "amount", "status_key"],
         variance,
     )
+    _write_manifest(target, f2, counts)
     return counts
+
+
+def _write_manifest(target: Path, f2: F2Result, counts: dict[str, int]) -> None:
+    """Build stamp for the dashboard: when, from which sources, how many rows.
+
+    Deliberately not versioned: it changes on every run. Power BI reads it to show
+    data freshness and to detect a stale export.
+    """
+    payload = {
+        "schema_version": "marts.1",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "periods": list(f2.f2_config.periods),
+        "row_counts": counts,
+        "sources": [
+            {
+                "source_id": source.source_id,
+                "source_key": source.source_key,
+                "relative_path": source.relative_path,
+                "sha256": source.sha256_before,
+            }
+            for source in f2.pipeline.sources
+        ],
+    }
+    (target / "_manifest.json").write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
 
 
 def main(argv: list[str] | None = None) -> int:

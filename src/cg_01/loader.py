@@ -48,6 +48,15 @@ def _source_key(path: Path, data_dir: Path) -> str:
     return "/".join(part.replace(" ", "_") for part in parts if part)
 
 
+def _is_source(path: Path, data_dir: Path) -> bool:
+    """Generated marts live under data/processed and must never be read back."""
+    try:
+        parts = path.relative_to(data_dir).parts
+    except ValueError:
+        return True
+    return "processed" not in parts[:-1]
+
+
 def _sorted_paths(paths: Iterable[Path]) -> list[Path]:
     """Deterministic, case-insensitive order.
 
@@ -75,12 +84,18 @@ def discover_sources(data_dir: Path, project_root: Path) -> list[SourceInfo]:
     excel_paths = _sorted_paths(
         path
         for path in data_dir.rglob("*.xlsx")
-        if path.is_file() and not path.name.startswith("~$") and not path.name.startswith(".")
+        if path.is_file()
+        and not path.name.startswith("~$")
+        and not path.name.startswith(".")
+        and _is_source(path, data_dir)
     )
     json_paths = _sorted_paths(
         path
         for path in data_dir.rglob("*.json")
-        if path.is_file() and not path.name.startswith(".")
+        if path.is_file()
+        and not path.name.startswith(".")
+        and not path.name.startswith("_")
+        and _is_source(path, data_dir)
     )
     manual_dir = data_dir / "manual"
     markdown_paths = _sorted_paths(
