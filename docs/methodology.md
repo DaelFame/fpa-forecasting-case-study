@@ -91,7 +91,27 @@ level. Quarterly granularity is used for volume and revenue only; the full P&L i
 annual, because quarterly statement depth is not available for the earliest years,
 and 2029 has no quarterly sales sheet at all (L-12).
 
-### 3.2 Driver-based forecasting
+### 3.2 Variance bridge
+
+Budget versus actual is exported as an additive bridge, never as a single
+percentage. Each row of `fact_variance` is an impact on profit, so the rows of a
+year add up exactly to the change in net income:
+
+```
+volume    = (Q_actual - Q_budget) * budget_unit_margin
+price     = sum(q_i * (p_i - P_budget))
+unit_cost = -sum(q_i * (u_i - U_budget))
+mix       = gross_margin_variance - volume - price - unit_cost
+opex      = -(actual - budget) per operating-expense line
+other     = financial result, extraordinary result and taxes
+```
+
+`mix` is the exact closing item, which keeps the identity true even when the source
+restates quantities. The budget publishes no quantities, so the committed volume is
+the planned production in the decision log; a zero there means "keep the previous
+plan", as the simulator defines it.
+
+### 3.3 Driver-based forecasting
 
 The forecast is **driver-based, not statistical**. With 20 quarterly observations,
 a purely time-series model cannot be defended. Instead:
@@ -104,7 +124,7 @@ price, volume, product mix, unit cost, opex, capex
 Each driver is explicit and editable. A statistical model is used only as an
 independent cross-check, never as the primary engine.
 
-### 3.3 Two forecast regimes
+### 3.4 Two forecast regimes
 
 | Regime | Information available | What it measures |
 |---|---|---|
@@ -114,7 +134,7 @@ independent cross-check, never as the primary engine.
 The gap between A and B is the headline result: it quantifies how much forecast
 accuracy comes from knowing the levers versus from extrapolating the past.
 
-### 3.4 Rolling-origin backtest
+### 3.5 Rolling-origin backtest
 
 Evaluation uses an expanding window, so each fold only sees information that was
 actually available at that point.
@@ -128,7 +148,7 @@ actually available at that point.
 only the last year available *at that fold*. Calibrating on the target year makes
 the backtest circular and invalid.
 
-### 3.5 Forecast metrics
+### 3.6 Forecast metrics
 
 | Metric | Definition | Why it matters |
 |---|---|---|
@@ -142,16 +162,18 @@ useful finding than a low average error.
 ### 3.6 Variance decomposition
 
 Budget-vs-actual gaps are decomposed into volume, price, mix, cost and one-off
-effects, so that the bridge closes to the reported figure with no residual.
+effects, so that the bridge closes to the reported figure with no residual. Section
+3.2 defines the identity; `fact_variance` carries the result row by row.
 
 ## 4. Reproducibility
 
 Every output under `outputs/` is generated, and therefore excluded from version
-control. A clean checkout plus one command reproduces the entire dataset:
+control. A clean checkout plus two commands reproduce the entire dataset:
 
 ```bash
 uv sync --group dev
-uv run python -m cg_01
+uv run python -m cg_01            # canonical layer + literal markdown
+uv run python -m cg_01.fpa.marts  # statements + data/processed
 ```
 
 Source hashes are recomputed at the end of every run and must remain unchanged.

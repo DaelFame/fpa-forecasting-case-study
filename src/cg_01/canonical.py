@@ -293,8 +293,55 @@ def detect_period_blocks(cells: list[RawCell], config: F1Config) -> list[PeriodB
             )
         )
 
+    blocks.extend(_demand_blocks(grid, max_row, blocks))
     blocks.sort(key=lambda block: block.header_row)
     return blocks
+
+
+def _demand_blocks(
+    grid: dict[tuple[int, int], RawCell], max_row: int, blocks: list[PeriodBlock]
+) -> list[PeriodBlock]:
+    """Capture the "demand intent vs real sales" snapshot tables.
+
+    Those tables are transposed: rows are products and columns are measures, so
+    the generic year-header detector cannot see them. The header row names the
+    measure ("Intención de Compra (Unidades)", "Ventas Reales (Unidades)") and the
+    table is a snapshot of the most recent year on the sheet, which is the largest
+    year already detected above it.
+    """
+    found: list[PeriodBlock] = []
+    for row in range(1, max_row + 1):
+        labels = {
+            column: normalize_label(cell.value)
+            for (cell_row, column), cell in grid.items()
+            if cell_row == row and cell.value_type == "string"
+        }
+        unit_columns = [
+            column
+            for column, label in labels.items()
+            if label.startswith("intencion de compra")
+        ]
+        if not unit_columns:
+            continue
+        previous_years = [
+            period.year
+            for block in blocks
+            if block.header_row < row
+            for period in block.col_periods.values()
+            if period.quarter is None
+        ]
+        if not previous_years:
+            continue
+        period_year = max(previous_years)
+        found.append(
+            PeriodBlock(
+                header_row=row,
+                quarter_row=None,
+                col_periods={column: PeriodValue(period_year) for column in unit_columns},
+            )
+        )
+    return found
+
 
 
 def _section_hints(

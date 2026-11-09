@@ -116,7 +116,8 @@ this dataset.
 
 ### `dim_driver.csv`
 
-Sensitivity drivers.
+Variance drivers. Only drivers that appear in `fact_variance` are exported, so the
+dimension can never point at an empty table.
 
 | Column | Type | Example |
 |---|---|---|
@@ -172,7 +173,7 @@ quarterly depth, so it lives in `fact_product_annual`.
 | `cost_of_sales` | decimal | Direct cost only |
 | `gross_margin` | decimal | `revenue - cost_of_sales` |
 
-Annual grain. 5 years × 3 products = 15 rows.
+Annual grain. 6 years × 3 products = 18 rows.
 
 ### `fact_market.csv` — grain: year × product
 
@@ -180,11 +181,43 @@ Annual grain. 5 years × 3 products = 15 rows.
 |---|---|---|
 | `period_key` | text | FK → `dim_period` (year grain) |
 | `product_key` | text | FK → `dim_product` |
-| `market_units` | int | Total market demand |
-| `company_units` | int | Units sold by the company |
-| `demand_intent_units` | int | Stated purchase intent, where available |
+| `market_units` | int | Units sold by the whole market |
+| `units_sold` | int | Units sold by the company |
+| `market_share` | decimal | `units_sold / market_units` |
+| `demand_units` | int | Market purchase intent, where the source publishes it |
+| `unserved_units` | int | `demand_units - market_units`: demand nobody served |
+| `company_unserved_units` | int | Company intent minus company sales, floored at zero |
 
-Annual grain. ~45 rows.
+Annual grain, 18 rows. `market_units`, `units_sold` and `market_share` are complete
+for 2024–2029. The demand columns exist only where the close file publishes the
+"Intención de Compra VS Ventas" table (2026–2028), so 2029 leaves them empty rather
+than inventing a demand figure (L-15).
+
+### `fact_variance.csv` — grain: period × driver × line item
+
+| Column | Type | Notes |
+|---|---|---|
+| `period_key` | text | FK → `dim_period` (year grain) |
+| `driver_key` | text | FK → `dim_driver` |
+| `line_item_key` | text | FK → `dim_line_item` |
+| `amount` | decimal | Impact on profit, signed EUR |
+| `status_key` | text | FK → `dim_status` |
+
+One row per effect of the budget bridge. Rows of a period add up **exactly** to
+`actual net income − budget net income`:
+
+| Driver | What it measures |
+|---|---|
+| `volume` | Selling more or fewer units at the budget unit margin |
+| `price` | Price per product against the budget average price, at actual volume |
+| `unit_cost` | Unit cost per product against the budget average cost, at actual volume |
+| `mix` | Closing item of the gross-margin bridge; captures the product-mix shift |
+| `opex` | Each operating-expense line, one row per line |
+| `financial_result`, `extraordinary_result`, `taxes` | Below-the-line effects |
+| `rounding` | Source rounding, only when it is not zero |
+
+`amount` is always the impact on profit, so a positive number improves profit and a
+waterfall can sum the column directly. The 2026 bridge is `-243,137`, the 61% miss.
 
 ### `fact_forecast.csv` — grain: period × line item × scenario × regime × fold
 
@@ -233,6 +266,11 @@ dim_product    1 ── *  fact_product_annual
 
 dim_period     1 ── *  fact_market
 dim_product    1 ── *  fact_market
+
+dim_period     1 ── *  fact_variance
+dim_driver     1 ── *  fact_variance
+dim_line_item  1 ── *  fact_variance
+dim_status     1 ── *  fact_variance
 
 dim_period     1 ── *  fact_forecast
 dim_line_item  1 ── *  fact_forecast
@@ -299,11 +337,12 @@ grains must filter on `dim_period[grain]` first.
 | Table | Status |
 |---|---|
 | 9 dimensions | Produced |
-| `fact_financials` | Produced — 177 rows (5 years actual + 3 years budget) |
-| `fact_balance` | Produced — 115 rows |
-| `fact_sales` | Produced — 60 rows |
-| `fact_product_annual` | Produced — 15 rows |
-| `fact_market` | Pending — the market sheet stacks three blocks and needs block disambiguation |
+| `fact_financials` | Produced — 218 rows (6 years actual + 4 years budget) |
+| `fact_balance` | Produced — 138 rows |
+| `fact_sales` | Produced — 60 rows (2024-Q1 to 2028-Q4) |
+| `fact_product_annual` | Produced — 18 rows |
+| `fact_market` | Produced — 18 rows; demand columns 2026–2028 |
+| `fact_variance` | Produced — 39 rows, 2026–2029, exact to the cent |
 | `fact_forecast` | Pending — needs the forecast engine |
 | `fact_sensitivity` | Pending — needs the sensitivity engine |
 

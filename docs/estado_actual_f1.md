@@ -307,3 +307,51 @@ cada matriz y demuestra que la clave sobrevive a una renumeración.
 2. Backtest rolling-origin F1/F2 con Régimen A y B.
 3. Forecast 2030.
 4. Dashboard Power BI y capturas (fuera de alcance de esta sesión).
+
+---
+
+## 11. Hechos de mercado y varianza (2026-11-09)
+
+### `fact_market`
+
+Granularidad año × producto, 18 filas. Unidades de mercado, unidades vendidas,
+cuota, demanda intencionada, demanda no servida del mercado y brecha propia de la
+compañía. Las tres medidas de mercado están completas 2024–2029; las de demanda
+existen 2026–2028 porque el libro de 2029 no publica esa tabla (L-15).
+
+Para obtenerla se añadió al motor canónico la extracción del bloque "Intención de
+Compra VS Ventas", que está transpuesto (filas = productos, columnas = medidas) y
+por eso el detector de periodos no lo veía. Treinta y cuatro observaciones nuevas,
+sin anomalías adicionales.
+
+### `fact_variance`
+
+Granularidad periodo × driver × línea, 39 filas, 2026–2029. Cada fila es un impacto
+en el resultado, firmado, de modo que las filas de un año suman exactamente la
+variación del resultado neto:
+
+| Año | Efectos | Actual − budget |
+|---|---:|---:|
+| 2026 | −243.137 | −243.137 |
+| 2027 | +280.350 | +280.350 |
+| 2028 | +86.598 | +86.598 |
+| 2029 | −337.072 | −337.072 |
+
+Cascada de 2026: volumen −2.607; precio +41.536; mix +1; coste unitario +35.527;
+OPEX −359.888; resultado financiero +24.294; extraordinario +18.000.
+
+Los planes de producción de 2027 vienen a cero en la bitácora ("mantener plan
+anterior"), así que se arrastran desde 2026. Las bitácoras de 2028 y 2029 usan otro
+esquema (`modulos.produccion.unidades_a_producir`) y también se leen.
+
+### Ventas trimestrales
+
+La hoja de ventas apila varias tablas trimestrales (unidades reales, cuotas de
+competidores, unidades caducadas). El hecho elegía la última y publicaba 10.456
+unidades de corbatas en 2028 en vez de 234.538. Ahora se queda con la serie cuyos
+cuatro trimestres suman el total anual del mismo libro (L-16).
+
+### Verificación
+
+`uv run pytest -q` → **64 passed**. `fact_variance` incluye una prueba que exige que
+la cascada cuadre al céntimo en los cuatro años.

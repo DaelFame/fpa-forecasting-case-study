@@ -162,6 +162,7 @@ period_key,line_item_key,scenario_key,amount,status_key
 2029,revenue_total,actual,6206657,inferred_accepted
 2029,taxes,actual,596273,confirmed
 2026,revenue_total,budget,3825241,confirmed
+2026,gross_profit,budget,1737839,confirmed
 2026,marketing_expenses,budget,220000,confirmed
 2026,personnel_expenses,budget,642946,confirmed
 2026,rd_expenses,budget,156000,confirmed
@@ -176,6 +177,7 @@ period_key,line_item_key,scenario_key,amount,status_key
 2026,extraordinary_result,budget,0,confirmed
 2026,net_result_before_taxes,budget,398088,confirmed
 2027,revenue_total,budget,4173885,confirmed
+2027,gross_profit,budget,1749354,confirmed
 2027,marketing_expenses,budget,220000,confirmed
 2027,personnel_expenses,budget,707749,confirmed
 2027,rd_expenses,budget,151080,confirmed
@@ -190,6 +192,7 @@ period_key,line_item_key,scenario_key,amount,status_key
 2027,extraordinary_result,budget,0,confirmed
 2027,net_result_before_taxes,budget,277098,confirmed
 2028,revenue_total,budget,5052204,confirmed
+2028,gross_profit,budget,2836204,confirmed
 2028,marketing_expenses,budget,220000,confirmed
 2028,personnel_expenses,budget,779673,confirmed
 2028,rd_expenses,budget,231090,confirmed
@@ -204,6 +207,7 @@ period_key,line_item_key,scenario_key,amount,status_key
 2028,extraordinary_result,budget,0,confirmed
 2028,net_result_before_taxes,budget,1153267,confirmed
 2029,revenue_total,budget,6198132,confirmed
+2029,gross_profit,budget,3910890,confirmed
 2029,marketing_expenses,budget,300000,confirmed
 2029,personnel_expenses,budget,784164,confirmed
 2029,rd_expenses,budget,288840,confirmed

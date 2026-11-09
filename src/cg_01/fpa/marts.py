@@ -19,6 +19,9 @@ from typing import Any, Iterable
 from ..config import load_config
 from ..f2_engine import F2Result, load_f2_config, run_f2, sheet_role
 from ..models import Observation
+from ..text import period_string
+from .market import build_market
+from .variance import BUDGET_LABELS, annual_units, build_variance, driver_dimension
 
 PRODUCTS: dict[str, tuple[str, int]] = {
     "corbatas": ("Neckties", 1),
@@ -51,14 +54,6 @@ REGIMES: list[tuple[str, str]] = [
 FOLDS: list[tuple[str, str, int, int]] = [
     ("F1", "Train up to 2027, predict 2028", 2027, 2028),
     ("F2", "Train up to 2028, predict 2029", 2028, 2029),
-]
-
-DRIVERS: list[tuple[str, str, str]] = [
-    ("price", "Price", "percent"),
-    ("volume", "Volume", "percent"),
-    ("unit_cost", "Unit cost", "percent"),
-    ("channel_discount", "Channel discount", "percent"),
-    ("capex", "Capex", "percent"),
 ]
 
 INCOME_ORDER: list[str] = [
@@ -118,26 +113,8 @@ SUBTOTAL_KEYS = {
     "net_result_after_taxes",
 }
 
-# Budget lines are labelled differently from the statement metrics. Only
-# equivalents are mapped; lines without a statement counterpart are dropped
-# rather than forced into a wrong slot.
-BUDGET_LABELS: dict[str, str] = {
-    "ingresos totales": "revenue_total",
-    "gastos de marketing": "marketing_expenses",
-    "gastos de personal": "personnel_expenses",
-    "gastos i d": "rd_expenses",
-    "gastos de depreciacion": "depreciation_expenses",
-    "dotaciones por insolvencias": "insolvency_expenses",
-    "gastos generales": "general_expenses",
-    "total gastos": "operating_expenses_total",
-    "resultado bruto": "gross_result",
-    "ingresos financieros": "financial_income",
-    "gastos financieros": "financial_expense",
-    "resultado financiero": "financial_result",
-    "resultado extraordinario": "extraordinary_result",
-    "resultado neto": "net_result_before_taxes",
-}
-
+# Budget lines are labelled differently from the statement metrics; the mapping
+# lives in `variance.BUDGET_LABELS` and is shared by the fact and the bridge.
 QUARTER_END = {1: (3, 31), 2: (6, 30), 3: (9, 30), 4: (12, 31)}
 
 
@@ -318,13 +295,6 @@ def _dim_fold() -> list[dict[str, Any]]:
     ]
 
 
-def _dim_driver() -> list[dict[str, Any]]:
-    return [
-        {"driver_key": key, "label": label, "unit": unit}
-        for key, label, unit in DRIVERS
-    ]
-
-
 def _fact_financials(f2: F2Result, aliases: dict[str, dict[str, str]]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for row in f2.rows:
@@ -376,33 +346,71 @@ def _fact_balance(f2: F2Result) -> list[dict[str, Any]]:
     ]
 
 
-def _product_observations(
+def _quarterly_series(
     observations: Iterable[Observation],
     aliases: dict[str, dict[str, str]],
     role: str,
-) -> list[Observation]:
-    return [
-        observation
-        for observation in observations
-        if observation.data_type == "real"
-        and observation.quarter
-        and observation.label_normalized in PRODUCTS
-        and sheet_role(observation.sheet, observation.source_id, aliases) == role
-    ]
+    product_keys: dict[str, str],
+    annual_totals: dict[tuple[int, str], float],
+) -> dict[tuple[str, str], float]:
+    """Pick one quarterly series per year and product.
+
+    Some sheets stack several tables under the same role: real units, competitor
+    shares, expired units. They are all quarterly numbers with a product label, so
+    the only reliable selector is the annual total published in the same workbook.
+    The series whose four quarters add up to that total is the real one.
+    """
+    groups: dict[tuple[int, str, int], dict[int, float]] = {}
+    for observation in observations:
+        if observation.data_type != "real" or observation.year is None:
+            continue
+        if not observation.quarter or observation.numeric_value is None:
+            continue
+        product = product_keys.get(observation.label_normalized)
+        if product is None:
+            continue
+        if sheet_role(observation.sheet, observation.source_id, aliases) != role:
+            continue
+        groups.setdefault(
+            (observation.year, product, observation.source_row), {}
+        )[observation.quarter] = observation.numeric_value
+
+    best: dict[tuple[int, str], tuple[float, dict[int, float]]] = {}
+    for (year, product, _row), quarters in groups.items():
+        total = sum(quarters.values())
+        target = annual_totals.get((year, product))
+        score = abs(total - target) if target is not None else 0.0
+        current = best.get((year, product))
+        if current is None or score < current[0] or (
+            score == current[0] and len(quarters) > len(current[1])
+        ):
+            best[(year, product)] = (score, quarters)
+
+    return {
+        (period_string(year, quarter), product): value
+        for (year, product), (_, quarters) in best.items()
+        for quarter, value in quarters.items()
+    }
 
 
 def _fact_sales(f2: F2Result, aliases: dict[str, dict[str, str]]) -> list[dict[str, Any]]:
-    units: dict[tuple[str, str], float] = {}
-    for observation in _product_observations(f2.pipeline.observations, aliases, "ventas"):
-        if observation.numeric_value is None:
-            continue
-        units[(observation.period, observation.label_normalized)] = observation.numeric_value
+    product_keys = {key: key for key in PRODUCTS}
+    observations = f2.pipeline.observations
+    revenue_annual = {
+        (row.period, row.metric[len("revenue_"):]): float(row.value)
+        for row in f2.rows
+        if row.section == "income_statement"
+        and row.metric.startswith("revenue_")
+        and row.metric[len("revenue_"):] in PRODUCTS
+        and row.value is not None
+    }
+    units_annual = {
+        (year, product): value
+        for (year, product), value in annual_units(observations, aliases, PRODUCTS).items()
+    }
 
-    revenue: dict[tuple[str, str], float] = {}
-    for observation in _product_observations(f2.pipeline.observations, aliases, "ingresos"):
-        if observation.numeric_value is None:
-            continue
-        revenue[(observation.period, observation.label_normalized)] = observation.numeric_value
+    units = _quarterly_series(observations, aliases, "ventas", product_keys, units_annual)
+    revenue = _quarterly_series(observations, aliases, "ingresos", product_keys, revenue_annual)
 
     keys = sorted(set(units) & set(revenue))
     return [
@@ -448,6 +456,8 @@ def build_marts(f2: F2Result, output_dir: Path | None = None) -> dict[str, int]:
     sales = _fact_sales(f2, aliases)
     quarters = sorted({row["period_key"] for row in sales})
     periods = list(config.periods)
+    variance = build_variance(f2, PRODUCTS)
+    market = build_market(f2, PRODUCTS)
 
     counts: dict[str, int] = {}
     counts["dim_period.csv"] = _write(
@@ -493,7 +503,7 @@ def build_marts(f2: F2Result, output_dir: Path | None = None) -> dict[str, int]:
     counts["dim_driver.csv"] = _write(
         target / "dim_driver.csv",
         ["driver_key", "label", "unit"],
-        _dim_driver(),
+        driver_dimension(variance),
     )
     counts["fact_financials.csv"] = _write(
         target / "fact_financials.csv",
@@ -514,6 +524,25 @@ def build_marts(f2: F2Result, output_dir: Path | None = None) -> dict[str, int]:
         target / "fact_product_annual.csv",
         ["period_key", "product_key", "revenue", "cost_of_sales", "gross_margin"],
         _fact_product_annual(f2),
+    )
+    counts["fact_market.csv"] = _write(
+        target / "fact_market.csv",
+        [
+            "period_key",
+            "product_key",
+            "market_units",
+            "units_sold",
+            "market_share",
+            "demand_units",
+            "unserved_units",
+            "company_unserved_units",
+        ],
+        market,
+    )
+    counts["fact_variance.csv"] = _write(
+        target / "fact_variance.csv",
+        ["period_key", "driver_key", "line_item_key", "amount", "status_key"],
+        variance,
     )
     return counts
 

@@ -54,6 +54,22 @@ FOREIGN_KEYS = {
         ("period_key", "dim_period.csv"),
         ("product_key", "dim_product.csv"),
     ],
+    "fact_market.csv": [
+        ("period_key", "dim_period.csv"),
+        ("product_key", "dim_product.csv"),
+    ],
+    "fact_variance.csv": [
+        ("period_key", "dim_period.csv"),
+        ("driver_key", "dim_driver.csv"),
+        ("line_item_key", "dim_line_item.csv"),
+        ("status_key", "dim_status.csv"),
+    ],
+}
+
+# Measures the source only publishes for some periods. Every other measure in
+# every fact must be present.
+OPTIONAL_MEASURES = {
+    "fact_market.csv": {"demand_units", "unserved_units", "company_unserved_units"},
 }
 
 
@@ -105,9 +121,79 @@ def test_no_foreign_key_is_orphan(marts) -> None:
 def test_no_key_or_measure_is_empty(marts) -> None:
     target, _ = marts
     for fact in FOREIGN_KEYS:
+        optional = OPTIONAL_MEASURES.get(fact, set())
         for row in _load(target / fact):
             for column, value in row.items():
+                if column in optional:
+                    continue
                 assert value != "", f"{fact}.{column} vacío"
+
+
+def test_driver_dimension_has_no_orphans(marts) -> None:
+    target, _ = marts
+    drivers = {row["driver_key"] for row in _load(target / "dim_driver.csv")}
+    used = {row["driver_key"] for row in _load(target / "fact_variance.csv")}
+    assert drivers == used
+
+
+def test_variance_bridge_ties_to_the_profit_change(marts) -> None:
+    target, _ = marts
+    variance = _load(target / "fact_variance.csv")
+    financials = _load(target / "fact_financials.csv")
+    actual = {
+        row["period_key"]: float(row["amount"])
+        for row in financials
+        if row["line_item_key"] == "net_result_after_taxes" and row["scenario_key"] == "actual"
+    }
+    budget = {
+        row["period_key"]: float(row["amount"])
+        for row in financials
+        if row["line_item_key"] == "net_result_before_taxes" and row["scenario_key"] == "budget"
+    }
+    for period in sorted({row["period_key"] for row in variance}):
+        effects = sum(float(row["amount"]) for row in variance if row["period_key"] == period)
+        assert abs(effects - (actual[period] - budget[period])) < 0.005, period
+
+
+def test_2026_bridge_matches_the_disclosed_figures(marts) -> None:
+    target, _ = marts
+    rows = [row for row in _load(target / "fact_variance.csv") if row["period_key"] == "2026"]
+    by_driver: dict[str, float] = {}
+    for row in rows:
+        by_driver[row["driver_key"]] = by_driver.get(row["driver_key"], 0.0) + float(row["amount"])
+    gross = sum(
+        by_driver[driver] for driver in ("price", "volume", "mix", "unit_cost")
+    )
+    assert abs(gross - 74_457) < 1
+    assert abs(by_driver["opex"] + 359_888) < 1
+    assert abs(by_driver["financial_result"] - 24_294) < 1
+    assert abs(by_driver["extraordinary_result"] - 18_000) < 1
+    assert abs(sum(by_driver.values()) + 243_137) < 1
+
+
+def test_market_fact_reports_the_2028_demand_gap(marts) -> None:
+    target, _ = marts
+    rows = {
+        row["product_key"]: row
+        for row in _load(target / "fact_market.csv")
+        if row["period_key"] == "2028"
+    }
+    assert set(rows) == {"corbatas", "bufandas", "calcetines"}
+    assert sum(float(row["unserved_units"]) for row in rows.values()) == 594_748
+    ties = rows["corbatas"]
+    assert int(ties["market_units"]) == 1_404_819
+    assert int(ties["units_sold"]) == 234_538
+    assert int(ties["demand_units"]) == 1_810_000
+    assert int(ties["company_unserved_units"]) == 90_462
+    assert abs(float(ties["market_share"]) - 234_538 / 1_404_819) < 1e-9
+
+
+def test_market_fact_keeps_market_measures_for_every_closed_year(marts) -> None:
+    target, _ = marts
+    rows = _load(target / "fact_market.csv")
+    assert {row["period_key"] for row in rows} == CLOSED_YEARS
+    for row in rows:
+        assert row["market_units"] and row["units_sold"] and row["market_share"]
 
 
 def test_financials_cover_every_year_in_both_scenarios(marts) -> None:
@@ -127,6 +213,23 @@ def test_sales_fact_is_quarterly_by_product(marts) -> None:
     assert len(rows) == 3 * len(periods)
     assert all("-Q" in period for period in periods)
     assert {row["product_key"] for row in rows} == {"corbatas", "bufandas", "calcetines"}
+
+
+def test_sales_fact_uses_the_series_that_reconciles_to_the_year(marts) -> None:
+    """The sales sheet stacks several quarterly tables; only one is real volume."""
+    target, _ = marts
+    rows = _load(target / "fact_sales.csv")
+    totals: dict[str, float] = {}
+    for row in rows:
+        if row["period_key"].startswith("2028"):
+            totals[row["product_key"]] = totals.get(row["product_key"], 0.0) + float(row["units_sold"])
+    assert totals == {"bufandas": 37_815.0, "calcetines": 88_670.0, "corbatas": 234_538.0}
+    first_quarter = {
+        row["product_key"]: float(row["units_sold"])
+        for row in rows
+        if row["period_key"] == "2028-Q1"
+    }
+    assert first_quarter["corbatas"] == 58_304.0
 
 
 def test_sales_fact_keeps_its_grain_when_units_are_annual_only(marts) -> None:

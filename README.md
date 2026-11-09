@@ -43,15 +43,21 @@ Revenue landed within **0.9%** of budget, yet net income missed by **61.1%**.
 
 | Bridge to budget | EUR |
 |---|---:|
-| Gross margin beat | +74,457 |
-| General expenses | (203,015) |
-| R&D | (93,240) |
-| Personnel | (35,352) |
-| Depreciation | (22,500) |
-| Provisions | (5,781) |
+| Volume | (2,607) |
+| Price | +41,536 |
+| Product mix | +1 |
+| Unit cost | +35,527 |
+| Operating expenses | (359,888) |
 | Financial result | +24,294 |
 | Extraordinary result | +18,000 |
 | **Net variance** | **(243,137)** |
+
+The gross-margin beat of `+74,457` decomposes into price, volume, mix and unit
+cost; every row is an impact on profit and the rows add up to the change in net
+income. The operating-expense miss is concentrated: general expenses `(203,015)`,
+R&D `(93,240)`, personnel `(35,352)`, depreciation `(22,500)` and provisions
+`(5,781)`. Marketing landed exactly on budget. The whole bridge is exported row by
+row to `fact_variance`, so the waterfall is the data, not a slide.
 
 The entire miss sits in operating expense discipline, and `150,000` of the general
 expense overrun has no documentary support (L-02). Budget accuracy on profit before
@@ -158,8 +164,9 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 | Dual decision-schema normalisation | Done |
 | Deterministic driver model | Done — reconstructed from 2024–2028 |
 | Annual and quarterly panel, 2024–2029 | Done — annual 2024–2029, quarterly sales 2024–2028 |
+| Market fact: market units, share, demand gap | Done — demand gap 2026–2028 |
+| Variance decomposition engine | Done — budget bridge 2026–2029 in `fact_variance` |
 | Rolling-origin backtest (folds F1, F2) | In progress |
-| Variance decomposition engine | In progress |
 | Power BI dashboard | Planned |
 
 ## Method notes

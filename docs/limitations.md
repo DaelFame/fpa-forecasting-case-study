@@ -155,6 +155,31 @@ silently ignored, and a regression test pins the published id of each matrix.
 
 **Impact:** none on the figures; it protects traceability across future close files.
 
+### L-15 — Demand intent is published unevenly
+
+The "Intención de Compra VS Ventas" table exists in the 2026, 2027 and 2028 close
+files, in thousands for 2027 and in units for 2026 and 2028, and it does not exist
+in the 2029 file. `fact_market` therefore carries demand and unserved units for
+2026–2028 only. Market units, company units and market share are complete.
+
+**Impact:** the demand-gap visual stops at 2028. The 2029 gap cannot be shown
+without an assumption, so it is left empty.
+
+### L-16 — Sales sheets stack several quarterly tables
+
+The sales sheet carries real units, competitor shares and expired units in
+consecutive blocks that the parser attaches to the same period. Summing every
+quarterly row with a product label over-counts: 2028 corbatas would read `10,456`
+instead of `234,538`.
+
+`fact_sales` now keeps, per year and product, the quarterly series whose four
+quarters add up to the annual total published in the same workbook. That is a
+data-driven reconciliation, not a hardcoded row, but it depends on the annual total
+being present. When it is missing, the series with the most quarters wins.
+
+**Impact:** no impact on 2024–2028 under the current sources; a future workbook
+without an annual total would need review.
+
 ## How these limitations are handled
 
 1. Every affected figure carries an explicit status.
