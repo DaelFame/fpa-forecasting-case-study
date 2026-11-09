@@ -121,6 +121,10 @@ uv run python -m cg_01.fpa.marts  # statements, marts and the 2030 forecast
 uv run pytest -q                  # 74 tests
 ```
 
+Inside the repository: `outputs/markdown/` keeps a literal cell-by-cell export of
+every sheet, `notebooks/01_revision_matrices.ipynb` holds the exploratory review of
+the source matrices, and `data/processed/` holds the marts the dashboard reads.
+
 Start with [`docs/README.md`](docs/README.md) for the method, the data model and
 every known limitation, or read the Spanish version at
 [`README.es.md`](README.es.md).
