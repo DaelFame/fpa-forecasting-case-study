@@ -86,6 +86,18 @@ It fails when a relationship points at a missing column, when the two sides have
 different types, when a mart has no table, or when a CSV column never reaches
 the model. All four only surface as a broken project otherwise.
 
+## Tool pitfalls
+
+**`pbip_create_measure` with `description` breaks the project.** The tool writes a
+`description:` property, which TMDL rejects on measures (`UnknownKeyword`), and
+Power BI fails to open the whole `.pbip`. Descriptions must be written as `///`
+lines directly above the measure. A test (`test_no_unsupported_description_property`)
+guards against it; never pass `description` to that tool, edit the TMDL instead.
+
+**Power BI rewrites files on save.** Expect `lineageTag` additions and reordered
+properties after every save. Regenerate with `cg_01.fpa.tmdl` only when the marts
+changed; the generator is idempotent and will leave a saved project untouched.
+
 ## Known caveats to disclose, never hide
 
 | Caveat | Where |

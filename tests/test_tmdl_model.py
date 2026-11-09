@@ -96,3 +96,17 @@ def test_every_csv_column_reaches_the_model(model) -> None:
         with path.open("r", encoding="utf-8", newline="") as handle:
             header = next(csv.reader(handle))
         assert set(header) <= set(columns[path.stem]), path.stem
+
+
+def test_no_unsupported_description_property() -> None:
+    """TMDL rejects `description:` on measures; descriptions use `///` above the object.
+
+    Writing the property crashes the whole project on open with UnknownKeyword, and
+    the error only names a line number, so it is cheap to guard here.
+    """
+    offenders = []
+    for path in sorted((MODEL_DIR / "definition").rglob("*.tmdl")):
+        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+            if line.strip().startswith("description:"):
+                offenders.append(f"{path.name}:{number}")
+    assert not offenders, offenders
