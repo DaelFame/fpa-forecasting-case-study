@@ -1,0 +1,32 @@
+table dim_status
+
+	column status_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: status_key
+
+	column label
+		dataType: string
+		summarizeBy: none
+		sourceColumn: label
+
+	column severity
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: severity
+
+	column description
+		dataType: string
+		summarizeBy: none
+		sourceColumn: description
+
+	partition dim_status = m
+		mode: import
+		source =
+			let
+				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_status.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				Tipos = Table.TransformColumnTypes(Encabezados, {{"status_key", type text}, {"label", type text}, {"severity", Int64.Type}, {"description", type text}})
+			in
+				Tipos

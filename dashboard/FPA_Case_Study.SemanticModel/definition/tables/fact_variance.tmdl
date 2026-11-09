@@ -1,0 +1,40 @@
+table fact_variance
+
+	column period_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: period_key
+
+	column driver_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: driver_key
+
+	column line_item_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: line_item_key
+
+	column amount
+		dataType: string
+		summarizeBy: none
+		sourceColumn: amount
+
+	column status_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: status_key
+
+	partition fact_variance = m
+		mode: import
+		source =
+			let
+				Origen = Csv.Document(File.Contents(pDataFolder & "\fact_variance.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				Tipos = Table.TransformColumnTypes(Encabezados, {{"period_key", type text}, {"driver_key", type text}, {"line_item_key", type text}, {"amount", type text}, {"status_key", type text}})
+			in
+				Tipos

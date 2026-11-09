@@ -1,0 +1,54 @@
+table fact_market
+
+	column period_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: period_key
+
+	column product_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: product_key
+
+	column market_units
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: market_units
+
+	column units_sold
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: units_sold
+
+	column market_share
+		dataType: double
+		summarizeBy: none
+		sourceColumn: market_share
+
+	column demand_units
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: demand_units
+
+	column unserved_units
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: unserved_units
+
+	column company_unserved_units
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: company_unserved_units
+
+	partition fact_market = m
+		mode: import
+		source =
+			let
+				Origen = Csv.Document(File.Contents(pDataFolder & "\fact_market.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				Reemplazados = Table.ReplaceValue(Encabezados, "", null, Replacer.ReplaceValue, {"demand_units", "unserved_units", "company_unserved_units"}),
+				Tipos = Table.TransformColumnTypes(Reemplazados, {{"period_key", type text}, {"product_key", type text}, {"market_units", Int64.Type}, {"units_sold", Int64.Type}, {"market_share", type number}, {"demand_units", Int64.Type}, {"unserved_units", Int64.Type}, {"company_unserved_units", Int64.Type}})
+			in
+				Tipos

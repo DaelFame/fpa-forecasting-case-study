@@ -1,0 +1,38 @@
+table fact_product_annual
+
+	column period_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: period_key
+
+	column product_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: product_key
+
+	column revenue
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: revenue
+
+	column cost_of_sales
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: cost_of_sales
+
+	column gross_margin
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: gross_margin
+
+	partition fact_product_annual = m
+		mode: import
+		source =
+			let
+				Origen = Csv.Document(File.Contents(pDataFolder & "\fact_product_annual.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				Tipos = Table.TransformColumnTypes(Encabezados, {{"period_key", type text}, {"product_key", type text}, {"revenue", Int64.Type}, {"cost_of_sales", Int64.Type}, {"gross_margin", Int64.Type}})
+			in
+				Tipos

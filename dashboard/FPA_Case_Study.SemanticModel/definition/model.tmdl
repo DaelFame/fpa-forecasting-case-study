@@ -13,3 +13,20 @@ annotation PBI_ProTooling = ["DevMode"]
 
 ref cultureInfo es-PE
 
+ref table dim_account
+ref table dim_driver
+ref table dim_fold
+ref table dim_line_item
+ref table dim_period
+ref table dim_product
+ref table dim_regime
+ref table dim_scenario
+ref table dim_status
+ref table fact_backtest
+ref table fact_balance
+ref table fact_financials
+ref table fact_forecast
+ref table fact_market
+ref table fact_product_annual
+ref table fact_sales
+ref table fact_variance

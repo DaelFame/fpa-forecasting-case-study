@@ -1,0 +1,32 @@
+table dim_account
+
+	column account_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: account_key
+
+	column label
+		dataType: string
+		summarizeBy: none
+		sourceColumn: label
+
+	column section
+		dataType: string
+		summarizeBy: none
+		sourceColumn: section
+
+	column is_total
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_total
+
+	partition dim_account = m
+		mode: import
+		source =
+			let
+				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_account.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				Tipos = Table.TransformColumnTypes(Encabezados, {{"account_key", type text}, {"label", type text}, {"section", type text}, {"is_total", type logical}})
+			in
+				Tipos

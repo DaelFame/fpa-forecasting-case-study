@@ -1,0 +1,32 @@
+table dim_fold
+
+	column fold_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: fold_key
+
+	column label
+		dataType: string
+		summarizeBy: none
+		sourceColumn: label
+
+	column train_through
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: train_through
+
+	column target_year
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: target_year
+
+	partition dim_fold = m
+		mode: import
+		source =
+			let
+				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_fold.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				Tipos = Table.TransformColumnTypes(Encabezados, {{"fold_key", type text}, {"label", type text}, {"train_through", Int64.Type}, {"target_year", Int64.Type}})
+			in
+				Tipos

@@ -1,0 +1,52 @@
+table fact_forecast
+
+	column period_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: period_key
+
+	column line_item_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: line_item_key
+
+	column scenario_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: scenario_key
+
+	column regime_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: regime_key
+
+	column fold_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: fold_key
+
+	column forecast_amount
+		dataType: double
+		summarizeBy: none
+		sourceColumn: forecast_amount
+
+	column status_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: status_key
+
+	partition fact_forecast = m
+		mode: import
+		source =
+			let
+				Origen = Csv.Document(File.Contents(pDataFolder & "\fact_forecast.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				Tipos = Table.TransformColumnTypes(Encabezados, {{"period_key", type text}, {"line_item_key", type text}, {"scenario_key", type text}, {"regime_key", type text}, {"fold_key", type text}, {"forecast_amount", type number}, {"status_key", type text}})
+			in
+				Tipos

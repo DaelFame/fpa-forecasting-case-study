@@ -1,0 +1,49 @@
+table dim_line_item
+
+	column line_item_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: line_item_key
+
+	column label
+		dataType: string
+		sortByColumn: display_order
+		summarizeBy: none
+		sourceColumn: label
+
+	column statement
+		dataType: string
+		summarizeBy: none
+		sourceColumn: statement
+
+	column section
+		dataType: string
+		summarizeBy: none
+		sourceColumn: section
+
+	column sign
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: sign
+
+	column is_subtotal
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_subtotal
+
+	column display_order
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: display_order
+
+	partition dim_line_item = m
+		mode: import
+		source =
+			let
+				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_line_item.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				Tipos = Table.TransformColumnTypes(Encabezados, {{"line_item_key", type text}, {"label", type text}, {"statement", type text}, {"section", type text}, {"sign", Int64.Type}, {"is_subtotal", type logical}, {"display_order", Int64.Type}})
+			in
+				Tipos

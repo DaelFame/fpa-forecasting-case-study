@@ -1,0 +1,22 @@
+table dim_regime
+
+	column regime_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: regime_key
+
+	column label
+		dataType: string
+		summarizeBy: none
+		sourceColumn: label
+
+	partition dim_regime = m
+		mode: import
+		source =
+			let
+				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_regime.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				Tipos = Table.TransformColumnTypes(Encabezados, {{"regime_key", type text}, {"label", type text}})
+			in
+				Tipos

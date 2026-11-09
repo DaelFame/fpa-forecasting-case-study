@@ -1,0 +1,27 @@
+table dim_driver
+
+	column driver_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: driver_key
+
+	column label
+		dataType: string
+		summarizeBy: none
+		sourceColumn: label
+
+	column unit
+		dataType: string
+		summarizeBy: none
+		sourceColumn: unit
+
+	partition dim_driver = m
+		mode: import
+		source =
+			let
+				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_driver.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				Tipos = Table.TransformColumnTypes(Encabezados, {{"driver_key", type text}, {"label", type text}, {"unit", type text}})
+			in
+				Tipos

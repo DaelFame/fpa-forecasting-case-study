@@ -1,0 +1,111 @@
+relationship fact_financials_period_key
+	fromColumn: fact_financials.period_key
+	toColumn: dim_period.period_key
+
+relationship fact_financials_line_item_key
+	fromColumn: fact_financials.line_item_key
+	toColumn: dim_line_item.line_item_key
+
+relationship fact_financials_scenario_key
+	fromColumn: fact_financials.scenario_key
+	toColumn: dim_scenario.scenario_key
+
+relationship fact_financials_status_key
+	fromColumn: fact_financials.status_key
+	toColumn: dim_status.status_key
+
+relationship fact_balance_period_key
+	fromColumn: fact_balance.period_key
+	toColumn: dim_period.period_key
+
+relationship fact_balance_account_key
+	fromColumn: fact_balance.account_key
+	toColumn: dim_account.account_key
+
+relationship fact_balance_status_key
+	fromColumn: fact_balance.status_key
+	toColumn: dim_status.status_key
+
+relationship fact_sales_period_key
+	fromColumn: fact_sales.period_key
+	toColumn: dim_period.period_key
+
+relationship fact_sales_product_key
+	fromColumn: fact_sales.product_key
+	toColumn: dim_product.product_key
+
+relationship fact_product_annual_period_key
+	fromColumn: fact_product_annual.period_key
+	toColumn: dim_period.period_key
+
+relationship fact_product_annual_product_key
+	fromColumn: fact_product_annual.product_key
+	toColumn: dim_product.product_key
+
+relationship fact_market_period_key
+	fromColumn: fact_market.period_key
+	toColumn: dim_period.period_key
+
+relationship fact_market_product_key
+	fromColumn: fact_market.product_key
+	toColumn: dim_product.product_key
+
+relationship fact_variance_period_key
+	fromColumn: fact_variance.period_key
+	toColumn: dim_period.period_key
+
+relationship fact_variance_driver_key
+	fromColumn: fact_variance.driver_key
+	toColumn: dim_driver.driver_key
+
+relationship fact_variance_line_item_key
+	fromColumn: fact_variance.line_item_key
+	toColumn: dim_line_item.line_item_key
+
+relationship fact_variance_status_key
+	fromColumn: fact_variance.status_key
+	toColumn: dim_status.status_key
+
+relationship fact_backtest_fold_key
+	fromColumn: fact_backtest.fold_key
+	toColumn: dim_fold.fold_key
+
+relationship fact_backtest_regime_key
+	fromColumn: fact_backtest.regime_key
+	toColumn: dim_regime.regime_key
+
+relationship fact_backtest_period_key
+	fromColumn: fact_backtest.period_key
+	toColumn: dim_period.period_key
+
+relationship fact_backtest_line_item_key
+	fromColumn: fact_backtest.line_item_key
+	toColumn: dim_line_item.line_item_key
+
+relationship fact_backtest_status_key
+	fromColumn: fact_backtest.status_key
+	toColumn: dim_status.status_key
+
+relationship fact_forecast_period_key
+	fromColumn: fact_forecast.period_key
+	toColumn: dim_period.period_key
+
+relationship fact_forecast_line_item_key
+	fromColumn: fact_forecast.line_item_key
+	toColumn: dim_line_item.line_item_key
+
+relationship fact_forecast_scenario_key
+	fromColumn: fact_forecast.scenario_key
+	toColumn: dim_scenario.scenario_key
+
+relationship fact_forecast_regime_key
+	fromColumn: fact_forecast.regime_key
+	toColumn: dim_regime.regime_key
+
+relationship fact_forecast_fold_key
+	fromColumn: fact_forecast.fold_key
+	toColumn: dim_fold.fold_key
+
+relationship fact_forecast_status_key
+	fromColumn: fact_forecast.status_key
+	toColumn: dim_status.status_key

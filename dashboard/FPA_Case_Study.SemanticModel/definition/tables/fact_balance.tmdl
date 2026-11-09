@@ -1,0 +1,34 @@
+table fact_balance
+
+	column period_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: period_key
+
+	column account_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: account_key
+
+	column amount
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: amount
+
+	column status_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: status_key
+
+	partition fact_balance = m
+		mode: import
+		source =
+			let
+				Origen = Csv.Document(File.Contents(pDataFolder & "\fact_balance.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				Tipos = Table.TransformColumnTypes(Encabezados, {{"period_key", type text}, {"account_key", type text}, {"amount", Int64.Type}, {"status_key", type text}})
+			in
+				Tipos
