@@ -6,6 +6,7 @@ Three kinds of documents live here, and they answer different questions.
 
 | Document | Question it answers |
 |---|---|
+| [`engine.html`](engine.html) | Interactive map of the engine, from raw cells to the 2030 forecast |
 | [`BRIEFING.md`](BRIEFING.md) | What is this company, what data exists and what does it cover? |
 | [`methodology.md`](methodology.md) | How is every number produced, and why this way? |
 | [`data_model.md`](data_model.md) | What tables does the analytics layer expose and at what grain? |

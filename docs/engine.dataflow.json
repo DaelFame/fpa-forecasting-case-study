@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Inside the FP&A Engine",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1068,
+      900
+    ]
+  },
+  "stages": [
+    {
+      "label": "Sources"
+    },
+    {
+      "label": "Canonical layer"
+    },
+    {
+      "label": "Statements"
+    },
+    {
+      "label": "Analytics engines"
+    },
+    {
+      "label": "Delivery"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "workbooks",
+      "type": "database",
+      "label": "Closing workbooks",
+      "sublabel": "2024–2029",
+      "stage": 0,
+      "row": 0,
+      "tag": "immutable"
+    },
+    {
+      "id": "decisions",
+      "type": "database",
+      "label": "Decision logs",
+      "sublabel": "2026–2029",
+      "stage": 0,
+      "row": 2,
+      "tag": "plan levers"
+    },
+    {
+      "id": "canonical",
+      "type": "backend",
+      "label": "Canonical layer",
+      "sublabel": "normalised facts",
+      "stage": 1,
+      "row": 1,
+      "tag": "11,777 obs"
+    },
+    {
+      "id": "validation",
+      "type": "security",
+      "label": "Validation",
+      "sublabel": "identities",
+      "stage": 1,
+      "row": 3,
+      "tag": "176 findings"
+    },
+    {
+      "id": "statements",
+      "type": "backend",
+      "label": "Statement engine",
+      "sublabel": "P&L · balance · cash",
+      "stage": 2,
+      "row": 1,
+      "tag": "492 rows"
+    },
+    {
+      "id": "variance",
+      "type": "backend",
+      "label": "Variance bridge",
+      "sublabel": "budget vs actual",
+      "stage": 3,
+      "row": 0,
+      "tag": "exact"
+    },
+    {
+      "id": "backtest",
+      "type": "backend",
+      "label": "Rolling backtest",
+      "sublabel": "folds F1 · F2",
+      "stage": 3,
+      "row": 1,
+      "tag": "A vs B"
+    },
+    {
+      "id": "forecast",
+      "type": "backend",
+      "label": "2030 forecast",
+      "sublabel": "4 scenarios",
+      "stage": 3,
+      "row": 2,
+      "tag": "2029 close"
+    },
+    {
+      "id": "marts",
+      "type": "database",
+      "label": "Analytics marts",
+      "sublabel": "8 facts · 9 dims",
+      "stage": 4,
+      "row": 1,
+      "tag": "galaxy schema"
+    },
+    {
+      "id": "powerbi",
+      "type": "frontend",
+      "label": "Power BI report",
+      "sublabel": "executive layer",
+      "stage": 4,
+      "row": 3,
+      "tag": "in progress"
+    }
+  ],
+  "flows": [
+    {
+      "from": "workbooks",
+      "to": "canonical",
+      "label": "22,586 cells",
+      "classification": "hashed on read",
+      "variant": "emphasis"
+    },
+    {
+      "from": "decisions",
+      "to": "canonical",
+      "label": "plan levers",
+      "classification": "normalised",
+      "variant": "default"
+    },
+    {
+      "from": "canonical",
+      "to": "validation",
+      "label": "business identities",
+      "classification": "20+ rules",
+      "variant": "security",
+      "labelDy": 24
+    },
+    {
+      "from": "canonical",
+      "to": "statements",
+      "label": "classified facts",
+      "classification": "status inherited",
+      "variant": "emphasis"
+    },
+    {
+      "from": "statements",
+      "to": "variance",
+      "label": "actual vs budget",
+      "classification": "drivers",
+      "variant": "emphasis"
+    },
+    {
+      "from": "statements",
+      "to": "backtest",
+      "label": "closed years",
+      "classification": "vintage rule",
+      "variant": "default",
+      "labelAt": [
+        720,
+        220
+      ]
+    },
+    {
+      "from": "statements",
+      "to": "forecast",
+      "label": "2029 close",
+      "classification": "no stale log",
+      "variant": "default"
+    },
+    {
+      "from": "variance",
+      "to": "marts",
+      "label": "bridge rows",
+      "classification": "signed impacts",
+      "variant": "emphasis",
+      "labelAt": [
+        852,
+        190
+      ]
+    },
+    {
+      "from": "backtest",
+      "to": "marts",
+      "label": "MAPE and bias",
+      "classification": "per line",
+      "variant": "default",
+      "labelAt": [
+        760,
+        314
+      ]
+    },
+    {
+      "from": "forecast",
+      "to": "marts",
+      "label": "scenario ranges",
+      "classification": "assumption-based",
+      "variant": "default",
+      "labelAt": [
+        852,
+        340
+      ]
+    },
+    {
+      "from": "marts",
+      "to": "powerbi",
+      "label": "versioned CSV",
+      "classification": "reproducible",
+      "variant": "emphasis",
+      "labelDy": 24
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Audit trail",
+      "items": [
+        "Every figure carries file, sheet and cell",
+        "Source hashes verified on every run",
+        "Stable source keys survive new workbooks"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "The 2026 miss",
+      "items": [
+        "Revenue within 0.9% of budget",
+        "Net income down 61.1%, all of it in OPEX",
+        "Gross margin beat +74,457; expenses -359,888"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Forecast discipline",
+      "items": [
+        "Knowing decisions: 0.3% revenue error",
+        "History only: 15.7% revenue error",
+        "2030 range: 1.21M to 2.03M net income"
+      ]
+    }
+  ]
+}
