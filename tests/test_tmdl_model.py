@@ -110,3 +110,21 @@ def test_no_unsupported_description_property() -> None:
             if line.strip().startswith("description:"):
                 offenders.append(f"{path.name}:{number}")
     assert not offenders, offenders
+
+
+def test_multiline_dax_is_fenced() -> None:
+    """A multi-line measure must be fenced, or TMDL swallows the next property as DAX.
+
+    Without the fences, `formatString:` is parsed as part of the expression and the
+    whole table fails to compile.
+    """
+    offenders = []
+    for path in sorted(TABLES_DIR.glob("*.tmdl")):
+        lines = path.read_text(encoding="utf-8").splitlines()
+        for number, line in enumerate(lines):
+            if not re.match(r"^\tmeasure .* =$", line):
+                continue
+            following = next((item for item in lines[number + 1:] if item.strip()), "")
+            if following.strip() != "```":
+                offenders.append(f"{path.name}:{number + 1}")
+    assert not offenders, offenders
