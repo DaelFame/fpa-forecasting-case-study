@@ -7,8 +7,9 @@
     "quality_profile": "showcase",
     "viewBox": [
       1068,
-      900
-    ]
+      680
+    ],
+    "output": "docs/engine.html"
   },
   "stages": [
     {
