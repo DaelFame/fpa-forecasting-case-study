@@ -45,8 +45,9 @@ de capacidad y subestima la caja.
 
 ## La metodología
 
-El motor también está disponible como [diagrama interactivo](docs/engine.html):
-zoom, búsqueda y temas claro/oscuro, sin instalar nada.
+El motor también está disponible como [diagrama interactivo en español](docs/engine.es.html)
+—zoom, búsqueda y temas claro/oscuro, sin instalar nada— y en
+[versión inglesa](docs/engine.html).
 
 **Backtest de ventana expansiva.** Dos folds, cada uno entrenado solo con años ya
 cerrados:

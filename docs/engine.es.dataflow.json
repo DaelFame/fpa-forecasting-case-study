@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Dentro del motor de FP&A",
+    "locale": "es",
+    "output": "docs/engine.es.html",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1068,
+      680
+    ]
+  },
+  "stages": [
+    {
+      "label": "Fuentes"
+    },
+    {
+      "label": "Capa canónica"
+    },
+    {
+      "label": "Estados"
+    },
+    {
+      "label": "Motores analíticos"
+    },
+    {
+      "label": "Entrega"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "workbooks",
+      "type": "database",
+      "label": "Libros de cierre",
+      "sublabel": "2024–2029",
+      "stage": 0,
+      "row": 0,
+      "tag": "inmutables"
+    },
+    {
+      "id": "decisions",
+      "type": "database",
+      "label": "Bitácoras",
+      "sublabel": "2026–2029",
+      "stage": 0,
+      "row": 2,
+      "tag": "palancas"
+    },
+    {
+      "id": "canonical",
+      "type": "backend",
+      "label": "Capa canónica",
+      "sublabel": "hechos normalizados",
+      "stage": 1,
+      "row": 1,
+      "tag": "11.777 obs"
+    },
+    {
+      "id": "validation",
+      "type": "security",
+      "label": "Validación",
+      "sublabel": "identidades",
+      "stage": 1,
+      "row": 3,
+      "tag": "176 hallazgos"
+    },
+    {
+      "id": "statements",
+      "type": "backend",
+      "label": "Motor de estados",
+      "sublabel": "P&L · balance · caja",
+      "stage": 2,
+      "row": 1,
+      "tag": "492 filas"
+    },
+    {
+      "id": "variance",
+      "type": "backend",
+      "label": "Cascada varianza",
+      "sublabel": "real vs presupuesto",
+      "stage": 3,
+      "row": 0,
+      "tag": "exacta"
+    },
+    {
+      "id": "backtest",
+      "type": "backend",
+      "label": "Backtest rolling",
+      "sublabel": "folds F1 · F2",
+      "stage": 3,
+      "row": 1,
+      "tag": "A vs B"
+    },
+    {
+      "id": "forecast",
+      "type": "backend",
+      "label": "Pronóstico 2030",
+      "sublabel": "4 escenarios",
+      "stage": 3,
+      "row": 2,
+      "tag": "cierre 2029"
+    },
+    {
+      "id": "marts",
+      "type": "database",
+      "label": "Data marts",
+      "sublabel": "8 hechos · 9 dims",
+      "stage": 4,
+      "row": 1,
+      "tag": "galaxia"
+    },
+    {
+      "id": "powerbi",
+      "type": "frontend",
+      "label": "Informe Power BI",
+      "sublabel": "capa ejecutiva",
+      "stage": 4,
+      "row": 3,
+      "tag": "en curso"
+    }
+  ],
+  "flows": [
+    {
+      "from": "workbooks",
+      "to": "canonical",
+      "label": "22.586 celdas",
+      "classification": "hash al leer",
+      "variant": "emphasis"
+    },
+    {
+      "from": "decisions",
+      "to": "canonical",
+      "label": "palancas del plan",
+      "classification": "normalizado",
+      "variant": "default"
+    },
+    {
+      "from": "canonical",
+      "to": "validation",
+      "label": "reglas contables",
+      "classification": "20+ reglas",
+      "variant": "security",
+      "labelDy": 24
+    },
+    {
+      "from": "canonical",
+      "to": "statements",
+      "label": "hechos clasificados",
+      "classification": "estado heredado",
+      "variant": "emphasis"
+    },
+    {
+      "from": "statements",
+      "to": "variance",
+      "label": "real vs presupuesto",
+      "classification": "drivers",
+      "variant": "emphasis"
+    },
+    {
+      "from": "statements",
+      "to": "backtest",
+      "label": "años cerrados",
+      "classification": "regla vintage",
+      "variant": "default",
+      "labelAt": [
+        745,
+        205
+      ]
+    },
+    {
+      "from": "statements",
+      "to": "forecast",
+      "label": "cierre 2029",
+      "classification": "sin log obsoleto",
+      "variant": "default"
+    },
+    {
+      "from": "variance",
+      "to": "marts",
+      "label": "filas de cascada",
+      "classification": "impactos",
+      "variant": "emphasis",
+      "labelAt": [
+        852,
+        190
+      ]
+    },
+    {
+      "from": "backtest",
+      "to": "marts",
+      "label": "MAPE y sesgo",
+      "classification": "por línea",
+      "variant": "default",
+      "labelAt": [
+        760,
+        314
+      ]
+    },
+    {
+      "from": "forecast",
+      "to": "marts",
+      "label": "rango escenarios",
+      "classification": "supuestos",
+      "variant": "default",
+      "labelAt": [
+        852,
+        340
+      ]
+    },
+    {
+      "from": "marts",
+      "to": "powerbi",
+      "label": "CSV versionado",
+      "classification": "reproducible",
+      "variant": "emphasis",
+      "labelDy": 24
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Trazabilidad",
+      "items": [
+        "Cada cifra lleva archivo, hoja y celda",
+        "Hashes verificados en cada ejecución",
+        "Claves estables ante libros nuevos"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "El fallo de 2026",
+      "items": [
+        "Ingresos a 0,9% del presupuesto",
+        "Resultado neto −61,1%, todo en OPEX",
+        "Margen bruto +74.457; gastos −359.888"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Disciplina de pronóstico",
+      "items": [
+        "Con decisiones: 0,3% de error",
+        "Solo historia: 15,7% de error",
+        "Rango 2030: 1,21–2,03 M€"
+      ]
+    }
+  ]
+}

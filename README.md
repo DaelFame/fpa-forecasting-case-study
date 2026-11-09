@@ -44,7 +44,8 @@ is not noise: an under-budgeting habit hides capacity needs and understates cash
 ## The methodology
 
 The engine is also available as an [interactive diagram](docs/engine.html) — pan,
-zoom, search and light/dark themes, no install required.
+zoom, search and light/dark themes, no install required. Spanish version:
+[`docs/engine.es.html`](docs/engine.es.html).
 
 **Rolling-origin backtest.** Two folds, each trained only on years that were already
 closed:
