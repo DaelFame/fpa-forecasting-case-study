@@ -1,4 +1,5 @@
 table _Measures
+	lineageTag: 2921c3df-a45b-4812-a041-5db938e15c25
 
 	/// Revenue recognised in the selected period, always from the actual scenario.
 	measure Revenue =
@@ -9,6 +10,7 @@ table _Measures
 			)
 		formatString: #,##0
 		displayFolder: 01 Executive
+		lineageTag: 89ebba0f-d2db-44b6-a29f-68412b8fef6d
 
 	/// Revenue less cost of sales.
 	measure 'Gross Margin' =
@@ -19,11 +21,12 @@ table _Measures
 			)
 		formatString: #,##0
 		displayFolder: 01 Executive
+		lineageTag: b149527e-5378-4bbe-87ba-aa5e20c7da7f
 
-	measure 'Gross Margin %' =
-			DIVIDE([Gross Margin], [Revenue])
+	measure 'Gross Margin %' = DIVIDE([Gross Margin], [Revenue])
 		formatString: 0.0%
 		displayFolder: 01 Executive
+		lineageTag: df1f2798-2971-43a9-8a43-44b32b20b083
 
 	/// Result before tax. The budget carries no tax line, so every variance is measured pre-tax.
 	measure 'Net Income' =
@@ -34,11 +37,12 @@ table _Measures
 			)
 		formatString: #,##0
 		displayFolder: 01 Executive
+		lineageTag: f73e0372-e125-40ac-9dbf-83afd47369b8
 
-	measure 'Net Margin %' =
-			DIVIDE([Net Income], [Revenue])
+	measure 'Net Margin %' = DIVIDE([Net Income], [Revenue])
 		formatString: 0.0%
 		displayFolder: 01 Executive
+		lineageTag: d056621a-48e3-41ca-9ced-238954d7bccb
 
 	/// Latest year with a reported close. Use it in titles instead of hardcoding a year.
 	measure 'Latest Closed Year' =
@@ -49,6 +53,7 @@ table _Measures
 			)
 		formatString: 0
 		displayFolder: 01 Executive
+		lineageTag: 6eefe4b5-634c-48d3-adfa-d49be962163d
 
 	/// Cash at the end of the period. Balances are semi-additive: never sum across time.
 	measure 'Closing Cash' =
@@ -59,6 +64,7 @@ table _Measures
 			)
 		formatString: #,##0
 		displayFolder: 01 Executive
+		lineageTag: beb86692-2c20-4908-bd0c-ff60f41a8454
 
 	measure 'Total Assets' =
 			CALCULATE(
@@ -68,31 +74,32 @@ table _Measures
 			)
 		formatString: #,##0
 		displayFolder: 01 Executive
+		lineageTag: 2cb88a24-53f0-469c-9acb-e67c30734e96
 
-	measure 'Product Revenue' =
-			SUM(fact_product_annual[revenue])
+	measure 'Product Revenue' = SUM(fact_product_annual[revenue])
 		formatString: #,##0
 		displayFolder: 02 Profitability
+		lineageTag: 3394bce2-ce1c-4e16-a640-2afa7e2aca11
 
-	measure 'Product Gross Margin' =
-			SUM(fact_product_annual[gross_margin])
+	measure 'Product Gross Margin' = SUM(fact_product_annual[gross_margin])
 		formatString: #,##0
 		displayFolder: 02 Profitability
+		lineageTag: 08f861fd-d1e5-4281-84c5-b3c545348071
 
-	measure 'Product Margin %' =
-			DIVIDE([Product Gross Margin], [Product Revenue])
+	measure 'Product Margin %' = DIVIDE([Product Gross Margin], [Product Revenue])
 		formatString: 0.0%
 		displayFolder: 02 Profitability
+		lineageTag: 121b423f-1f2c-437c-b9ca-34bbdd39a164
 
-	measure 'Units Sold' =
-			SUM(fact_sales[units_sold])
+	measure 'Units Sold' = SUM(fact_sales[units_sold])
 		formatString: #,##0
 		displayFolder: 02 Profitability
+		lineageTag: d81d4f68-7d12-4f8e-bdb8-c24f66ea7912
 
-	measure 'Quarterly Revenue' =
-			SUM(fact_sales[revenue])
+	measure 'Quarterly Revenue' = SUM(fact_sales[revenue])
 		formatString: #,##0
 		displayFolder: 02 Profitability
+		lineageTag: ba46c3c2-d868-413c-9076-cbb456bafd73
 
 	measure 'Budget Net Income' =
 			CALCULATE(
@@ -102,37 +109,38 @@ table _Measures
 			)
 		formatString: #,##0
 		displayFolder: 03 Variance
+		lineageTag: beac9622-003f-4e00-9e4e-36893a8d17d6
 
-	measure 'Net Income vs Budget' =
-			[Net Income] - [Budget Net Income]
+	measure 'Net Income vs Budget' = [Net Income] - [Budget Net Income]
 		formatString: #,##0
 		displayFolder: 03 Variance
+		lineageTag: 8c708df6-9949-4831-bb69-f18c8142cf49
 
-	measure 'Net Income vs Budget %' =
-			DIVIDE([Net Income vs Budget], [Budget Net Income])
+	measure 'Net Income vs Budget %' = DIVIDE([Net Income vs Budget], [Budget Net Income])
 		formatString: 0.0%
 		displayFolder: 03 Variance
+		lineageTag: a9636c76-99a0-42f8-aaf3-87e970e2cd32
 
 	/// Sum of the bridge drivers. Must equal [Net Income vs Budget] to the euro.
-	measure 'Bridge Total' =
-			SUM(fact_variance[amount])
+	measure 'Bridge Total' = SUM(fact_variance[amount])
 		formatString: #,##0
 		displayFolder: 03 Variance
+		lineageTag: 7c220b71-2ab2-4f62-a5c8-35c387a644b5
 
-	measure 'Bridge Residual' =
-			[Bridge Total] - [Net Income vs Budget]
+	measure 'Bridge Residual' = [Bridge Total] - [Net Income vs Budget]
 		formatString: #,##0
 		displayFolder: 03 Variance
+		lineageTag: 0128cfcc-e771-4ddd-8d49-59182a3f0177
 
-	measure 'Forecast Amount' =
-			SUM(fact_forecast[forecast_amount])
+	measure 'Forecast Amount' = SUM(fact_forecast[forecast_amount])
 		formatString: #,##0
 		displayFolder: 04 Forecast
+		lineageTag: 0e85ffd8-9e28-49d5-9d25-98dd893421dc
 
-	measure 'Forecast Error' =
-			SUM(fact_backtest[error_eur])
+	measure 'Forecast Error' = SUM(fact_backtest[error_eur])
 		formatString: #,##0
 		displayFolder: 04 Forecast
+		lineageTag: 9a92b22f-3121-4c28-9665-e4fb4f54e571
 
 	/// Weighted error: ratio of sums, never an average of per-line percentages.
 	measure 'MAPE Weighted' =
@@ -142,6 +150,7 @@ table _Measures
 			)
 		formatString: 0.0%
 		displayFolder: 04 Forecast
+		lineageTag: fa9d6e66-d0dc-4ffa-a1ea-77d4900859ae
 
 	/// Positive means the forecast landed above the actual outcome.
 	measure 'Bias Weighted' =
@@ -151,38 +160,41 @@ table _Measures
 			)
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: 04 Forecast
+		lineageTag: 2fad1060-2f2c-492c-a79f-fc5d2d7e8a61
 
-	measure 'Forecast Accuracy %' =
-			1 - [MAPE Weighted]
+	measure 'Forecast Accuracy %' = 1 - [MAPE Weighted]
 		formatString: 0.0%
 		displayFolder: 04 Forecast
+		lineageTag: 00b25726-e13e-4066-97aa-233700705fb0
 
-	measure 'Market Units' =
-			SUM(fact_market[market_units])
+	measure 'Market Units' = SUM(fact_market[market_units])
 		formatString: #,##0
 		displayFolder: 05 Market
+		lineageTag: 0af29faf-35fc-44db-ba59-d3e77862b8c4
 
-	measure 'Market Units Sold' =
-			SUM(fact_market[units_sold])
+	measure 'Market Units Sold' = SUM(fact_market[units_sold])
 		formatString: #,##0
 		displayFolder: 05 Market
+		lineageTag: 8813c2cd-c1b9-4adb-a477-463770f857e8
 
-	measure 'Market Share %' =
-			DIVIDE([Market Units Sold], [Market Units])
+	measure 'Market Share %' = DIVIDE([Market Units Sold], [Market Units])
 		formatString: 0.0%
 		displayFolder: 05 Market
+		lineageTag: 38e3d3b3-5da7-41bf-993d-d38e60ccc23f
 
-	measure 'Unserved Units' =
-			SUM(fact_market[unserved_units])
+	measure 'Unserved Units' = SUM(fact_market[unserved_units])
 		formatString: #,##0
 		displayFolder: 05 Market
+		lineageTag: af0e0191-6fe5-494c-8f5b-d5f9072ba680
 
 	column Dummy
 		dataType: string
 		isHidden
+		lineageTag: 78e91ec5-b97d-4d37-b95b-6fbeede0b06c
 		summarizeBy: none
 		sourceColumn: [Dummy]
 
 	partition _Measures = calculated
 		mode: import
 		source = ROW("Dummy", BLANK())
+

@@ -1,32 +1,38 @@
 table dim_status
+	lineageTag: a814d4fc-2895-495c-a505-d274709066c4
 
 	column status_key
 		dataType: string
 		isHidden
+		lineageTag: e6ff7c4e-e22e-4d1d-976a-e39a0ad8ce1f
 		summarizeBy: none
 		sourceColumn: status_key
 
 	column label
 		dataType: string
+		lineageTag: 45bb33ea-b7b6-4ed9-98d2-70b903093bab
 		summarizeBy: none
 		sourceColumn: label
 
 	column severity
 		dataType: int64
+		lineageTag: 46841ed3-5c89-4233-ba09-418ca7a08c1f
 		summarizeBy: none
 		sourceColumn: severity
 
 	column description
 		dataType: string
+		lineageTag: 1fdf8abd-1d8e-42e8-bf54-d60988ac117b
 		summarizeBy: none
 		sourceColumn: description
 
 	partition dim_status = m
 		mode: import
 		source =
-			let
-				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_status.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-				Tipos = Table.TransformColumnTypes(Encabezados, {{"status_key", type text}, {"label", type text}, {"severity", Int64.Type}, {"description", type text}})
-			in
-				Tipos
+				let
+					Origen = Csv.Document(File.Contents(pDataFolder & "\dim_status.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Encabezados, {{"status_key", type text}, {"label", type text}, {"severity", Int64.Type}, {"description", type text}})
+				in
+					Tipos
+

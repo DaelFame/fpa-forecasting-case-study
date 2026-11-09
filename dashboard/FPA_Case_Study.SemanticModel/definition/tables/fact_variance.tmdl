@@ -1,40 +1,47 @@
 table fact_variance
+	lineageTag: d174b60b-0ca3-47fa-a005-709210a3f36e
 
 	column period_key
 		dataType: string
 		isHidden
+		lineageTag: a6fd5e18-4b49-4008-a199-9fe96282c25f
 		summarizeBy: none
 		sourceColumn: period_key
 
 	column driver_key
 		dataType: string
 		isHidden
+		lineageTag: 99a47d5e-01a3-46e7-92ba-3fa3b6e51bb1
 		summarizeBy: none
 		sourceColumn: driver_key
 
 	column line_item_key
 		dataType: string
 		isHidden
+		lineageTag: 6a4bdd0b-4a3b-4661-b73e-9d071b17056a
 		summarizeBy: none
 		sourceColumn: line_item_key
 
 	column amount
 		dataType: string
+		lineageTag: c19f4a13-b33e-4f1d-92df-867778d323a1
 		summarizeBy: none
 		sourceColumn: amount
 
 	column status_key
 		dataType: string
 		isHidden
+		lineageTag: 512adc31-485c-45b7-aaa1-3b255b2e4b25
 		summarizeBy: none
 		sourceColumn: status_key
 
 	partition fact_variance = m
 		mode: import
 		source =
-			let
-				Origen = Csv.Document(File.Contents(pDataFolder & "\fact_variance.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-				Tipos = Table.TransformColumnTypes(Encabezados, {{"period_key", type text}, {"driver_key", type text}, {"line_item_key", type text}, {"amount", type text}, {"status_key", type text}})
-			in
-				Tipos
+				let
+					Origen = Csv.Document(File.Contents(pDataFolder & "\fact_variance.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Encabezados, {{"period_key", type text}, {"driver_key", type text}, {"line_item_key", type text}, {"amount", type text}, {"status_key", type text}})
+				in
+					Tipos
+

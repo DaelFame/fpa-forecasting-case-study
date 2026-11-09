@@ -1,34 +1,40 @@
 table dim_scenario
+	lineageTag: 1e3930f5-1e0a-48ab-bda2-b3ccb0178236
 
 	column scenario_key
 		dataType: string
 		isHidden
+		lineageTag: 729db106-144d-48b6-a894-0413d52a164f
 		summarizeBy: none
 		sourceColumn: scenario_key
 
 	column label
 		dataType: string
-		sortByColumn: sort_order
+		lineageTag: f6b94f92-a8a5-4123-973b-735a9997ea9a
 		summarizeBy: none
 		sourceColumn: label
+		sortByColumn: sort_order
 
 	column is_committed
 		dataType: boolean
+		lineageTag: d5ad45f2-fa71-4555-b817-03510375832f
 		summarizeBy: none
 		sourceColumn: is_committed
 
 	column sort_order
 		dataType: int64
 		isHidden
+		lineageTag: ed68bc67-9bf0-4959-86ab-aa53e1eb99da
 		summarizeBy: none
 		sourceColumn: sort_order
 
 	partition dim_scenario = m
 		mode: import
 		source =
-			let
-				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_scenario.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-				Tipos = Table.TransformColumnTypes(Encabezados, {{"scenario_key", type text}, {"label", type text}, {"is_committed", type logical}, {"sort_order", Int64.Type}})
-			in
-				Tipos
+				let
+					Origen = Csv.Document(File.Contents(pDataFolder & "\dim_scenario.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Encabezados, {{"scenario_key", type text}, {"label", type text}, {"is_committed", type logical}, {"sort_order", Int64.Type}})
+				in
+					Tipos
+

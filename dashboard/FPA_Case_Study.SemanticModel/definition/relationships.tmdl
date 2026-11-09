@@ -109,3 +109,4 @@ relationship fact_forecast_fold_key
 relationship fact_forecast_status_key
 	fromColumn: fact_forecast.status_key
 	toColumn: dim_status.status_key
+

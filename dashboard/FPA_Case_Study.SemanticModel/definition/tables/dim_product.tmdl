@@ -1,29 +1,34 @@
 table dim_product
+	lineageTag: e5cfe047-127b-4945-892a-1075afbc0a0c
 
 	column product_key
 		dataType: string
 		isHidden
+		lineageTag: f578ff07-5fb5-4009-b474-ed0f055dc70b
 		summarizeBy: none
 		sourceColumn: product_key
 
 	column label
 		dataType: string
-		sortByColumn: sort_order
+		lineageTag: 477974d7-05b0-438b-9619-73047be71f02
 		summarizeBy: none
 		sourceColumn: label
+		sortByColumn: sort_order
 
 	column sort_order
 		dataType: int64
 		isHidden
+		lineageTag: d75ac739-2611-4cc8-92f7-1e2eea835cdd
 		summarizeBy: none
 		sourceColumn: sort_order
 
 	partition dim_product = m
 		mode: import
 		source =
-			let
-				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_product.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-				Tipos = Table.TransformColumnTypes(Encabezados, {{"product_key", type text}, {"label", type text}, {"sort_order", Int64.Type}})
-			in
-				Tipos
+				let
+					Origen = Csv.Document(File.Contents(pDataFolder & "\dim_product.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Encabezados, {{"product_key", type text}, {"label", type text}, {"sort_order", Int64.Type}})
+				in
+					Tipos
+

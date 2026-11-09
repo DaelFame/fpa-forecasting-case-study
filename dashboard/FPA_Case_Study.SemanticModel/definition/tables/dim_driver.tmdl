@@ -1,27 +1,32 @@
 table dim_driver
+	lineageTag: cc090599-a552-4665-9d14-7e64c4ee51b4
 
 	column driver_key
 		dataType: string
 		isHidden
+		lineageTag: 90fc92ee-e06c-419f-a753-f4ef913d2221
 		summarizeBy: none
 		sourceColumn: driver_key
 
 	column label
 		dataType: string
+		lineageTag: 6651e825-e179-4527-8392-11c3dd3d1acd
 		summarizeBy: none
 		sourceColumn: label
 
 	column unit
 		dataType: string
+		lineageTag: 8ab57f70-6edb-44b8-8e6f-8b6e99f411c3
 		summarizeBy: none
 		sourceColumn: unit
 
 	partition dim_driver = m
 		mode: import
 		source =
-			let
-				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_driver.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-				Tipos = Table.TransformColumnTypes(Encabezados, {{"driver_key", type text}, {"label", type text}, {"unit", type text}})
-			in
-				Tipos
+				let
+					Origen = Csv.Document(File.Contents(pDataFolder & "\dim_driver.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Encabezados, {{"driver_key", type text}, {"label", type text}, {"unit", type text}})
+				in
+					Tipos
+

@@ -1,52 +1,61 @@
 table fact_forecast
+	lineageTag: 98bdd172-5405-4ef6-a6d1-d1a92c1eabc1
 
 	column period_key
 		dataType: string
 		isHidden
+		lineageTag: 086c0b6b-66fc-49df-92e4-0bc2b90f87c0
 		summarizeBy: none
 		sourceColumn: period_key
 
 	column line_item_key
 		dataType: string
 		isHidden
+		lineageTag: 208a4bef-b8de-4806-b13b-dfe77c18486d
 		summarizeBy: none
 		sourceColumn: line_item_key
 
 	column scenario_key
 		dataType: string
 		isHidden
+		lineageTag: 6068b3a2-c082-4a80-a89c-5bb53eeae898
 		summarizeBy: none
 		sourceColumn: scenario_key
 
 	column regime_key
 		dataType: string
 		isHidden
+		lineageTag: cb6f5c4a-b563-4713-a0d3-284fecc0c890
 		summarizeBy: none
 		sourceColumn: regime_key
 
 	column fold_key
 		dataType: string
 		isHidden
+		lineageTag: 3c02935e-79a8-48ec-9694-3273da462533
 		summarizeBy: none
 		sourceColumn: fold_key
 
 	column forecast_amount
 		dataType: double
+		lineageTag: a552d47f-c998-434e-8b3b-15326bdf9615
 		summarizeBy: none
 		sourceColumn: forecast_amount
 
 	column status_key
 		dataType: string
 		isHidden
+		lineageTag: b50fc73a-2db8-40c6-92bb-fdac8d9929f2
 		summarizeBy: none
 		sourceColumn: status_key
 
 	partition fact_forecast = m
 		mode: import
 		source =
-			let
-				Origen = Csv.Document(File.Contents(pDataFolder & "\fact_forecast.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-				Tipos = Table.TransformColumnTypes(Encabezados, {{"period_key", type text}, {"line_item_key", type text}, {"scenario_key", type text}, {"regime_key", type text}, {"fold_key", type text}, {"forecast_amount", type number}, {"status_key", type text}})
-			in
-				Tipos
+				let
+					Origen = Csv.Document(File.Contents(pDataFolder & "\fact_forecast.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Encabezados, {{"period_key", type text}, {"line_item_key", type text}, {"scenario_key", type text}, {"regime_key", type text}, {"fold_key", type text}, {"forecast_amount", type number}, {"status_key", type text}})
+				in
+					Tipos
+

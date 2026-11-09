@@ -1,34 +1,40 @@
 table fact_balance
+	lineageTag: 7167c3c9-b24a-454a-9bf7-abcb2b991948
 
 	column period_key
 		dataType: string
 		isHidden
+		lineageTag: e2f82f60-9bfe-4744-b7c5-c2508a7c22d6
 		summarizeBy: none
 		sourceColumn: period_key
 
 	column account_key
 		dataType: string
 		isHidden
+		lineageTag: a02f5d00-728b-4abf-a0c6-8669dc192752
 		summarizeBy: none
 		sourceColumn: account_key
 
 	column amount
 		dataType: int64
+		lineageTag: d4fc9efa-df69-4f30-9870-c9aab8d9c0f9
 		summarizeBy: none
 		sourceColumn: amount
 
 	column status_key
 		dataType: string
 		isHidden
+		lineageTag: 1cc16746-0098-495d-9451-25618f004ddf
 		summarizeBy: none
 		sourceColumn: status_key
 
 	partition fact_balance = m
 		mode: import
 		source =
-			let
-				Origen = Csv.Document(File.Contents(pDataFolder & "\fact_balance.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-				Tipos = Table.TransformColumnTypes(Encabezados, {{"period_key", type text}, {"account_key", type text}, {"amount", Int64.Type}, {"status_key", type text}})
-			in
-				Tipos
+				let
+					Origen = Csv.Document(File.Contents(pDataFolder & "\fact_balance.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Encabezados, {{"period_key", type text}, {"account_key", type text}, {"amount", Int64.Type}, {"status_key", type text}})
+				in
+					Tipos
+

@@ -1,22 +1,26 @@
 table dim_regime
+	lineageTag: fab162db-db7b-4376-8e0c-375c816d997a
 
 	column regime_key
 		dataType: string
 		isHidden
+		lineageTag: 31a0fd46-4425-4364-9dfa-74ff0a2d62d8
 		summarizeBy: none
 		sourceColumn: regime_key
 
 	column label
 		dataType: string
+		lineageTag: bedba68e-555d-43ab-a17b-e81467de4d8f
 		summarizeBy: none
 		sourceColumn: label
 
 	partition dim_regime = m
 		mode: import
 		source =
-			let
-				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_regime.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-				Tipos = Table.TransformColumnTypes(Encabezados, {{"regime_key", type text}, {"label", type text}})
-			in
-				Tipos
+				let
+					Origen = Csv.Document(File.Contents(pDataFolder & "\dim_regime.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Encabezados, {{"regime_key", type text}, {"label", type text}})
+				in
+					Tipos
+

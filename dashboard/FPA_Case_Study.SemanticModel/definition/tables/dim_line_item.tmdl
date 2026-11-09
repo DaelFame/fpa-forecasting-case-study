@@ -1,49 +1,58 @@
 table dim_line_item
+	lineageTag: 65675320-ec07-4f93-a2da-838b7fcad90f
 
 	column line_item_key
 		dataType: string
 		isHidden
+		lineageTag: da7a12df-1c97-4ee3-a917-7667f98435d6
 		summarizeBy: none
 		sourceColumn: line_item_key
 
 	column label
 		dataType: string
-		sortByColumn: display_order
+		lineageTag: e8fbd540-b708-4f49-8420-5f25929d50e1
 		summarizeBy: none
 		sourceColumn: label
+		sortByColumn: display_order
 
 	column statement
 		dataType: string
+		lineageTag: c9f96556-dcff-4615-8fd6-37b5fa64ccfb
 		summarizeBy: none
 		sourceColumn: statement
 
 	column section
 		dataType: string
+		lineageTag: f8411dc2-7f7a-4795-9941-ce39c5bf870b
 		summarizeBy: none
 		sourceColumn: section
 
 	column sign
 		dataType: int64
+		lineageTag: c4c488b1-afa4-4630-85f7-476289d1079c
 		summarizeBy: none
 		sourceColumn: sign
 
 	column is_subtotal
 		dataType: boolean
+		lineageTag: e636c105-c5d5-4102-b953-847fa6971aea
 		summarizeBy: none
 		sourceColumn: is_subtotal
 
 	column display_order
 		dataType: int64
 		isHidden
+		lineageTag: 68bcc146-2f91-483b-92c7-81f5bb60dbdb
 		summarizeBy: none
 		sourceColumn: display_order
 
 	partition dim_line_item = m
 		mode: import
 		source =
-			let
-				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_line_item.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-				Tipos = Table.TransformColumnTypes(Encabezados, {{"line_item_key", type text}, {"label", type text}, {"statement", type text}, {"section", type text}, {"sign", Int64.Type}, {"is_subtotal", type logical}, {"display_order", Int64.Type}})
-			in
-				Tipos
+				let
+					Origen = Csv.Document(File.Contents(pDataFolder & "\dim_line_item.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Encabezados, {{"line_item_key", type text}, {"label", type text}, {"statement", type text}, {"section", type text}, {"sign", Int64.Type}, {"is_subtotal", type logical}, {"display_order", Int64.Type}})
+				in
+					Tipos
+

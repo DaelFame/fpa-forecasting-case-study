@@ -1,66 +1,78 @@
 table fact_backtest
+	lineageTag: d0953cad-8b01-4ec6-a0ae-8875c6601c6a
 
 	column fold_key
 		dataType: string
 		isHidden
+		lineageTag: 91ed0757-c942-4843-abe1-27d98175c286
 		summarizeBy: none
 		sourceColumn: fold_key
 
 	column regime_key
 		dataType: string
 		isHidden
+		lineageTag: 06ca1577-cfd2-438d-8091-96a734b03dfd
 		summarizeBy: none
 		sourceColumn: regime_key
 
 	column period_key
 		dataType: string
 		isHidden
+		lineageTag: 7ac6a7c1-9da2-4e0b-b8c5-3ef301ea5987
 		summarizeBy: none
 		sourceColumn: period_key
 
 	column line_item_key
 		dataType: string
 		isHidden
+		lineageTag: c919228b-b6ab-41e4-ac0d-645831c54da2
 		summarizeBy: none
 		sourceColumn: line_item_key
 
 	column forecast_amount
 		dataType: double
+		lineageTag: 0148d116-54cf-45c7-968b-f05d825ed234
 		summarizeBy: none
 		sourceColumn: forecast_amount
 
 	column actual_amount
 		dataType: int64
+		lineageTag: 871a2f38-c10a-4860-9902-1ca5855049cf
 		summarizeBy: none
 		sourceColumn: actual_amount
 
 	column error_eur
 		dataType: double
+		lineageTag: 20f4e2c0-60d9-4195-95a2-4f5baa7aecb0
 		summarizeBy: none
 		sourceColumn: error_eur
 
 	column abs_pct_error
 		dataType: double
+		lineageTag: 62d414f3-506e-43f0-9808-c2acd7e24362
 		summarizeBy: none
 		sourceColumn: abs_pct_error
 
 	column bias_pct
 		dataType: double
+		lineageTag: f5a73f2a-d4a8-4fdf-974c-6a2e069eae37
 		summarizeBy: none
 		sourceColumn: bias_pct
 
 	column status_key
 		dataType: string
 		isHidden
+		lineageTag: 41c9caeb-a396-4167-9f19-33cbd8890527
 		summarizeBy: none
 		sourceColumn: status_key
 
 	partition fact_backtest = m
 		mode: import
 		source =
-			let
-				Origen = Csv.Document(File.Contents(pDataFolder & "\fact_backtest.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-				Tipos = Table.TransformColumnTypes(Encabezados, {{"fold_key", type text}, {"regime_key", type text}, {"period_key", type text}, {"line_item_key", type text}, {"forecast_amount", type number}, {"actual_amount", Int64.Type}, {"error_eur", type number}, {"abs_pct_error", type number}, {"bias_pct", type number}, {"status_key", type text}})
-			in
-				Tipos
+				let
+					Origen = Csv.Document(File.Contents(pDataFolder & "\fact_backtest.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Encabezados, {{"fold_key", type text}, {"regime_key", type text}, {"period_key", type text}, {"line_item_key", type text}, {"forecast_amount", type number}, {"actual_amount", Int64.Type}, {"error_eur", type number}, {"abs_pct_error", type number}, {"bias_pct", type number}, {"status_key", type text}})
+				in
+					Tipos
+

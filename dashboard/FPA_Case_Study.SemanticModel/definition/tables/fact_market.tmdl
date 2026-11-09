@@ -1,54 +1,64 @@
 table fact_market
+	lineageTag: b5e137c9-5c8f-4d0e-b967-13ee41e153d1
 
 	column period_key
 		dataType: string
 		isHidden
+		lineageTag: 558dbe58-58ae-4311-b112-a247aedb3864
 		summarizeBy: none
 		sourceColumn: period_key
 
 	column product_key
 		dataType: string
 		isHidden
+		lineageTag: 55820082-988a-4356-87d4-55a0e93e6584
 		summarizeBy: none
 		sourceColumn: product_key
 
 	column market_units
 		dataType: int64
+		lineageTag: 9033be65-39aa-4161-b09d-62c86bb10f28
 		summarizeBy: none
 		sourceColumn: market_units
 
 	column units_sold
 		dataType: int64
+		lineageTag: e9c98640-d50d-43c2-9ae4-c05e58e95e10
 		summarizeBy: none
 		sourceColumn: units_sold
 
 	column market_share
 		dataType: double
+		lineageTag: 461dd069-2a50-426e-bead-7e6772f473a7
 		summarizeBy: none
 		sourceColumn: market_share
 
 	column demand_units
 		dataType: int64
+		lineageTag: 60fd42fb-23b9-41ad-adb9-f50d5cf438b6
 		summarizeBy: none
 		sourceColumn: demand_units
 
 	column unserved_units
 		dataType: int64
+		lineageTag: 91ed4b70-84e3-4c66-bf2a-eb43a73804d9
 		summarizeBy: none
 		sourceColumn: unserved_units
 
 	column company_unserved_units
 		dataType: int64
+		lineageTag: 2b55bad1-3da9-4177-8049-17b5c0923d9d
 		summarizeBy: none
 		sourceColumn: company_unserved_units
 
 	partition fact_market = m
 		mode: import
 		source =
-			let
-				Origen = Csv.Document(File.Contents(pDataFolder & "\fact_market.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-				Reemplazados = Table.ReplaceValue(Encabezados, "", null, Replacer.ReplaceValue, {"demand_units", "unserved_units", "company_unserved_units"}),
-				Tipos = Table.TransformColumnTypes(Reemplazados, {{"period_key", type text}, {"product_key", type text}, {"market_units", Int64.Type}, {"units_sold", Int64.Type}, {"market_share", type number}, {"demand_units", Int64.Type}, {"unserved_units", Int64.Type}, {"company_unserved_units", Int64.Type}})
-			in
-				Tipos
+				let
+					Origen = Csv.Document(File.Contents(pDataFolder & "\fact_market.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+					Reemplazados = Table.ReplaceValue(Encabezados, "", null, Replacer.ReplaceValue, {"demand_units", "unserved_units", "company_unserved_units"}),
+					Tipos = Table.TransformColumnTypes(Reemplazados, {{"period_key", type text}, {"product_key", type text}, {"market_units", Int64.Type}, {"units_sold", Int64.Type}, {"market_share", type number}, {"demand_units", Int64.Type}, {"unserved_units", Int64.Type}, {"company_unserved_units", Int64.Type}})
+				in
+					Tipos
+

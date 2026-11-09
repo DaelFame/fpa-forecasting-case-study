@@ -1,53 +1,63 @@
 table dim_period
+	lineageTag: 20ca407b-217f-4faf-8c3f-95106122a4b8
 
 	column period_key
 		dataType: string
 		isHidden
+		lineageTag: 6b8131b8-3a82-4d0e-800e-ed6da70cab60
 		summarizeBy: none
 		sourceColumn: period_key
 
 	column grain
 		dataType: string
+		lineageTag: 23d47265-0a49-4b0a-8434-a273b40dbb23
 		summarizeBy: none
 		sourceColumn: grain
 
 	column year
 		dataType: int64
+		lineageTag: 5005c222-bc8b-423c-b920-6499e23e2855
 		summarizeBy: none
 		sourceColumn: year
 
 	column quarter
 		dataType: int64
+		lineageTag: 7d301c92-217e-46eb-bee2-c54ec3d4f79b
 		summarizeBy: none
 		sourceColumn: quarter
 
 	column period_end
 		dataType: dateTime
+		lineageTag: a097d626-623c-4cc1-946e-d6f3739451b2
 		summarizeBy: none
 		sourceColumn: period_end
 
 	column label
 		dataType: string
+		lineageTag: 74709d7b-45af-4d48-b1f0-95a11909dc58
 		summarizeBy: none
 		sourceColumn: label
 
 	column is_closed
 		dataType: boolean
+		lineageTag: d5cd0abc-e6cd-4f80-a153-dfc61994ba22
 		summarizeBy: none
 		sourceColumn: is_closed
 
 	column is_forecast
 		dataType: boolean
+		lineageTag: 057ef768-d2c7-4fd3-800f-8de7fbb7b5d1
 		summarizeBy: none
 		sourceColumn: is_forecast
 
 	partition dim_period = m
 		mode: import
 		source =
-			let
-				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_period.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-				Reemplazados = Table.ReplaceValue(Encabezados, "", null, Replacer.ReplaceValue, {"quarter"}),
-				Tipos = Table.TransformColumnTypes(Reemplazados, {{"period_key", type text}, {"grain", type text}, {"year", Int64.Type}, {"quarter", Int64.Type}, {"period_end", type date}, {"label", type text}, {"is_closed", type logical}, {"is_forecast", type logical}})
-			in
-				Tipos
+				let
+					Origen = Csv.Document(File.Contents(pDataFolder & "\dim_period.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+					Reemplazados = Table.ReplaceValue(Encabezados, "", null, Replacer.ReplaceValue, {"quarter"}),
+					Tipos = Table.TransformColumnTypes(Reemplazados, {{"period_key", type text}, {"grain", type text}, {"year", Int64.Type}, {"quarter", Int64.Type}, {"period_end", type date}, {"label", type text}, {"is_closed", type logical}, {"is_forecast", type logical}})
+				in
+					Tipos
+

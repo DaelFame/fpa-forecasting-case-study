@@ -1,32 +1,38 @@
 table dim_fold
+	lineageTag: b6da9acd-7bfa-49a4-949a-6da9bd68f768
 
 	column fold_key
 		dataType: string
 		isHidden
+		lineageTag: 87774d0a-9d53-4861-a9c1-482e126eea91
 		summarizeBy: none
 		sourceColumn: fold_key
 
 	column label
 		dataType: string
+		lineageTag: 84fc499a-4e51-4113-bb66-8d2fd52f8374
 		summarizeBy: none
 		sourceColumn: label
 
 	column train_through
 		dataType: int64
+		lineageTag: 1af440e3-ec3b-4507-bb5a-b94f468a7e2d
 		summarizeBy: none
 		sourceColumn: train_through
 
 	column target_year
 		dataType: int64
+		lineageTag: 39b8aa25-0658-457a-9e85-52338073153f
 		summarizeBy: none
 		sourceColumn: target_year
 
 	partition dim_fold = m
 		mode: import
 		source =
-			let
-				Origen = Csv.Document(File.Contents(pDataFolder & "\dim_fold.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-				Tipos = Table.TransformColumnTypes(Encabezados, {{"fold_key", type text}, {"label", type text}, {"train_through", Int64.Type}, {"target_year", Int64.Type}})
-			in
-				Tipos
+				let
+					Origen = Csv.Document(File.Contents(pDataFolder & "\dim_fold.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Encabezados, {{"fold_key", type text}, {"label", type text}, {"train_through", Int64.Type}, {"target_year", Int64.Type}})
+				in
+					Tipos
+
