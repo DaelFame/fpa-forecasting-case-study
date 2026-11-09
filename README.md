@@ -1,229 +1,129 @@
-# FP&A Analytics — Fashion Accessories Manufacturer
-
-A financial analytics case study built on six years of statements (2024–2029) for a
-mid-size European manufacturer of neckties, scarves and socks: canonical data layer,
-budget-vs-actual reconciliation, driver-based forecasting and scenario analysis.
-
-> **Data provenance.** An anonymised dataset from a competitive business simulation.
-> The company is anonymised; the origin is not. See [docs/limitations.md](docs/limitations.md).
+# FP&A Forecasting & Variance Analysis — Fashion Accessories Case Study
 
 ![CI](https://github.com/DaelFame/fpa-forecasting-case-study/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![uv](https://img.shields.io/badge/managed%20with-uv-black)
+![Tests](https://img.shields.io/badge/tests-74%20passing-brightgreen)
+
+A manufacturer of neckties, scarves and socks grew revenue 0.9% in 2026 and watched
+net income fall 61%. A Python financial model rebuilt its statements from the raw
+closing workbooks, traced the entire miss to operating expenses, and forecast the
+next year's revenue within **0.3%** of the actual close — one year ahead, using only
+information available at the time.
 
 ---
 
 ## The business problem
 
-The company entered 2024 loss-making and margin-poor, and exited 2029 profitable and
-structurally stronger. Between those two points sit four annual planning cycles,
-each one a committed budget that was later measured against the real outcome.
+**1. Revenue grew. Profit collapsed.** In 2026 revenue landed within 0.9% of budget
+while net income missed by 61.1%. The bridge is unambiguous:
 
-The question this repository answers is not *"what happened"* — that is reporting.
-It is:
-
-1. **Which decisions** produced the margin expansion, and what did each one cost?
-2. **How accurate** was the budgeting, and was the error random or systematic?
-3. **What is the 2030 outlook** if the current strategy holds, and what breaks it?
-
-## Key findings (verified against source)
-
-### Margin expansion of 27.1 points, driven by price and product mix
-
-| EUR | 2024 | 2025 | 2026 | 2027 | 2028 | 2029 |
-|---|---:|---:|---:|---:|---:|---:|
-| Revenue | 3,274,513 | 3,346,747 | 3,861,039 | 4,304,333 | 5,107,811 | 6,206,657 |
-| Gross margin | 1,157,881 | 1,088,267 | 1,812,296 | 2,205,670 | 2,907,215 | 3,879,909 |
-| Gross margin % | 35.4% | 32.5% | 46.9% | 51.2% | 56.9% | 62.5% |
-| Net income | (196,177) | (105,110) | 154,951 | 557,448 | 1,239,865 | 1,788,820 |
-
-### The 2026 miss was operational, not commercial
-
-Revenue landed within **0.9%** of budget, yet net income missed by **61.1%**.
-
-| Bridge to budget | EUR |
+| Bridge to budget, 2026 | EUR |
 |---|---:|
-| Volume | (2,607) |
-| Price | +41,536 |
-| Product mix | +1 |
-| Unit cost | +35,527 |
+| Gross margin beat | +74,457 |
 | Operating expenses | (359,888) |
 | Financial result | +24,294 |
 | Extraordinary result | +18,000 |
 | **Net variance** | **(243,137)** |
 
-The gross-margin beat of `+74,457` decomposes into price, volume, mix and unit
-cost; every row is an impact on profit and the rows add up to the change in net
-income. The operating-expense miss is concentrated: general expenses `(203,015)`,
-R&D `(93,240)`, personnel `(35,352)`, depreciation `(22,500)` and provisions
-`(5,781)`. Marketing landed exactly on budget. The whole bridge is exported row by
-row to `fact_variance`, so the waterfall is the data, not a slide.
+The market showed up. The cost discipline did not. Of the overrun, **€150,000 of
+general expenses has no documentary support** — it is carried as a visible gap, not
+smoothed away. Gross margin itself broke down into price +41,536, volume −2,607,
+mix +1 and unit cost +35,527.
 
-The entire miss sits in operating expense discipline, and `150,000` of the general
-expense overrun has no documentary support (L-02). Budget accuracy on profit before
-taxes then moved from **−61.1% (2026)** to **+127.0% (2027)**, **+43.3% (2028)** and
-**+12.2% (2029)**. The 2026 miss is a one-off control failure, not a forecasting
-model that slowly improves.
+**2. The company was capacity-constrained, not demand-constrained.** In 2028 the
+market could not serve **594,748 units** of demand: 405,181 neckties, 112,242
+scarves, 77,325 socks. Market share was 16.7%, 20.1% and 36.5% — the ceiling was
+production, which turns a commercial question into a capital-allocation decision.
 
-> Note on basis. The simulator budgets profit **before taxes**, and only the 2026–2029
-> budgets expose that line. Every accuracy figure above is measured before taxes;
-> comparing an after-tax actual with a pre-tax budget would overstate accuracy.
+**3. The budget was biased, not merely inaccurate.** Measured on profit before
+taxes, actual versus budget ran −61.1% (2026), **+127.0% (2027)**, +43.3% (2028) and
++12.2% (2029). From 2027 onward the company systematically beat its own plan. That
+is not noise: an under-budgeting habit hides capacity needs and understates cash.
 
-### Demand exceeds capacity, not price
+## The methodology
 
-2028 market coverage, from the market sheet:
+**Rolling-origin backtest.** Two folds, each trained only on years that were already
+closed:
 
-| Product | Market units | Sold | Share | Unserved |
-|---|---:|---:|---:|---:|
-| Neckties | 1,404,819 | 234,538 | 16.7% | 405,181 |
-| Scarves | 187,758 | 37,815 | 20.1% | 112,242 |
-| Socks | 242,675 | 88,670 | 36.5% | 77,325 |
+| Fold | Trains on | Predicts | Evaluated against |
+|---|---|---|---|
+| F1 | 2024–2027 | 2028 | Actual 2028 |
+| F2 | 2024–2028 | 2029 | Actual 2029 |
 
-**594,748 units of demand were not served** — a capacity constraint, which is what
-makes the capacity-expansion decision a financial decision rather than an operational one.
+**Two information regimes, one engine.** Regime A knows the management decisions for
+the target year — prices, planned production, marketing. Regime B knows only the last
+closed year, held flat. The gap between them quantifies the value of knowing the
+levers.
 
-### Knowing the decisions removes most of the forecasting error
-
-The backtest trains only on closed years and predicts the next one. Two regimes,
-same model, different information:
-
-| 2028 out-of-sample | A — decisions known | B — decisions unknown |
+| Out-of-sample, 2028 | A — decisions known | B — decisions unknown |
 |---|---:|---:|
 | Revenue error | **0.3%** | 15.7% |
 | Gross profit error | 9.9% | 24.1% |
 | Net income error | 25.5% | 55.0% |
-| Mean MAPE across 15 P&L lines | 26.6% | 32.3% |
+| Mean MAPE, 15 P&L lines | 26.6% | 32.3% |
 
-Knowing price, volume and marketing decisions cuts the revenue error by **15.4
-points (98%)** and the net-income error by **29.5 points**. The aggregate MAPE moves
-less because it averages lines the decisions cannot inform — financial result,
-extraordinary items, taxes — which are identical in both regimes by construction.
+Knowing the decisions cut the revenue error by **15.4 points — a 98% reduction**.
+Both regimes share a negative bias (−22.8% and −30.4%): extrapolation systematically
+under-forecasts a growing business, and bias is the finding, not the noise.
 
-The 2029 fold is exported but flagged: the 2029 decision log records prices the
-close did not execute, so regime A is `pending` there and the comparison is not a
-fair test (L-17). The backtest catches a bad input instead of hiding it.
+**Everything is auditable.** Every figure carries a source file, sheet and cell; every
+statement line carries a status (`confirmed`, `inferred_accepted`, `pending`,
+`unreconciled`); source hashes are verified on every run. When a decision log
+contradicts the close — as the 2029 log does — the affected rows are exported as
+`pending` instead of being quietly corrected.
 
-### 2030 outlook: EUR 1.21M to 2.03M of net income
+## The 2030 outlook
 
-The live forecast starts from the **executed 2029 close**, never from the 2029
-decision log, and moves the drivers per scenario (L-19).
+Built from the executed 2029 close, with scenarios applied to the drivers:
 
-| 2030 scenario | Revenue | Net income (A) | Net income (B) |
-|---|---:|---:|---:|
-| Stress | 5,306,691 | 1,209,825 | 1,497,828 |
-| Downside | 5,778,397 | 1,554,879 | 1,643,324 |
-| Base | 6,206,656 | 1,788,821 | 1,788,821 |
-| Upside | 6,647,329 | 2,032,072 | 1,934,317 |
+| Scenario | Revenue | Gross margin | Net income | Net margin |
+|---|---:|---:|---:|---:|
+| Stress | 5,306,691 | 3,107,915 | 1,209,825 | 22.8% |
+| Downside | 5,778,397 | 3,567,987 | 1,554,879 | 26.9% |
+| **Base** | **6,206,656** | **3,879,909** | **1,788,821** | **28.8%** |
+| Upside | 6,647,329 | 4,204,244 | 2,032,072 | 30.6% |
 
-Two things worth reading. Base is identical in both regimes: with no new decisions,
-knowing the levers adds nothing, so regime A only creates value when a decision
-changes. And in the downside and stress cases the decision-free regime keeps more
-profit, because regime A applies the price cut as well as the volume cut.
+Base holds the current strategy: it is identical with and without knowledge of the
+decisions, because no new decisions exist. The value of regime A appears only when a
+decision changes. In the downside and stress cases the decision-free regime keeps
+more profit, because regime A applies the price cut as well as the volume cut.
 
-## What this project demonstrates
+## Tech stack
 
-This is not a dashboard exercise. The deliverable is the chain that feeds the
-dashboard, and every link is testable:
+- **Python 3.12** — pandas, NumPy, openpyxl. Driver-based model, no statistical black
+  box: with 20 quarterly observations a time-series model cannot be defended, so the
+  drivers are explicit and editable.
+- **Galaxy-schema data marts** — 8 fact tables sharing 9 conformed dimensions,
+  exported as CSV (`data/processed`) for Power BI. Zero orphan dimensions.
+- **Git and CI** — 74 tests on GitHub Actions: accounting identities, referential
+  integrity, exact variance tie-out, backtest coverage, source-identity regressions.
+- **Power BI** — the `.pbip` project is versioned as text (TMDL); the report layer is
+  in progress.
 
-- **Financial modelling** — income statement, balance sheet, debt and cash flow
-  rebuilt from raw cells, then reconciled line by line with an explicit residual.
-- **Variance analysis** — budget versus actual with a bridge that attributes the gap
-  to named drivers instead of a single unexplained number.
-- **Forecasting discipline** — out-of-sample backtest with rolling origin, and two
-  regimes: decisions known versus decisions unknown.
-- **Data engineering** — immutable sources with verified hashes, stable source
-  identity, status propagation and referential-integrity tests on every mart.
+## Transparency
 
-## Documentation
+This is an **anonymised case study built on a competitive business simulation**, not
+client data and not a real company's books. The simulation brand and the identity of
+the other teams are removed; the origin is disclosed because claiming otherwise would
+be trivially falsifiable.
 
-Start at [`docs/README.md`](docs/README.md) for the index, or jump straight to the
-[methodology](docs/methodology.md), the [data model](docs/data_model.md) and the
-[known limitations](docs/limitations.md).
+What it demonstrates is the method: turning raw closing workbooks into an auditable
+financial model, finding where the money went, and proving a forecast can be trusted
+before it is used.
 
-## How it works
-
-```
-data/ (immutable source workbooks and decision logs)
-   |
-   +-- literal cell extraction ......... outputs/markdown/
-   +-- canonical normalisation ......... period, data type, metric, value
-   +-- validation rules ................ 20+ accounting and business identities
-   +-- statement engine ................ income statement, balance, debt, cash flow
-   |
-   +-- FP&A layer ...................... panel -> forecast -> backtest -> variance
-```
-
-Every figure carries an explicit status — `confirmed`, `inferred_accepted`,
-`pending`, `accepted_exception` or `unreconciled` — and derived values inherit the
-weakest status of their inputs. No number is silently trusted, corrected or rounded
-into place.
-
-## Repository layout
-
-```
-config/              Analysis parameters and tolerances (f1.toml, f2.toml)
-data/                Immutable sources: workbooks, decision logs
-data/processed/      Analytics marts (galaxy schema) exported for Power BI
-docs/                Case-study documentation — see docs/README.md for the index
-dashboard/           Power BI project (.pbip, TMDL) — scaffold, no tables yet
-notebooks/           Exploratory review of the source matrices (01_revision_matrices.ipynb)
-specs/ .specify/     Specification, plan and task log for the delivery process
-src/cg_01/
-  loader.py          Source discovery, hashing, decision-log normalisation
-  canonical.py       Period and metric classification
-  validation.py      Accounting identities and business rules
-  f2_engine.py       Financial statement construction and reconciliation
-  fpa/marts.py       Galaxy schema exported to data/processed (Power BI source)
-  model/             Reconstructed deterministic driver model
-tests/               Test suite, including literal-fidelity checks
-```
-
-`outputs/` is generated and excluded from version control. Everything in
-`data/processed/` is rebuilt with a single command (see Quickstart) and committed so
-the dashboard can be opened without running Python.
-
-## Quickstart
+## Reproduce it
 
 ```bash
 uv sync --group dev
-uv run python -m cg_01            # canonical layer + literal markdown
-uv run python -m cg_01.fpa.marts  # statements (outputs/f2) + marts (data/processed)
-uv run pytest -q
+uv run python -m cg_01            # canonical layer + literal cell export
+uv run python -m cg_01.fpa.marts  # statements, marts and the 2030 forecast
+uv run pytest -q                  # 74 tests
 ```
 
-Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
-
-## Status
-
-| Component | Status |
-|---|---|
-| Literal extraction, canonical layer, validation | Done |
-| Income statement, balance, debt, cash flow reconciliation | Done — 2024–2029 (2024 cash flow partial: no 2023 opening balance) |
-| Dual decision-schema normalisation | Done |
-| Deterministic driver model | Done — reconstructed from 2024–2028 |
-| Annual and quarterly panel, 2024–2029 | Done — annual 2024–2029, quarterly sales 2024–2028 |
-| Market fact: market units, share, demand gap | Done — demand gap 2026–2028 |
-| Variance decomposition engine | Done — budget bridge 2026–2029 in `fact_variance` |
-| Rolling-origin backtest (folds F1, F2) | Done — 2 folds × 2 regimes in `fact_backtest`; 2029 flagged pending (L-17) |
-| 2030 forecast, 4 scenarios × 2 regimes | Done — `fact_forecast`, built from the 2029 close (L-19) |
-| Power BI dashboard | Planned |
-
-## Method notes
-
-- **Driver-based, not statistical.** With 20 quarterly observations a pure
-  time-series model cannot be defended; drivers are explicit and editable, and the
-  statistical model is only a cross-check.
-- **Two forecast regimes.** Decision-conditional (plan known) versus decision-free
-  (history only). The gap between them is the headline: how much accuracy comes from
-  knowing the levers.
-- **Bias over MAPE.** A correctable systematic bias is a more useful finding than a
-  low average error.
-
-Full detail in [docs/methodology.md](docs/methodology.md).
-
-## Stack
-
-Python 3.12 · pandas · numpy · openpyxl · pytest · Power BI · uv
+Start with [`docs/README.md`](docs/README.md) for the method, the data model and
+every known limitation, or read the Spanish version at
+[`README.es.md`](README.es.md).
 
 ## License
 
