@@ -103,6 +103,23 @@ The 2029 fold is exported but flagged: the 2029 decision log records prices the
 close did not execute, so regime A is `pending` there and the comparison is not a
 fair test (L-17). The backtest catches a bad input instead of hiding it.
 
+### 2030 outlook: EUR 1.21M to 2.03M of net income
+
+The live forecast starts from the **executed 2029 close**, never from the 2029
+decision log, and moves the drivers per scenario (L-19).
+
+| 2030 scenario | Revenue | Net income (A) | Net income (B) |
+|---|---:|---:|---:|
+| Stress | 5,306,691 | 1,209,825 | 1,497,828 |
+| Downside | 5,778,397 | 1,554,879 | 1,643,324 |
+| Base | 6,206,656 | 1,788,821 | 1,788,821 |
+| Upside | 6,647,329 | 2,032,072 | 1,934,317 |
+
+Two things worth reading. Base is identical in both regimes: with no new decisions,
+knowing the levers adds nothing, so regime A only creates value when a decision
+changes. And in the downside and stress cases the decision-free regime keeps more
+profit, because regime A applies the price cut as well as the volume cut.
+
 ## What this project demonstrates
 
 This is not a dashboard exercise. The deliverable is the chain that feeds the
@@ -188,6 +205,7 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 | Market fact: market units, share, demand gap | Done — demand gap 2026–2028 |
 | Variance decomposition engine | Done — budget bridge 2026–2029 in `fact_variance` |
 | Rolling-origin backtest (folds F1, F2) | Done — 2 folds × 2 regimes in `fact_backtest`; 2029 flagged pending (L-17) |
+| 2030 forecast, 4 scenarios × 2 regimes | Done — `fact_forecast`, built from the 2029 close (L-19) |
 | Power BI dashboard | Planned |
 
 ## Method notes

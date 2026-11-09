@@ -30,9 +30,10 @@ from ..models import Observation
 from ..text import normalize_label
 from .variance import annual_units, planned_units
 
-FOLDS: tuple[tuple[str, int, int], ...] = (
-    ("F1", 2027, 2028),
-    ("F2", 2028, 2029),
+FOLDS: tuple[tuple[str, str, int, int], ...] = (
+    ("F1", "Train up to 2027, predict 2028", 2027, 2028),
+    ("F2", "Train up to 2028, predict 2029", 2028, 2029),
+    ("F3", "Train up to 2029, predict 2030", 2029, 2030),
 )
 
 LINES: tuple[str, ...] = (
@@ -68,7 +69,7 @@ RECONCILIATION_TOLERANCE = 0.02
 """A decision log that implies revenue more than 2% away from the budget is flagged."""
 
 
-def _actuals_by_year(f2: F2Result) -> dict[int, dict[str, float]]:
+def actuals_by_year(f2: F2Result) -> dict[int, dict[str, float]]:
     result: dict[int, dict[str, float]] = {}
     for row in f2.rows:
         if row.section != "income_statement" or row.value is None:
@@ -161,7 +162,7 @@ def _decisions(
     return result
 
 
-def _tax_rate(actual: dict[str, float]) -> float:
+def tax_rate(actual: dict[str, float]) -> float:
     before = actual.get("net_result_before_taxes") or 0.0
     taxes = actual.get("taxes") or 0.0
     if before <= 0:
@@ -193,7 +194,7 @@ def _forecast_b(
         + forecast["extraordinary_result"]
         - forecast["operating_expenses_total"]
     )
-    forecast["taxes"] = max(0.0, forecast["net_result_before_taxes"]) * _tax_rate(actual)
+    forecast["taxes"] = max(0.0, forecast["net_result_before_taxes"]) * tax_rate(actual)
     forecast["net_result_after_taxes"] = (
         forecast["net_result_before_taxes"] - forecast["taxes"]
     )
@@ -232,7 +233,7 @@ def _forecast_a(
         + forecast["extraordinary_result"]
         - forecast["operating_expenses_total"]
     )
-    forecast["taxes"] = max(0.0, forecast["net_result_before_taxes"]) * _tax_rate(actual)
+    forecast["taxes"] = max(0.0, forecast["net_result_before_taxes"]) * tax_rate(actual)
     forecast["net_result_after_taxes"] = (
         forecast["net_result_before_taxes"] - forecast["taxes"]
     )
@@ -273,7 +274,7 @@ def build_backtest(
     budget: dict[tuple[int, str], float] | None = None,
 ) -> list[dict[str, Any]]:
     product_keys = [normalize_label(product) for product in products]
-    actuals = _actuals_by_year(f2)
+    actuals = actuals_by_year(f2)
     units = annual_units(f2.pipeline.observations, f2.f2_config.sheet_aliases, product_keys)
     for (year, product), quantity in units.items():
         actuals.setdefault(year, {})[f"units_{product}"] = quantity
@@ -281,7 +282,7 @@ def build_backtest(
     budget = budget or {}
 
     rows: list[dict[str, Any]] = []
-    for fold, train, target in FOLDS:
+    for fold, _label, train, target in FOLDS:
         if train not in actuals or target not in actuals:
             continue
         training = actuals[train]

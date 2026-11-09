@@ -1,7 +1,7 @@
 scenario_key,label,is_committed,sort_order
 actual,Actual,true,1
 budget,Budget,true,2
-forecast,Forecast,false,3
+base,Base,false,3
 upside,Upside,false,4
 downside,Downside,false,5
 stress,Stress,false,6

@@ -23,7 +23,8 @@ from ..models import Observation
 from ..text import period_string
 from .market import build_market
 from .variance import BUDGET_LABELS, annual_units, budget_values, build_variance, driver_dimension
-from .backtest import build_backtest, summarise
+from .backtest import FOLDS, build_backtest, summarise
+from .forecast import TARGET_YEAR, build_forecast
 
 PRODUCTS: dict[str, tuple[str, int]] = {
     "corbatas": ("Neckties", 1),
@@ -34,7 +35,7 @@ PRODUCTS: dict[str, tuple[str, int]] = {
 SCENARIOS: list[tuple[str, str, bool, int]] = [
     ("actual", "Actual", True, 1),
     ("budget", "Budget", True, 2),
-    ("forecast", "Forecast", False, 3),
+    ("base", "Base", False, 3),
     ("upside", "Upside", False, 4),
     ("downside", "Downside", False, 5),
     ("stress", "Stress", False, 6),
@@ -51,11 +52,6 @@ STATUS_META: dict[str, tuple[int, str]] = {
 REGIMES: list[tuple[str, str]] = [
     ("A", "Decision-conditional"),
     ("B", "Decision-free"),
-]
-
-FOLDS: list[tuple[str, str, int, int]] = [
-    ("F1", "Train up to 2027, predict 2028", 2027, 2028),
-    ("F2", "Train up to 2028, predict 2029", 2028, 2029),
 ]
 
 INCOME_ORDER: list[str] = [
@@ -147,9 +143,12 @@ def _period_end(period: str) -> date:
     return date(int(period), 12, 31)
 
 
-def _dim_period(periods: list[int], quarters: list[str]) -> list[dict[str, Any]]:
+def _dim_period(
+    periods: list[int], quarters: list[str], forecast_periods: list[int] | None = None
+) -> list[dict[str, Any]]:
+    forecast_years = set(forecast_periods or [])
     rows: list[dict[str, Any]] = []
-    for period in periods:
+    for period in sorted(set(periods) | forecast_years):
         rows.append(
             {
                 "period_key": str(period),
@@ -158,8 +157,8 @@ def _dim_period(periods: list[int], quarters: list[str]) -> list[dict[str, Any]]
                 "quarter": "",
                 "period_end": _period_end(str(period)).isoformat(),
                 "label": str(period),
-                "is_closed": "true",
-                "is_forecast": "false",
+                "is_closed": "false" if period in forecast_years else "true",
+                "is_forecast": "true" if period in forecast_years else "false",
             }
         )
     for period in quarters:
@@ -463,12 +462,13 @@ def build_marts(f2: F2Result, output_dir: Path | None = None) -> dict[str, int]:
     backtest = build_backtest(
         f2, PRODUCTS, budget=budget_values(f2.pipeline.observations)
     )
+    forecast = build_forecast(f2, PRODUCTS)
 
     counts: dict[str, int] = {}
     counts["dim_period.csv"] = _write(
         target / "dim_period.csv",
         ["period_key", "grain", "year", "quarter", "period_end", "label", "is_closed", "is_forecast"],
-        _dim_period(periods, quarters),
+        _dim_period(periods, quarters, [TARGET_YEAR]),
     )
     counts["dim_product.csv"] = _write(
         target / "dim_product.csv",
@@ -564,6 +564,19 @@ def build_marts(f2: F2Result, output_dir: Path | None = None) -> dict[str, int]:
             "status_key",
         ],
         backtest,
+    )
+    counts["fact_forecast.csv"] = _write(
+        target / "fact_forecast.csv",
+        [
+            "period_key",
+            "line_item_key",
+            "scenario_key",
+            "regime_key",
+            "fold_key",
+            "forecast_amount",
+            "status_key",
+        ],
+        forecast,
     )
     _write_manifest(target, f2, counts, summarise(backtest))
     return counts

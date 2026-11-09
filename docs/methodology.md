@@ -124,6 +124,10 @@ price, volume, product mix, unit cost, opex, capex
 Each driver is explicit and editable. A statistical model is used only as an
 independent cross-check, never as the primary engine.
 
+The same engine produces the live 2030 forecast: it starts from the last executed
+close, applies the scenario multipliers to the drivers, and never reads the 2029
+decision log, which does not reconcile with its own close (L-17).
+
 ### 3.4 Two forecast regimes
 
 Both regimes use the same model. Only the information set changes.

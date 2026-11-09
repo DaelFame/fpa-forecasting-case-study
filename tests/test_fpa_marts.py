@@ -72,6 +72,14 @@ FOREIGN_KEYS = {
         ("line_item_key", "dim_line_item.csv"),
         ("status_key", "dim_status.csv"),
     ],
+    "fact_forecast.csv": [
+        ("period_key", "dim_period.csv"),
+        ("line_item_key", "dim_line_item.csv"),
+        ("scenario_key", "dim_scenario.csv"),
+        ("regime_key", "dim_regime.csv"),
+        ("fold_key", "dim_fold.csv"),
+        ("status_key", "dim_status.csv"),
+    ],
 }
 
 # Measures the source only publishes for some periods. Every other measure in
@@ -252,12 +260,22 @@ def test_sales_fact_keeps_its_grain_when_units_are_annual_only(marts) -> None:
 def test_period_dimension_keeps_gauges_separate(marts) -> None:
     target, _ = marts
     rows = _load(target / "dim_period.csv")
-    annual = {row["period_key"] for row in rows if row["grain"] == "year"}
+    closed = {
+        row["period_key"]
+        for row in rows
+        if row["grain"] == "year" and row["is_closed"] == "true"
+    }
+    forecast = {
+        row["period_key"]
+        for row in rows
+        if row["grain"] == "year" and row["is_forecast"] == "true"
+    }
     quarterly = {row["period_key"] for row in rows if row["grain"] == "quarter"}
     sales_periods = {row["period_key"] for row in _load(target / "fact_sales.csv")}
-    assert annual == CLOSED_YEARS
+    assert closed == CLOSED_YEARS
+    assert forecast == {"2030"}
     assert quarterly == sales_periods
-    assert not annual & quarterly
+    assert not closed & forecast
 
 
 def test_marts_manifest_describes_the_build(marts) -> None:
@@ -337,3 +355,50 @@ def test_inconsistent_decision_log_is_flagged_not_hidden(marts) -> None:
         for row in rows
         if not (row["fold_key"] == "F2" and row["regime_key"] == "A")
     )
+
+
+def test_forecast_covers_four_scenarios_and_two_regimes(marts) -> None:
+    target, _ = marts
+    rows = _load(target / "fact_forecast.csv")
+    assert len(rows) == 4 * 2 * 15
+    assert {row["scenario_key"] for row in rows} == {"base", "upside", "downside", "stress"}
+    assert {row["regime_key"] for row in rows} == {"A", "B"}
+    assert {row["period_key"] for row in rows} == {"2030"}
+    assert {row["fold_key"] for row in rows} == {"F3"}
+
+
+def test_forecast_uses_the_2029_close_as_its_base(marts) -> None:
+    target, _ = marts
+    forecast = {
+        row["line_item_key"]: float(row["forecast_amount"])
+        for row in _load(target / "fact_forecast.csv")
+        if row["scenario_key"] == "base" and row["regime_key"] == "A"
+    }
+    actual = {
+        row["line_item_key"]: float(row["amount"])
+        for row in _load(target / "fact_financials.csv")
+        if row["period_key"] == "2029"
+        and row["scenario_key"] == "actual"
+        and row["line_item_key"] in forecast
+    }
+    for line, value in actual.items():
+        assert abs(forecast[line] - value) < 2, line
+
+
+def test_scenarios_are_ordered_and_regimes_differ_when_price_moves(marts) -> None:
+    target, _ = marts
+    rows = _load(target / "fact_forecast.csv")
+
+    def net(scenario: str, regime: str) -> float:
+        return next(
+            float(row["forecast_amount"])
+            for row in rows
+            if row["scenario_key"] == scenario
+            and row["regime_key"] == regime
+            and row["line_item_key"] == "net_result_after_taxes"
+        )
+
+    for regime in ("A", "B"):
+        assert net("stress", regime) < net("downside", regime) < net("base", regime) < net("upside", regime)
+    assert net("base", "A") == net("base", "B")
+    assert net("upside", "A") > net("upside", "B")

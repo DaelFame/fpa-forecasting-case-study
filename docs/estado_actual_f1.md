@@ -403,3 +403,42 @@ modelo (L-17). El backtest detecta el input malo en lugar de esconderlo.
 `uv run pytest -q` → **71 passed**. Incluye: cobertura de folds y regímenes,
 consistencia de error/porcentaje/sesgo, que A bata a B en el fold limpio y que el
 log inconsistente quede marcado.
+
+---
+
+## 13. Forecast vivo 2030 (2026-11-09)
+
+`fact_forecast`: 120 filas = 4 escenarios × 2 regímenes × 15 líneas. Periodo 2030,
+fold F3, `dim_period` marca 2030 como `is_forecast = true`.
+
+Base de cálculo: el cierre ejecutado de 2029. **No se usa la bitácora de 2029**
+porque no concilia con su propio cierre (L-17). Esto se decidió explícitamente para
+no propagar un dato roto a tres años vista.
+
+Escenarios (supuestos declarados, L-19):
+
+| Escenario | Precio | Volumen | Coste unitario |
+|---|---:|---:|---:|
+| Base | ×1,00 | ×1,00 | ×1,00 |
+| Upside | ×1,02 | ×1,05 | ×1,00 |
+| Downside | ×0,98 | ×0,95 | ×1,00 |
+| Stress | ×0,95 | ×0,90 | ×1,05 |
+
+Resultados:
+
+| Escenario | Ingresos | Resultado neto A | Resultado neto B |
+|---|---:|---:|---:|
+| Stress | 5.306.691 | 1.209.825 | 1.497.828 |
+| Downside | 5.778.397 | 1.554.879 | 1.643.324 |
+| Base | 6.206.656 | 1.788.821 | 1.788.821 |
+| Upside | 6.647.329 | 2.032.072 | 1.934.317 |
+
+Regime A mueve precio y volumen; B solo volumen. En Base ambos coinciden por
+construcción: sin decisiones nuevas, saber las palancas no aporta nada. En Downside
+y Stress, B conserva más resultado porque A aplica además el recorte de precio.
+
+### Verificación
+
+`uv run pytest -q` → **74 passed**. Incluye: cobertura de escenarios y regímenes,
+que el Base reproduzca el cierre de 2029, el orden Stress < Downside < Base <
+Upside, y que 2030 esté marcado como pronóstico en `dim_period`.

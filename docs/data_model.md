@@ -80,7 +80,7 @@ additivity rules differ.
 
 | Column | Type | Example | Notes |
 |---|---|---|---|
-| `scenario_key` | text | `budget` | `actual`, `budget`, `forecast`, `upside`, `downside`, `stress` |
+| `scenario_key` | text | `budget` | `actual`, `budget`, `base`, `upside`, `downside`, `stress` |
 | `label` | text | Budget | |
 | `is_committed` | bool | true | A committed plan vs a modelled scenario |
 | `sort_order` | int | 2 | |
@@ -243,15 +243,18 @@ inheriting a single pre-chewed number.
 
 | Column | Type | Notes |
 |---|---|---|
-| `period_key` | text | FK → `dim_period` |
+| `period_key` | text | FK → `dim_period`; 2030, the only open period |
 | `line_item_key` | text | FK → `dim_line_item` |
-| `scenario_key` | text | FK → `dim_scenario` |
-| `regime_key` | text | FK → `dim_regime` |
-| `fold_key` | text | FK → `dim_fold` |
+| `scenario_key` | text | FK → `dim_scenario`: `base`, `upside`, `downside`, `stress` |
+| `regime_key` | text | FK → `dim_regime` (A decisions known, B decisions unknown) |
+| `fold_key` | text | FK → `dim_fold`; F3, train ≤2029 and predict 2030 |
 | `forecast_amount` | decimal | Model output |
-| `actual_amount` | decimal | Real outcome for the same period |
+| `status_key` | text | FK → `dim_status` |
 
-Stores both sides so error is computed in DAX, not pre-computed in Python. ~580 rows.
+120 rows: 4 scenarios × 2 regimes × 15 P&L lines. The forecast is built from the
+**executed 2029 close**, never from the 2029 decision log, because that log does not
+reconcile with its own close (L-17). Scenarios move the drivers, not the result, so
+every scenario stays internally consistent (L-19).
 
 ### `fact_sensitivity.csv` — grain: driver × delta × line item
 
@@ -370,7 +373,7 @@ grains must filter on `dim_period[grain]` first.
 | `fact_market` | Produced — 18 rows; demand columns 2026–2028 |
 | `fact_variance` | Produced — 39 rows, 2026–2029, exact to the cent |
 | `fact_backtest` | Produced — 60 rows, folds F1/F2 × regimes A/B |
-| `fact_forecast` | Pending — needs the forecast engine |
+| `fact_forecast` | Produced — 120 rows for 2030, 4 scenarios × 2 regimes |
 | `fact_sensitivity` | Pending — needs the sensitivity engine |
 
 ## Adding a new year

@@ -206,6 +206,29 @@ error of about 10% in F1 even when its revenue error is 0.3%.
 **Impact:** the backtest measures the value of knowing price, volume and marketing
 levers. It does not measure the value of cost decisions.
 
+### L-19 — The 2030 scenarios are explicit assumptions
+
+There is no 2030 decision log. The macro block for 2030 exists twice in the last
+workbook with different values (GDP `2.6` vs `1.2`, CPI `3.0` vs `2.2`), which is the
+conflict already registered as L-08, so it is not used as a forecast input.
+
+The 2030 scenarios are therefore documented assumptions applied to the drivers, not
+source facts:
+
+| Scenario | Price | Volume | Unit cost |
+|---|---:|---:|---:|
+| Base | ×1.00 | ×1.00 | ×1.00 |
+| Upside | ×1.02 | ×1.05 | ×1.00 |
+| Downside | ×0.98 | ×0.95 | ×1.00 |
+| Stress | ×0.95 | ×0.90 | ×1.05 |
+
+Regime A moves price and volume separately; regime B moves only volume, because a
+decision-free forecaster does not know the price lever. Base is identical in both
+regimes by construction: with no new decisions, knowing the levers adds nothing.
+
+**Impact:** the scenarios bound the range, they do not predict it. Any change to
+these multipliers is a change of assumption, not a data refresh.
+
 ## How these limitations are handled
 
 1. Every affected figure carries an explicit status.
