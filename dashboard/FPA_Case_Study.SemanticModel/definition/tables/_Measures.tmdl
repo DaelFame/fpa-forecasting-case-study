@@ -307,6 +307,10 @@ table _Measures
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: 01 Executive
 
+	/// Text version for the card reference label, which compacts numbers to millions.
+	measure 'Net Income YoY Label' = FORMAT ( [Net Income YoY], "+#,##0;-#,##0;0" )
+		displayFolder: 01 Executive
+
 	column Dummy
 		dataType: string
 		isHidden
