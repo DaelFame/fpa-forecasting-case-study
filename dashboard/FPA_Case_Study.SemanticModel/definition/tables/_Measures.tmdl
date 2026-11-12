@@ -234,6 +234,20 @@ table _Measures
 		displayFolder: 01 Executive
 		lineageTag: b6cc8201-cfaa-44d8-93cd-af09f2474d47
 
+	/// Revenue as text for KPI cards. The card visual compacts numbers to millions
+	/// and its display-units switch is not reachable in this version, so the value
+	/// is formatted here instead.
+	measure 'Revenue Card' = FORMAT([Revenue Latest], "#,##0")
+		displayFolder: 01 Executive
+
+	/// Net income as text for KPI cards. Same reason as [Revenue Card].
+	measure 'Net Income Card' = FORMAT([Net Income Latest], "#,##0")
+		displayFolder: 01 Executive
+
+	/// Closing cash as text for KPI cards. Same reason as [Revenue Card].
+	measure 'Closing Cash Card' = FORMAT([Closing Cash Latest], "#,##0")
+		displayFolder: 01 Executive
+
 	column Dummy
 		dataType: string
 		isHidden
