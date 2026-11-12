@@ -311,6 +311,18 @@ table _Measures
 	measure 'Net Income YoY Label' = FORMAT ( [Net Income YoY], "+#,##0;-#,##0;0" )
 		displayFolder: 01 Executive
 
+	/// The euro amount behind the budget variance percentage.
+	measure 'Net Income vs Budget Latest' = ```
+			VAR LastYear = [Latest Closed Year]
+			RETURN
+			    CALCULATE ( [Net Income vs Budget], dim_period[grain] = "year", dim_period[year] = LastYear )
+			```
+		formatString: +#,##0;-#,##0;0
+		displayFolder: 01 Executive
+
+	measure 'Net Income vs Budget Label' = FORMAT ( [Net Income vs Budget Latest], "+#,##0;-#,##0;0" )
+		displayFolder: 01 Executive
+
 	column Dummy
 		dataType: string
 		isHidden
