@@ -7,6 +7,24 @@ description: Visual and layout rules for the FPA Power BI report — palette, gr
 
 Every page in `dashboard/` follows this. Deviating is a bug, not a preference.
 
+## Narrative hierarchy
+
+Every page answers one question, in three levels:
+
+| Level | Element | What it carries | Example |
+|---|---|---|---|
+| 1 | Page title | **The question** | `How did the business perform over the last five years?` |
+| 2 | Chart titles | **The finding** | `Revenue almost doubled; profit arrived only in 2026` |
+| 3 | Closing text box | **The answer** | `Revenue almost doubled and profit swung from −€196K to €2.39M` |
+
+Rules:
+
+- The page title is a question, never a noun phrase. `Profitability` is a tab name, not a page title.
+- The question is identical to the one shown when hovering that item in the navigation. One sentence, two places.
+- A chart title that could be guessed from the axis is a label, not a finding. Rewrite it.
+- The subtitle carries scope and basis (`2024–2029 · pre-tax`), never a repeat of the field names.
+- The closing text box states the answer with numbers that appear on the page.
+
 ## Canvas
 
 | Property | Value |
