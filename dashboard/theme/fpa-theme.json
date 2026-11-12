@@ -57,11 +57,11 @@
         ],
         "dropShadow": [
           {
-            "show": true,
+            "show": false,
             "color": { "solid": { "color": "#000000" } },
             "position": "Outer",
             "preset": "BottomRight",
-            "transparency": 94
+            "transparency": 100
           }
         ],
         "visualHeader": [
