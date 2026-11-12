@@ -252,76 +252,78 @@ table _Measures
 		lineageTag: 9c0211e7-d897-4c68-9571-818c62669b32
 
 	/// Revenue of the year before the latest close. Comparison base for the KPI cards.
-	measure 'Revenue Prev' = ```
+	measure 'Revenue Prev' =
 			VAR LastYear = [Latest Closed Year]
 			RETURN
 			    CALCULATE ( [Revenue], dim_period[grain] = "year", dim_period[year] = LastYear - 1 )
-			```
 		formatString: #,##0
 		displayFolder: 90 Comparison
+		lineageTag: 5f96fa7b-ee50-4a69-a701-43575ef787bf
 
-	measure 'Gross Margin % Prev' = ```
+	measure 'Gross Margin % Prev' =
 			VAR LastYear = [Latest Closed Year]
 			RETURN
 			    CALCULATE ( [Gross Margin %], dim_period[grain] = "year", dim_period[year] = LastYear - 1 )
-			```
 		formatString: 0.0%
 		displayFolder: 90 Comparison
+		lineageTag: 8a04ab9b-a32e-4c24-ae5b-ee9cb11c03cd
 
-	measure 'Net Income Prev' = ```
+	measure 'Net Income Prev' =
 			VAR LastYear = [Latest Closed Year]
 			RETURN
 			    CALCULATE ( [Net Income], dim_period[grain] = "year", dim_period[year] = LastYear - 1 )
-			```
 		formatString: #,##0
 		displayFolder: 90 Comparison
+		lineageTag: e3759119-4ba4-43c0-9b77-8c8e0992e966
 
-	measure 'Closing Cash Prev' = ```
+	measure 'Closing Cash Prev' =
 			VAR LastYear = [Latest Closed Year]
 			RETURN
 			    CALCULATE ( [Closing Cash], dim_period[grain] = "year", dim_period[year] = LastYear - 1 )
-			```
 		formatString: #,##0
 		displayFolder: 90 Comparison
+		lineageTag: 122ddd3e-0dfb-4eff-b1c9-21827132f792
 
 	/// Year-on-year change, for the reference label under a KPI card.
-	measure 'Revenue YoY %' =
-			DIVIDE ( [Revenue Latest] - [Revenue Prev], [Revenue Prev] )
+	measure 'Revenue YoY %' = DIVIDE ( [Revenue Latest] - [Revenue Prev], [Revenue Prev] )
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: 01 Executive
+		lineageTag: 9dc4fd5c-9a73-4357-9fb6-c41d814c32f7
 
 	/// Change in percentage points, not a relative change: 5.6 pp, not 9.8%.
-	measure 'Gross Margin pts YoY' =
-			( [Gross Margin % Latest] - [Gross Margin % Prev] ) * 100
+	measure 'Gross Margin pts YoY' = ( [Gross Margin % Latest] - [Gross Margin % Prev] ) * 100
 		formatString: +0.0" pp";-0.0" pp";0.0" pp"
 		displayFolder: 01 Executive
+		lineageTag: c8a0d29d-1825-4616-b937-8ad5c3eddfa5
 
 	/// Absolute change in euros. A percentage is meaningless when the base is negative.
-	measure 'Net Income YoY' =
-			[Net Income Latest] - [Net Income Prev]
+	measure 'Net Income YoY' = [Net Income Latest] - [Net Income Prev]
 		formatString: +#,##0;-#,##0;0
 		displayFolder: 01 Executive
+		lineageTag: 2d31aaa0-014d-455b-8d6e-a07605cccfb5
 
-	measure 'Closing Cash YoY %' =
-			DIVIDE ( [Closing Cash Latest] - [Closing Cash Prev], [Closing Cash Prev] )
+	measure 'Closing Cash YoY %' = DIVIDE ( [Closing Cash Latest] - [Closing Cash Prev], [Closing Cash Prev] )
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: 01 Executive
+		lineageTag: b6a364fc-c7ff-4f35-b02c-e2b6d8bcd0b4
 
 	/// Text version for the card reference label, which compacts numbers to millions.
 	measure 'Net Income YoY Label' = FORMAT ( [Net Income YoY], "+#,##0;-#,##0;0" )
 		displayFolder: 01 Executive
+		lineageTag: b40def4c-50f7-45c0-9567-0729a0a46c8c
 
 	/// The euro amount behind the budget variance percentage.
-	measure 'Net Income vs Budget Latest' = ```
+	measure 'Net Income vs Budget Latest' =
 			VAR LastYear = [Latest Closed Year]
 			RETURN
 			    CALCULATE ( [Net Income vs Budget], dim_period[grain] = "year", dim_period[year] = LastYear )
-			```
 		formatString: +#,##0;-#,##0;0
 		displayFolder: 01 Executive
+		lineageTag: dac4a93c-4f5a-44f4-b29f-7397c95e331e
 
 	measure 'Net Income vs Budget Label' = FORMAT ( [Net Income vs Budget Latest], "+#,##0;-#,##0;0" )
 		displayFolder: 01 Executive
+		lineageTag: b4e3ea1d-5b08-4514-9e34-6e69ade14f5f
 
 	column Dummy
 		dataType: string
