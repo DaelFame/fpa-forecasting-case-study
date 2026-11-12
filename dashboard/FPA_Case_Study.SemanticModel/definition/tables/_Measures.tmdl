@@ -239,13 +239,72 @@ table _Measures
 	/// is formatted here instead.
 	measure 'Revenue Card' = FORMAT([Revenue Latest], "#,##0")
 		displayFolder: 01 Executive
+		lineageTag: 1117b26e-1124-4e60-a343-ad97fd53cb33
 
 	/// Net income as text for KPI cards. Same reason as [Revenue Card].
 	measure 'Net Income Card' = FORMAT([Net Income Latest], "#,##0")
 		displayFolder: 01 Executive
+		lineageTag: d9c305c8-5eec-4146-860c-85240389562f
 
 	/// Closing cash as text for KPI cards. Same reason as [Revenue Card].
 	measure 'Closing Cash Card' = FORMAT([Closing Cash Latest], "#,##0")
+		displayFolder: 01 Executive
+		lineageTag: 9c0211e7-d897-4c68-9571-818c62669b32
+
+	/// Revenue of the year before the latest close. Comparison base for the KPI cards.
+	measure 'Revenue Prev' = ```
+			VAR LastYear = [Latest Closed Year]
+			RETURN
+			    CALCULATE ( [Revenue], dim_period[grain] = "year", dim_period[year] = LastYear - 1 )
+			```
+		formatString: #,##0
+		displayFolder: 90 Comparison
+
+	measure 'Gross Margin % Prev' = ```
+			VAR LastYear = [Latest Closed Year]
+			RETURN
+			    CALCULATE ( [Gross Margin %], dim_period[grain] = "year", dim_period[year] = LastYear - 1 )
+			```
+		formatString: 0.0%
+		displayFolder: 90 Comparison
+
+	measure 'Net Income Prev' = ```
+			VAR LastYear = [Latest Closed Year]
+			RETURN
+			    CALCULATE ( [Net Income], dim_period[grain] = "year", dim_period[year] = LastYear - 1 )
+			```
+		formatString: #,##0
+		displayFolder: 90 Comparison
+
+	measure 'Closing Cash Prev' = ```
+			VAR LastYear = [Latest Closed Year]
+			RETURN
+			    CALCULATE ( [Closing Cash], dim_period[grain] = "year", dim_period[year] = LastYear - 1 )
+			```
+		formatString: #,##0
+		displayFolder: 90 Comparison
+
+	/// Year-on-year change, for the reference label under a KPI card.
+	measure 'Revenue YoY %' =
+			DIVIDE ( [Revenue Latest] - [Revenue Prev], [Revenue Prev] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Executive
+
+	/// Change in percentage points, not a relative change: 5.6 pp, not 9.8%.
+	measure 'Gross Margin pts YoY' =
+			( [Gross Margin % Latest] - [Gross Margin % Prev] ) * 100
+		formatString: +0.0" pp";-0.0" pp";0.0" pp"
+		displayFolder: 01 Executive
+
+	/// Absolute change in euros. A percentage is meaningless when the base is negative.
+	measure 'Net Income YoY' =
+			[Net Income Latest] - [Net Income Prev]
+		formatString: +#,##0;-#,##0;0
+		displayFolder: 01 Executive
+
+	measure 'Closing Cash YoY %' =
+			DIVIDE ( [Closing Cash Latest] - [Closing Cash Prev], [Closing Cash Prev] )
+		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: 01 Executive
 
 	column Dummy
