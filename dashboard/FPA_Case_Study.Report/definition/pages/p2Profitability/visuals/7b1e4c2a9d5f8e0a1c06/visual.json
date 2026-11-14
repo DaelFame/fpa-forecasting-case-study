@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
-  "name": "c4576d44dd006ae40db8",
+  "name": "7b1e4c2a9d5f8e0a1c06",
   "position": {
-    "x": 0,
-    "y": 1039.1374347465485,
-    "z": 10,
+    "x": 1748,
+    "y": 48,
+    "z": 15,
     "height": 40,
-    "width": 100,
-    "tabOrder": 10
+    "width": 140,
+    "tabOrder": 15
   },
   "visual": {
     "visualType": "actionButton",
@@ -18,7 +18,7 @@
             "shapeType": {
               "expr": {
                 "Literal": {
-                  "Value": "'leftArrow'"
+                  "Value": "'rightArrow'"
                 }
               }
             }
@@ -39,12 +39,32 @@
                   "Value": "true"
                 }
               }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'PageNavigation'"
+                }
+              }
+            },
+            "navigationSection": {
+              "expr": {
+                "Literal": {
+                  "Value": "'p3BudgetVsActual'"
+                }
+              }
+            },
+            "tooltip": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Next: 03 | Variance'"
+                }
+              }
             }
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   },
   "howCreated": "InsertVisualButton"
 }

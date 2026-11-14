@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "83d2d3d948100697d710",
   "position": {
-    "x": 1600.004010276333,
-    "y": 97.016605050441754,
+    "x": 1436,
+    "y": 120,
     "z": 9,
     "height": 160,
-    "width": 320,
+    "width": 452,
     "tabOrder": 9
   },
   "visual": {
@@ -300,6 +300,33 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'tipClosingCash'"
                 }
               }
             }

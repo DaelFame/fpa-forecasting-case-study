@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "bac264a0251246eb7039",
   "position": {
-    "x": 1264.2957578795663,
-    "y": 97.016605050441754,
+    "x": 968,
+    "y": 120,
     "z": 8,
     "height": 160,
-    "width": 320,
+    "width": 452,
     "tabOrder": 8
   },
   "visual": {
@@ -28,7 +28,7 @@
               },
               "queryRef": "_Measures.Net Income vs Budget % Latest",
               "nativeQueryRef": "vs budget",
-              "displayName": "vs budget"
+              "displayName": "Net income vs budget · %"
             }
           ]
         }
@@ -318,6 +318,33 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'tipVsBudget'"
                 }
               }
             }

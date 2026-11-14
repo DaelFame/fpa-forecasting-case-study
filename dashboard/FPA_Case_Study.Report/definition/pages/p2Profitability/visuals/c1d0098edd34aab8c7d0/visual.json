@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "c1d0098edd34aab8c7d0",
   "position": {
-    "x": 1322.9018880811827,
-    "y": 123.89715568131923,
+    "x": 1124,
+    "y": 120,
     "z": 6,
-    "height": 504,
-    "width": 581,
+    "height": 596,
+    "width": 764,
     "tabOrder": 6
   },
   "visual": {
@@ -148,6 +148,27 @@
                   "Value": "'Ties still carry 72% of revenue'"
                 }
               }
+            },
+            "heading": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Heading2'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "16D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
             }
           }
         }
@@ -271,7 +292,21 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Revenue mix by product line · 2024–2029'"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
                 }
               }
             }

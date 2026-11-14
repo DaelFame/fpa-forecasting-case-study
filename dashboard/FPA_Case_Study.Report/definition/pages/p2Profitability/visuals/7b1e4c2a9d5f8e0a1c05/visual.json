@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
-  "name": "8539627361221c61ecc0",
+  "name": "7b1e4c2a9d5f8e0a1c05",
   "position": {
-    "x": 0,
-    "y": 20.019299454853059,
-    "z": 4,
-    "height": 104,
-    "width": 180,
-    "tabOrder": 4
+    "x": 1592,
+    "y": 48,
+    "z": 14,
+    "height": 40,
+    "width": 140,
+    "tabOrder": 14
   },
   "visual": {
     "visualType": "actionButton",
@@ -56,7 +56,14 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'01 | Summary'"
+                  "Value": "'05 | Market'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
                 }
               }
             }
@@ -85,7 +92,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F3864'"
+                      "Value": "'#2E75B6'"
                     }
                   }
                 }
@@ -192,13 +199,6 @@
                   "Value": "false"
                 }
               }
-            },
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "''"
-                }
-              }
             }
           }
         }
@@ -223,14 +223,14 @@
             "navigationSection": {
               "expr": {
                 "Literal": {
-                  "Value": "'4d804dfcc8d2d6986002'"
+                  "Value": "'p5MarketCapacity'"
                 }
               }
             },
             "tooltip": {
               "expr": {
                 "Literal": {
-                  "Value": "'How did the business perform over the last five years?'"
+                  "Value": "'Why is capacity the constraint, not price?'"
                 }
               }
             }

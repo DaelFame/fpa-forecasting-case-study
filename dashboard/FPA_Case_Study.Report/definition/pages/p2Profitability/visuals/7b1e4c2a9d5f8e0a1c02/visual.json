@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
-  "name": "882b3e3e29999477bbc7",
+  "name": "7b1e4c2a9d5f8e0a1c02",
   "position": {
-    "x": 0,
-    "y": 333.86029826430234,
-    "z": 2,
-    "height": 104,
-    "width": 180,
-    "tabOrder": 2
+    "x": 1124,
+    "y": 48,
+    "z": 11,
+    "height": 40,
+    "width": 140,
+    "tabOrder": 11
   },
   "visual": {
     "visualType": "actionButton",
@@ -56,7 +56,14 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'04 | Forecast'"
+                  "Value": "'02 | Profitability'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
                 }
               }
             }
@@ -192,13 +199,6 @@
                   "Value": "false"
                 }
               }
-            },
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "''"
-                }
-              }
             }
           }
         }
@@ -223,14 +223,14 @@
             "navigationSection": {
               "expr": {
                 "Literal": {
-                  "Value": "'p4ForecastAccuracy'"
+                  "Value": "'p2Profitability'"
                 }
               }
             },
             "tooltip": {
               "expr": {
                 "Literal": {
-                  "Value": "'Can the forecast be trusted? How wrong was it, and in which direction?'"
+                  "Value": "'Which product line created the margin - and which one destroyed it?'"
                 }
               }
             }

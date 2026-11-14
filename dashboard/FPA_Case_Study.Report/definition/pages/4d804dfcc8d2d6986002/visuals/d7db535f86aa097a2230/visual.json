@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "d7db535f86aa097a2230",
   "position": {
-    "x": 274.11040792029576,
-    "y": 0,
+    "x": 32,
+    "y": 32,
     "z": 18,
-    "height": 97.016605050441754,
-    "width": 1633.8828247383919,
+    "height": 72,
+    "width": 920,
     "tabOrder": 18
   },
   "visual": {
@@ -19,14 +19,6 @@
               {
                 "textRuns": [
                   {
-                    "value": ""
-                  }
-                ],
-                "horizontalTextAlignment": "center"
-              },
-              {
-                "textRuns": [
-                  {
                     "value": "How did the business perform over the last five years?",
                     "textStyle": {
                       "fontWeight": "bold",
@@ -35,7 +27,7 @@
                     }
                   }
                 ],
-                "horizontalTextAlignment": "center"
+                "horizontalTextAlignment": "left"
               },
               {
                 "textRuns": [
@@ -48,7 +40,7 @@
                     }
                   }
                 ],
-                "horizontalTextAlignment": "center"
+                "horizontalTextAlignment": "left"
               }
             ]
           }

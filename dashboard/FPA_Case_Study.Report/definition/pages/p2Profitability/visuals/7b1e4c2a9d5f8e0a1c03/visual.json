@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
-  "name": "8b30f1e270a4900ce9d3",
+  "name": "7b1e4c2a9d5f8e0a1c03",
   "position": {
-    "x": 0,
-    "y": 438.57663387430296,
-    "z": 3,
-    "height": 104,
-    "width": 180,
-    "tabOrder": 3
+    "x": 1280,
+    "y": 48,
+    "z": 12,
+    "height": 40,
+    "width": 140,
+    "tabOrder": 12
   },
   "visual": {
     "visualType": "actionButton",
@@ -56,7 +56,14 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'05 | Market'"
+                  "Value": "'03 | Variance'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
                 }
               }
             }
@@ -85,7 +92,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F3864'"
+                      "Value": "'#2E75B6'"
                     }
                   }
                 }
@@ -192,13 +199,6 @@
                   "Value": "false"
                 }
               }
-            },
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "''"
-                }
-              }
             }
           }
         }
@@ -223,14 +223,14 @@
             "navigationSection": {
               "expr": {
                 "Literal": {
-                  "Value": "'p5MarketCapacity'"
+                  "Value": "'p3BudgetVsActual'"
                 }
               }
             },
             "tooltip": {
               "expr": {
                 "Literal": {
-                  "Value": "'Why is capacity the constraint, not price?'"
+                  "Value": "'Where did the budget miss, and by how much?'"
                 }
               }
             }

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "b0fb231bba0e55c48306",
   "position": {
-    "x": 0,
-    "y": 438.57663387430296,
+    "x": 1592,
+    "y": 48,
     "z": 16,
-    "height": 104,
-    "width": 180,
+    "height": 40,
+    "width": 140,
     "tabOrder": 16
   },
   "visual": {
@@ -59,6 +59,13 @@
                   "Value": "'05 | Market'"
                 }
               }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
             }
           },
           "selector": {
@@ -85,7 +92,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F3864'"
+                      "Value": "'#2E75B6'"
                     }
                   }
                 }

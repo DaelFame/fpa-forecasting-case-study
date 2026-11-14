@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
-  "name": "dd2b87822cc4d6ab0750",
+  "name": "7b1e4c2a9d5f8e0a1c04",
   "position": {
-    "x": 0,
-    "y": 124.42762704430095,
-    "z": 0,
-    "height": 104,
-    "width": 180,
-    "tabOrder": 0
+    "x": 1436,
+    "y": 48,
+    "z": 13,
+    "height": 40,
+    "width": 140,
+    "tabOrder": 13
   },
   "visual": {
     "visualType": "actionButton",
@@ -56,7 +56,14 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'02 | Profitability'"
+                  "Value": "'04 | Forecast'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
                 }
               }
             }
@@ -85,7 +92,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F3864'"
+                      "Value": "'#2E75B6'"
                     }
                   }
                 }
@@ -192,13 +199,6 @@
                   "Value": "false"
                 }
               }
-            },
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "''"
-                }
-              }
             }
           }
         }
@@ -223,14 +223,14 @@
             "navigationSection": {
               "expr": {
                 "Literal": {
-                  "Value": "'p2Profitability'"
+                  "Value": "'p4ForecastAccuracy'"
                 }
               }
             },
             "tooltip": {
               "expr": {
                 "Literal": {
-                  "Value": "'Which product line created the margin — and which one destroyed it?'"
+                  "Value": "'Can the forecast be trusted? How wrong was it, and in which direction?'"
                 }
               }
             }

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "438d9c47b91c3be51a07",
   "position": {
-    "x": 205.82914572864323,
-    "y": 0,
+    "x": 32,
+    "y": 32,
     "z": 9,
-    "height": 99.917061033321957,
-    "width": 1698.5900375664733,
+    "height": 72,
+    "width": 920,
     "tabOrder": 9
   },
   "visual": {
@@ -19,10 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": " "
-                  },
-                  {
-                    "value": "Which line created the margin — and which one destroyed it?  ",
+                    "value": "Which product line created the margin - and which one destroyed it?",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "20pt",
@@ -30,21 +27,20 @@
                     }
                   }
                 ],
-                "horizontalTextAlignment": "center"
+                "horizontalTextAlignment": "left"
               },
               {
                 "textRuns": [
                   {
-                    "value": "Gross margin by product · 2024–2029",
+                    "value": "Gross margin by product line · 2024–2029 · pre-tax",
                     "textStyle": {
                       "fontWeight": "bold",
-                      "fontStyle": "italic",
-                      "fontSize": "14pt",
-                      "color": "#5b9bd5"
+                      "fontSize": "12pt",
+                      "color": "#2e75b6"
                     }
                   }
                 ],
-                "horizontalTextAlignment": "center"
+                "horizontalTextAlignment": "left"
               }
             ]
           }
@@ -94,41 +90,6 @@
       "dropShadow": [
         {
           "properties": {
-            "angle": {
-              "expr": {
-                "Literal": {
-                  "Value": "45L"
-                }
-              }
-            },
-            "shadowDistance": {
-              "expr": {
-                "Literal": {
-                  "Value": "10L"
-                }
-              }
-            },
-            "shadowBlur": {
-              "expr": {
-                "Literal": {
-                  "Value": "10L"
-                }
-              }
-            },
-            "shadowSpread": {
-              "expr": {
-                "Literal": {
-                  "Value": "3L"
-                }
-              }
-            },
-            "transparency": {
-              "expr": {
-                "Literal": {
-                  "Value": "70L"
-                }
-              }
-            },
             "show": {
               "expr": {
                 "Literal": {
@@ -139,7 +100,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

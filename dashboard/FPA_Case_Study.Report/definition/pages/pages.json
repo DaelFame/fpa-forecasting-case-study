@@ -5,7 +5,11 @@
     "p2Profitability",
     "p3BudgetVsActual",
     "p4ForecastAccuracy",
-    "p5MarketCapacity"
+    "p5MarketCapacity",
+    "tipRevenue",
+    "tipNetIncome",
+    "tipVsBudget",
+    "tipClosingCash"
   ],
   "activePageName": "p2Profitability"
 }

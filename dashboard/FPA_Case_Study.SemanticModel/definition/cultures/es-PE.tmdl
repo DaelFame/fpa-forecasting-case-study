@@ -13246,16 +13246,6 @@ cultureInfo es-PE
 			            },
 			            "Weight": 0.599
 			          }
-			        },
-			        {
-			          "Gross Margin": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
 			        }
 			      ]
 			    },
@@ -13296,7 +13286,7 @@ cultureInfo es-PE
 			          }
 			        },
 			        {
-			          "vs budget": {
+			          "Net income vs budget · %": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",

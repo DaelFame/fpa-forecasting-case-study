@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "69f05fc70ae180036473",
   "position": {
-    "x": 931.66739770662321,
-    "y": 97.016605050441754,
+    "x": 500,
+    "y": 120,
     "z": 7,
     "height": 160,
-    "width": 320,
+    "width": 452,
     "tabOrder": 7
   },
   "visual": {
@@ -300,6 +300,33 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'tipNetIncome'"
                 }
               }
             }

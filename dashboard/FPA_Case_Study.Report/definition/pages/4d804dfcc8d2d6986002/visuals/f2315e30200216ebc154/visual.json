@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "f2315e30200216ebc154",
   "position": {
-    "x": 0,
-    "y": 124.42762704430095,
+    "x": 1124,
+    "y": 48,
     "z": 13,
-    "height": 104,
-    "width": 180,
+    "height": 40,
+    "width": 140,
     "tabOrder": 13
   },
   "visual": {
@@ -59,6 +59,13 @@
                   "Value": "'02 | Profitability'"
                 }
               }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
             }
           },
           "selector": {
@@ -85,7 +92,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F3864'"
+                      "Value": "'#2E75B6'"
                     }
                   }
                 }

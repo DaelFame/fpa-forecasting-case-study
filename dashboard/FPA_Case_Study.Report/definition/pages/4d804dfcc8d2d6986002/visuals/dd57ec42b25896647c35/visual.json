@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "dd57ec42b25896647c35",
   "position": {
-    "x": 303.36938404661947,
-    "y": 959.38642772103515,
+    "x": 1124,
+    "y": 732,
     "z": 12,
-    "height": 120.11579672911836,
-    "width": 1578.4447647095683,
+    "height": 316,
+    "width": 764,
     "tabOrder": 12
   },
   "visual": {
@@ -21,6 +21,21 @@
                   {
                     "value": ""
                   }
+                ],
+                "horizontalTextAlignment": "center"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
                 ]
               },
               {
@@ -40,14 +55,36 @@
               {
                 "textRuns": [
                   {
-                    "value": "Revenue almost doubled and profit swung from −€196K to €2.39M. The driver was margin 35% to 63% — not volume: units sold grew 66% in the same period.",
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Revenue almost doubled and profit swung from −€196K to €2.39M. The driver was margin, not volume: gross margin went from 35% to 63%, while units sold grew 46% between 2024 and 2028 — the last year with unit-level data.",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "14pt",
                       "color": "#1f3864"
                     }
                   }
-                ]
+                ],
+                "horizontalTextAlignment": "center"
               }
             ]
           }

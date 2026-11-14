@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "b3d6f334519e3b239714",
   "position": {
-    "x": 205.82914572864323,
-    "y": 929.22866760989416,
+    "x": 1124,
+    "y": 732,
     "z": 8,
-    "height": 149.87559154998294,
-    "width": 1698.5900375664733,
+    "height": 316,
+    "width": 764,
     "tabOrder": 8
   },
   "visual": {
@@ -40,7 +40,28 @@
               {
                 "textRuns": [
                   {
-                    "value": "Every line improved, but the mix barely moved: ties still fund three quarters of the margin.",
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Every line improved and the mix shifted only modestly: ties still fund three quarters of the margin.",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "14pt",
@@ -52,7 +73,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Socks stopped destroying value — €57K of negative margin in 2024 became +€132K in 2029",
+                    "value": "Socks stopped destroying value — €57K of negative margin in 2024 became +€132K in 2029.",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "14pt",
@@ -80,44 +101,9 @@
           }
         }
       ],
-      "dropShadow": [
+      "background": [
         {
           "properties": {
-            "angle": {
-              "expr": {
-                "Literal": {
-                  "Value": "45L"
-                }
-              }
-            },
-            "shadowDistance": {
-              "expr": {
-                "Literal": {
-                  "Value": "10L"
-                }
-              }
-            },
-            "shadowBlur": {
-              "expr": {
-                "Literal": {
-                  "Value": "10L"
-                }
-              }
-            },
-            "shadowSpread": {
-              "expr": {
-                "Literal": {
-                  "Value": "3L"
-                }
-              }
-            },
-            "transparency": {
-              "expr": {
-                "Literal": {
-                  "Value": "70L"
-                }
-              }
-            },
             "show": {
               "expr": {
                 "Literal": {
@@ -141,7 +127,7 @@
           }
         }
       ],
-      "background": [
+      "dropShadow": [
         {
           "properties": {
             "show": {
@@ -154,7 +140,6 @@
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

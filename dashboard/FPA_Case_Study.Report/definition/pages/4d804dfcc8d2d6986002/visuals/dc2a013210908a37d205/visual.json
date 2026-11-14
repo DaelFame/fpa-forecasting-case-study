@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "dc2a013210908a37d205",
   "position": {
-    "x": 1091.8217933454478,
-    "y": 281.81013847985463,
+    "x": 1124,
+    "y": 296,
     "z": 11,
-    "height": 677.43767380592283,
-    "width": 829.31160657657222,
+    "height": 420,
+    "width": 764,
     "tabOrder": 11
   },
   "visual": {
@@ -213,6 +213,33 @@
               "expr": {
                 "Literal": {
                   "Value": "'35% → 63% in five years'"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Gross Margin % per year · 2024–2029'"
                 }
               }
             },
