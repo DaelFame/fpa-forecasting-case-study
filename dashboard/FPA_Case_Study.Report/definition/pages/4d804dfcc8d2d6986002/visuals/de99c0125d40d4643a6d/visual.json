@@ -5,8 +5,8 @@
     "x": 257.17100068926624,
     "y": 281.81013847985463,
     "z": 10,
-    "height": 678.2816404319899,
-    "width": 817.06049269428956,
+    "height": 677.57628924118046,
+    "width": 817.71138542515189,
     "tabOrder": 10
   },
   "visual": {
@@ -103,6 +103,20 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            },
+            "roundRange": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
                 }
               }
             }

@@ -4,5 +4,11 @@
   "displayName": "02 | Profitability",
   "displayOption": "FitToPage",
   "height": 1080,
-  "width": 1920
+  "width": 1920,
+  "pageBinding": {
+    "name": "2e0b8217326e30a93a17",
+    "type": "Default",
+    "parameters": [],
+    "acceptsFilterContext": "None"
+  }
 }
