@@ -113,8 +113,16 @@ table _Measures
 		displayFolder: 03 Variance
 		lineageTag: 134e1be6-0763-43c8-9b04-021d243f2724
 
-	measure 'Net Income vs Budget' = [Net Income] - [Budget Net Income]
-		formatString: #,##0
+	/// Variance is only defined for years the plan covers. Budget starts in 2026,
+	/// so years without a plan are skipped instead of being counted as full misses.
+	measure 'Net Income vs Budget' =
+			SUMX (
+			    VALUES ( dim_period[year] ),
+			    VAR BudgetAmount = CALCULATE ( [Budget Net Income] )
+			    RETURN
+			        IF ( NOT ISBLANK ( BudgetAmount ), CALCULATE ( [Net Income] ) - BudgetAmount )
+			)
+		formatString: +#,##0;-#,##0;0
 		displayFolder: 03 Variance
 		lineageTag: fc92d957-cd01-494f-8024-7a85b965cc07
 
@@ -134,7 +142,11 @@ table _Measures
 		displayFolder: 03 Variance
 		lineageTag: ea943644-ba90-4456-a67b-af155ea539f7
 
-	measure 'Forecast Amount' = SUM(fact_forecast[forecast_amount])
+	/// fact_forecast stores each line item once per regime, and both regimes carry
+	/// the same value, so an unfiltered sum would multiply every 2030 figure. One
+	/// regime is kept; the scenario dimension still splits base, upside, downside
+	/// and stress.
+	measure 'Forecast Amount' = CALCULATE ( SUM ( fact_forecast[forecast_amount] ), dim_regime[regime_key] = "A" )
 		formatString: #,##0
 		displayFolder: 04 Forecast
 		lineageTag: 025a7ecc-a04c-44d1-ad9f-e28ae46c36b5
@@ -145,20 +157,29 @@ table _Measures
 		lineageTag: 5cb1c6e0-54e3-419e-8235-46f276ebf0e3
 
 	/// Weighted error: ratio of sums, never an average of per-line percentages.
+	/// Restricted to the committed regime, the same one the 2030 forecast uses;
+	/// blending both regimes would describe no single model.
 	measure 'MAPE Weighted' =
-			DIVIDE(
-			    SUMX(fact_backtest, ABS(fact_backtest[error_eur])),
-			    SUMX(fact_backtest, ABS(fact_backtest[actual_amount]))
+			CALCULATE (
+			    DIVIDE(
+			        SUMX(fact_backtest, ABS(fact_backtest[error_eur])),
+			        SUMX(fact_backtest, ABS(fact_backtest[actual_amount]))
+			    ),
+			    fact_backtest[regime_key] = "A"
 			)
 		formatString: 0.0%
 		displayFolder: 04 Forecast
 		lineageTag: 29ea30eb-5da5-43cd-8931-a0946782c135
 
-	/// Positive means the forecast landed above the actual outcome.
+	/// Positive means the forecast landed above the actual outcome. Same regime
+	/// restriction as [MAPE Weighted].
 	measure 'Bias Weighted' =
-			DIVIDE(
-			    SUM(fact_backtest[error_eur]),
-			    SUMX(fact_backtest, ABS(fact_backtest[actual_amount]))
+			CALCULATE (
+			    DIVIDE(
+			        SUM(fact_backtest[error_eur]),
+			        SUMX(fact_backtest, ABS(fact_backtest[actual_amount]))
+			    ),
+			    fact_backtest[regime_key] = "A"
 			)
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: 04 Forecast
@@ -324,6 +345,329 @@ table _Measures
 	measure 'Net Income vs Budget Label' = FORMAT ( [Net Income vs Budget Latest], "+#,##0;-#,##0;0" )
 		displayFolder: 01 Executive
 		lineageTag: b4e3ea1d-5b08-4514-9e34-6e69ade14f5f
+
+	/// Budget variance carried by operating expenses, with the cost-overrun sign.
+	measure 'Operating Expenses Variance' = CALCULATE ( [Bridge Total], dim_driver[label] = "Operating expenses" )
+		formatString: +#,##0;-#,##0;0
+		displayFolder: 03 Variance
+		lineageTag: fae19c2d-5894-450f-8df2-1bd6694807ef
+
+	/// Budget years where actual net income beat the plan. Years without a plan
+	/// return blank variance and are never counted as a win.
+	measure 'Years Ahead of Plan' =
+			COUNTROWS (
+			    FILTER ( VALUES ( dim_period[year] ), CALCULATE ( [Net Income vs Budget] ) > 0 )
+			)
+		formatString: 0
+		displayFolder: 03 Variance
+		lineageTag: 93ce70d5-b46d-47b4-b4b6-88d580129550
+
+	measure 'Years With Budget' =
+			COUNTROWS (
+			    FILTER (
+			        VALUES ( dim_period[year] ),
+			        NOT ISBLANK ( CALCULATE ( [Budget Net Income] ) )
+			    )
+			)
+		formatString: 0
+		displayFolder: 03 Variance
+		lineageTag: fe559e25-db31-4d9b-85d1-fb39689f9369
+
+	/// Text version for the card visual, which compacts numbers to millions.
+	measure 'Variance Card' = FORMAT ( [Net Income vs Budget], "+#,##0;-#,##0;0" )
+		displayFolder: 03 Variance
+		lineageTag: 1d0a4e5e-9392-4f2c-bb77-1b8aca5c9c86
+
+	measure 'Variance % Card' = FORMAT ( [Net Income vs Budget %], "+0.0%;-0.0%;0.0%" )
+		displayFolder: 03 Variance
+		lineageTag: 3a58cb02-149a-4949-b9c4-301bee553b0c
+
+	measure 'Years Ahead Card' = FORMAT ( [Years Ahead of Plan], "0" ) & " of " & FORMAT ( [Years With Budget], "0" )
+		displayFolder: 03 Variance
+		lineageTag: 5fe51661-5955-40a3-90b8-432efc2a6232
+
+	measure 'Opex Variance Card' = FORMAT ( [Operating Expenses Variance], "+#,##0;-#,##0;0" )
+		displayFolder: 03 Variance
+		lineageTag: 37db9437-e81c-4723-a42f-87061ef334a7
+
+	/// 2030 revenue in the committed base scenario, pre-tax basis of the P&L.
+	measure 'Forecast Revenue' = CALCULATE ( [Scenario Revenue], dim_scenario[scenario_key] = "base" )
+		formatString: #,##0
+		displayFolder: 04 Forecast
+		lineageTag: 2b429747-9ed1-4cd5-aa81-57cfb36f0d33
+
+	measure 'Forecast Net Result' = CALCULATE ( [Scenario Net Result], dim_scenario[scenario_key] = "base" )
+		formatString: #,##0
+		displayFolder: 04 Forecast
+		lineageTag: 9ffeb140-069f-4b91-a678-a5baf25af052
+
+	measure 'Forecast Revenue Card' = FORMAT ( [Forecast Revenue], "#,##0" )
+		displayFolder: 04 Forecast
+		lineageTag: bf603499-71ea-455a-8087-fcdb2e5ae433
+
+	measure 'Forecast Net Result Card' = FORMAT ( [Forecast Net Result], "#,##0" )
+		displayFolder: 04 Forecast
+		lineageTag: 09988d6b-74b6-4380-95e0-2f752c0d6b13
+
+	/// The most recent fold that has actuals to compare against; F3 is the live
+	/// forecast year and carries no MAPE.
+	measure 'Backtest Fold Latest' =
+			MAXX (
+			    FILTER ( VALUES ( dim_fold[fold_key] ), NOT ISBLANK ( CALCULATE ( [MAPE Weighted] ) ) ),
+			    dim_fold[fold_key]
+			)
+		displayFolder: 04 Forecast
+		lineageTag: e8fcc3fe-dd91-4de6-bd88-95eefc39da56
+
+	measure 'Backtest Accuracy Latest' =
+			VAR LatestFold = [Backtest Fold Latest]
+			RETURN
+			    CALCULATE ( [Forecast Accuracy %], dim_fold[fold_key] = LatestFold )
+		formatString: 0.0%
+		displayFolder: 04 Forecast
+		lineageTag: 2f4f251d-1191-426c-a85e-9b9822f225bd
+
+	measure 'Backtest Bias Latest' =
+			VAR LatestFold = [Backtest Fold Latest]
+			RETURN
+			    CALCULATE ( [Bias Weighted], dim_fold[fold_key] = LatestFold )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 04 Forecast
+		lineageTag: ccb95f7f-a973-4062-9598-cc5e83900815
+
+	measure 'Backtest Accuracy Card' = FORMAT ( [Backtest Accuracy Latest], "0.0%" )
+		displayFolder: 04 Forecast
+		lineageTag: 492d6c9c-6ac6-44fe-8b85-8a7af0c6d8cd
+
+	measure 'Backtest Bias Card' = FORMAT ( [Backtest Bias Latest], "+0.0%;-0.0%;0.0%" )
+		displayFolder: 04 Forecast
+		lineageTag: 974f8c9d-58ac-43be-ac50-be129a62308d
+
+	measure 'Backtest Forecast Latest' =
+			VAR LatestFold = [Backtest Fold Latest]
+			RETURN
+			    CALCULATE ( [Backtest Forecast], dim_fold[fold_key] = LatestFold )
+		formatString: #,##0
+		displayFolder: 04 Forecast
+		lineageTag: aae346b5-62d4-4e8e-99d8-1d7c62d7b6a7
+
+	measure 'Backtest Actual Latest' =
+			VAR LatestFold = [Backtest Fold Latest]
+			RETURN
+			    CALCULATE ( [Backtest Actual], dim_fold[fold_key] = LatestFold )
+		formatString: #,##0
+		displayFolder: 04 Forecast
+		lineageTag: 502c30c4-2d61-4d8d-addf-fb84392b902b
+
+	/// Purchase intent, published for 2026-2028 only (L-15). Years without a
+	/// published gap stay blank instead of pretending the market served it all.
+	measure 'Demand Units' = IF ( ISBLANK ( [Unserved Units] ), BLANK (), [Market Units] + [Unserved Units] )
+		formatString: #,##0
+		displayFolder: 05 Market
+		lineageTag: 10e0fbaa-12a1-4753-bd1f-6d1045316e9e
+
+	measure 'Unserved Share %' = DIVIDE ( [Unserved Units], [Demand Units] )
+		formatString: 0.0%
+		displayFolder: 05 Market
+		lineageTag: f81685c9-a75a-421a-b4dd-1b9c3b49b9aa
+
+	/// Latest year that publishes a demand gap, so no year is hardcoded.
+	measure 'Demand Year Latest' =
+			MAXX (
+			    FILTER ( VALUES ( dim_period[year] ), NOT ISBLANK ( CALCULATE ( [Unserved Units] ) ) ),
+			    dim_period[year]
+			)
+		displayFolder: 05 Market
+		lineageTag: 9be6a704-5aa3-44e2-ae51-9a21be62afaa
+
+	measure 'Unserved Latest' =
+			VAR LatestYear = [Demand Year Latest]
+			RETURN
+			    CALCULATE ( [Unserved Units], dim_period[year] = LatestYear )
+		formatString: #,##0
+		displayFolder: 05 Market
+		lineageTag: 11fe7a85-10f3-43a0-a9ab-10f80d9eed1e
+
+	measure 'Demand Latest' =
+			VAR LatestYear = [Demand Year Latest]
+			RETURN
+			    CALCULATE ( [Demand Units], dim_period[year] = LatestYear )
+		formatString: #,##0
+		displayFolder: 05 Market
+		lineageTag: 57e49e83-b8bc-4662-abb2-f8dccb43dd46
+
+	measure 'Unserved Share Latest' =
+			VAR LatestYear = [Demand Year Latest]
+			RETURN
+			    CALCULATE ( [Unserved Share %], dim_period[year] = LatestYear )
+		formatString: 0.0%
+		displayFolder: 05 Market
+		lineageTag: d68c90d3-330b-4e60-8138-3d499ee062a9
+
+	measure 'Company Units Latest' =
+			VAR LatestYear = [Latest Closed Year]
+			RETURN
+			    CALCULATE ( [Market Units Sold], dim_period[year] = LatestYear )
+		formatString: #,##0
+		displayFolder: 05 Market
+		lineageTag: 3098c6e5-4a85-4a30-9beb-e4f0a6d80bfe
+
+	measure 'Unserved Card' = FORMAT ( [Unserved Latest], "#,##0" )
+		displayFolder: 05 Market
+		lineageTag: 685e8eed-a20a-4840-ba31-b23bdb425bd1
+
+	measure 'Demand Card' = FORMAT ( [Demand Latest], "#,##0" )
+		displayFolder: 05 Market
+		lineageTag: ae108612-991d-4305-803d-5a25b144cb6b
+
+	measure 'Unserved Share Card' = FORMAT ( [Unserved Share Latest], "0.0%" )
+		displayFolder: 05 Market
+		lineageTag: c26d8680-802b-4370-abbf-5c659a949279
+
+	measure 'Company Units Card' = FORMAT ( [Company Units Latest], "#,##0" )
+		displayFolder: 05 Market
+		lineageTag: 7c3f0e2a-9b41-4c6d-8f2e-5a1b3c4d6e70
+
+	/// Amounts are in euros and the model culture is es-PE, so charts that show a
+	/// scale carry the suffix themselves instead of letting the locale print "mill.".
+	measure 'Net Income M' = [Net Income] / 1000000
+		formatString: #,##0.00"M"
+		displayFolder: 01 Summary
+		lineageTag: 9b5a2c3d-7e4f-4051-8b72-3c8d9e0f1a24
+
+	measure 'Product Gross Margin M' = [Product Gross Margin] / 1000000
+		formatString: #,##0.00"M"
+		displayFolder: 02 Profitability
+		lineageTag: ac6b3d4e-8f50-4162-9c83-4d9e0f1a2b35
+
+	/// Demand is published in units and the model culture is es-PE, so the chart
+	/// carries the K suffix itself instead of letting the locale pick "mil".
+	measure 'Unserved Units K' = [Unserved Units] / 1000
+		formatString: #,##0"K"
+		displayFolder: 05 Market
+		lineageTag: 8a4f1b2c-6d3e-4f50-9a61-2b7c8d9e0f13
+
+	/// 2030 figure for whatever scenario the visual puts on its axis. Regime A only,
+	/// so a scenario is not counted twice. The chart reads Scenario Revenue K.
+	measure 'Scenario Revenue' = CALCULATE ( [Forecast Amount], dim_line_item[line_item_key] = "revenue_total" )
+		formatString: #,##0
+		displayFolder: 04 Forecast
+		lineageTag: 4c1d7a90-6b2e-4f18-8d3a-0e5b7c9a1f21
+
+	measure 'Scenario Net Result' = CALCULATE ( [Forecast Amount], dim_line_item[line_item_key] = "net_result_before_taxes" )
+		formatString: #,##0
+		displayFolder: 04 Forecast
+		lineageTag: 5d2e8b01-7c3f-4a29-9e4b-1f6c8d0b2a32
+
+	/// fact_backtest carries both regimes with identical values, so the sum is
+	/// restricted to one of them; the ratio measures are unaffected because they
+	/// divide one sum by another.
+	measure 'Backtest Forecast' = CALCULATE ( SUM ( fact_backtest[forecast_amount] ), dim_regime[regime_key] = "A" )
+		formatString: #,##0
+		displayFolder: 04 Forecast
+		lineageTag: 6e3f9c12-8d40-4b3a-af5c-2a7d9e1c3b43
+
+	measure 'Backtest Actual' = CALCULATE ( SUM ( fact_backtest[actual_amount] ), dim_regime[regime_key] = "A" )
+		formatString: #,##0
+		displayFolder: 04 Forecast
+		lineageTag: 7f40ad23-9e51-4c4b-b06d-3b8e0f2d4c54
+
+	/// Forecast minus actual: negative means the model came in below reality.
+	measure 'Backtest Error' = [Backtest Forecast] - [Backtest Actual]
+		formatString: +#,##0;-#,##0;0
+		displayFolder: 04 Forecast
+		lineageTag: 8041be34-af62-4d5c-c17e-4c9f103e5d65
+
+	measure 'Backtest Error Latest' = [Backtest Forecast Latest] - [Backtest Actual Latest]
+		formatString: +#,##0;-#,##0;0
+		displayFolder: 04 Forecast
+		lineageTag: 9152cf45-b073-4e6d-d28f-5da0214f6e76
+
+	/// The profit line alone, so a fold total is not a sum of subtotals.
+	measure 'Backtest Net Forecast' = CALCULATE ( [Backtest Forecast], dim_line_item[line_item_key] = "net_result_before_taxes" )
+		formatString: #,##0
+		displayFolder: 04 Forecast
+		lineageTag: a2638f56-c184-4f7e-e390-6eb1325a7f87
+
+	measure 'Backtest Net Actual' = CALCULATE ( [Backtest Actual], dim_line_item[line_item_key] = "net_result_before_taxes" )
+		formatString: #,##0
+		displayFolder: 04 Forecast
+		lineageTag: b3749a67-d295-4a8f-f4a1-7fc2436b8098
+
+	measure 'Backtest Net Error' = [Backtest Net Forecast] - [Backtest Net Actual]
+		formatString: +#,##0;-#,##0;0
+		displayFolder: 04 Forecast
+		lineageTag: c485ab78-e3a6-4b90-05b2-80d3547c91a9
+
+	/// Blank for every line that is not a headline, so a bar chart of the miss
+	/// shows five bars instead of twenty and never mixes a subtotal with its own
+	/// components. The variable is not called Key: that name collides with the
+	/// DAX KEY function and the measure fails to parse.
+	measure 'Backtest Error Key Lines' =
+			VAR LineKey = SELECTEDVALUE ( dim_line_item[line_item_key] )
+			RETURN
+			    IF (
+			        LineKey = "revenue_total"
+			            || LineKey = "cost_of_sales_total"
+			            || LineKey = "gross_profit"
+			            || LineKey = "operating_expenses_total"
+			            || LineKey = "net_result_before_taxes",
+			        [Backtest Error Latest]
+			    )
+		formatString: +#,##0;-#,##0;0
+		displayFolder: 04 Forecast
+		lineageTag: d596bc89-f4b7-4ca1-16c3-91e4658da2ba
+
+	/// Chart-only twins in thousands. Auto display units take their suffix from
+	/// the model culture (es-PE) and render "mil" inside an English report, so the
+	/// K suffix is a literal in the format string instead.
+	measure 'Scenario Revenue K' = [Scenario Revenue] / 1000
+		formatString: #,##0"K"
+		displayFolder: 04 Forecast
+		lineageTag: e1a7cd90-a5c8-4d32-9b74-60f5961af3cb
+
+	measure 'Scenario Net Result K' = [Scenario Net Result] / 1000
+		formatString: #,##0"K"
+		displayFolder: 04 Forecast
+		lineageTag: f2b8de01-b6d9-4e43-ac85-71a6a72b04dc
+
+	measure 'Backtest Error K' = DIVIDE ( [Backtest Error Key Lines], 1000 )
+		formatString: +#,##0"K";-#,##0"K";0"K"
+		displayFolder: 04 Forecast
+		lineageTag: 03c9ef12-c7ea-4f54-bd96-82b7b83c15ed
+
+	/// Page-03 chart twins in thousands; see the note on Scenario Revenue K for
+	/// why the K is a literal instead of a display unit. Values that round to zero
+	/// collapse to zero so the label never prints "-0K".
+	measure 'Bridge Total K' =
+			VAR Thousands = [Bridge Total] / 1000
+			RETURN
+			    IF ( ABS ( Thousands ) < 0.5, 0, Thousands )
+		formatString: +#,##0"K";-#,##0"K";0"K"
+		displayFolder: 03 Variance
+		lineageTag: 14da0f23-d8fb-4a65-ce07-93c8c94d26fe
+
+	measure 'Operating Expenses Variance K' = [Operating Expenses Variance] / 1000
+		formatString: +#,##0"K";-#,##0"K";0"K"
+		displayFolder: 03 Variance
+		lineageTag: 25eb1034-e90c-4b76-df18-a4d9da5e37af
+
+	/// Safe above year grain: [Market Units] covers all six years but demand is
+	/// published for three, so folding both across years would divide three years
+	/// of unserved demand by six years of market. This restricts the base to the
+	/// years that carry demand.
+	measure 'Unserved Share Published %' =
+			VAR Unserved = [Unserved Units]
+			VAR PublishedMarket =
+			    SUMX (
+			        FILTER ( VALUES ( dim_period[year] ), NOT ISBLANK ( [Unserved Units] ) ),
+			        [Market Units]
+			    )
+			RETURN
+			    DIVIDE ( Unserved, PublishedMarket + Unserved )
+		formatString: 0.0%
+		displayFolder: 05 Market
+		lineageTag: 4a1b558d-af44-4e42-ae6f-5b7d60028f29
 
 	column Dummy
 		dataType: string

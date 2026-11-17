@@ -42,11 +42,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Net Income"
+                  "Property": "Net Income M"
                 }
               },
-              "queryRef": "_Measures.Net Income",
-              "nativeQueryRef": "Net Income"
+              "queryRef": "_Measures.Net Income M",
+              "nativeQueryRef": "Net Income M"
             }
           ]
         }
@@ -63,24 +63,10 @@
                 }
               }
             },
-            "start": {
+            "show": {
               "expr": {
                 "Literal": {
-                  "Value": "-500000D"
-                }
-              }
-            },
-            "labelDisplayUnits": {
-              "expr": {
-                "Literal": {
-                  "Value": "1000000D"
-                }
-              }
-            },
-            "labelPrecision": {
-              "expr": {
-                "Literal": {
-                  "Value": "1L"
+                  "Value": "false"
                 }
               }
             }
@@ -174,7 +160,14 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
                 }
               }
             }

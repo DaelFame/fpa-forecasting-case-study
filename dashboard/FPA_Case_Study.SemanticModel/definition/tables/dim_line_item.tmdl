@@ -46,6 +46,15 @@ table dim_line_item
 		summarizeBy: none
 		sourceColumn: display_order
 
+	/// The source spells research and development as "Rd expenses". Report-facing
+	/// visuals read this column so the typo never reaches a page; keys and joins
+	/// still use line_item_key.
+	column 'Report label' = SUBSTITUTE ( dim_line_item[label], "Rd expenses", "R&D expenses" )
+		dataType: string
+		lineageTag: 7b5e2f41-2c6d-4a90-9f1b-3d8c5a7e4b10
+		summarizeBy: none
+		sortByColumn: display_order
+
 	partition dim_line_item = m
 		mode: import
 		source =
