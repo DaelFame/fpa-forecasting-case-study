@@ -3,7 +3,7 @@
 ![CI](https://github.com/DaelFame/fpa-forecasting-case-study/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![uv](https://img.shields.io/badge/managed%20with-uv-black)
-![Tests](https://img.shields.io/badge/tests-74%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-83%20passing-brightgreen)
 
 A manufacturer of neckties, scarves and socks grew revenue 0.9% in 2026 and watched
 net income fall 61%. A Python financial model rebuilt its statements from the raw
@@ -13,23 +13,32 @@ information available at the time.
 
 ---
 
-## 📊 Executive Dashboard Status (Power BI PBIR Report)
+## 📊 Executive Dashboard (Power BI PBIR, five pages)
 
-**Pages completed & verified:**
-- `01 | Summary` — DAX-verified KPI cards, tooltip pages, executive header and takeaway
-- `02 | Profitability` — Product margin analysis, 12-column grid layout, question-driven titles
-- `03 | Variance` — **Built / In Review**: Variance bridge, year-over-year columns, opex breakdown, interactive tooltips (hover captures available)
+All five pages are built, validated with `powerbi-report-author validate` and
+reviewed from a fresh render. Nothing on a page is written before the figure
+behind it is executed against the live semantic model at the grain the visual
+shows, and every visible string is English.
+
+| Page | Question it answers | Verified headline |
+|---|---|---|
+| `01 \| Summary` | How did the business perform over the last five years? | Revenue **€6,206,657**, net income **€2,385,093**, gross margin **35.4% → 62.5%** |
+| `02 \| Profitability` | Which product line created the margin — and which one destroyed it? | Ties carry **72.1%** of revenue and **79%** of gross margin; the weakest line went from **−€57K** to **+€132K** |
+| `03 \| Variance` | Where did the budget miss, and by how much? | Net income vs plan **+€867,945 (+21.9%)**, **3 of 4** years ahead, opex **−€326,210** |
+| `04 \| Forecast` | Can the forecast be trusted? How wrong was it, and in which direction? | 2029 fold **76.2%** accuracy, bias **−21.4%**; 2030 base **€6,206,656** revenue and **€2,385,094** net result |
+| `05 \| Market` | Why is the capacity the constraint, not price? | **594,748** units unserved in 2028 (**24.5%** of demand), company share **14.3% → 20.1%** |
 
 **Canvas:** 1920×1080 · `#F5F7FA` · 12-column grid (139 px columns, 16 px gutter, 32 px margins)
 **Palette:** Primary `#1F3864`, Secondary `#2E75B6`, Neutral `#8C8C8C`, Card `#FFFFFF`
 **Typography:** 16 px title, 11 px subtitle, 10 px card label, 32 px callout value
-**All text 100% English** — permanent rule in `dashboard/AGENTS.md`
+**All text 100% English** — permanent rule in `dashboard/AGENTS.md`, display units included
 
 **Live DAX-verified numbers (FY 2026–2029, pre-tax):**
 - Plan Net Income: **€3,954,345** | Actual: **€4,822,290** | Variance: **+€867,945** (`+21.9%`)
 - 2026: **−€243,137** (`−61.1%`) | 2027: **+€351,995** (`+127.0%`)
 - 2028: **+€499,886** (`+43.3%`) | 2029: **+€259,201** (`+12.2%`)
 - Drivers: Extraordinary **+€572,000** (65.9% of surplus), Unit Cost **+€551,368**, Volume **+€255,229**, Opex overrun **−€326,210**
+- Forecast backtest: 2028 fold **86.9%** accurate (**−8.8%** bias), 2029 fold **76.2%** accurate (**−21.4%** bias), total error **−€1,673,785**
 
 **Report Page Tooltips:** Hidden tooltip pages bound to every KPI card and visual, verified against the working PBIR pattern from `tipRevenue`.
 
@@ -48,7 +57,7 @@ while net income missed by 61.1%. The bridge is unambiguous:
 | Extraordinary result | +18,000 |
 | **Net variance** | **(243,137)** |
 
-The market showed up. The cost discipline did not. Of the overrun, **?150,000 of
+The market showed up. The cost discipline did not. Of the overrun, **€150,000 of
 general expenses has no documentary support** - it is carried as a visible gap, not
 smoothed away. Gross margin itself broke down into price +41,536, volume -2,607,
 mix +1 and unit cost +35,527.
@@ -68,7 +77,7 @@ is not noise: an under-budgeting habit hides capacity needs and understates cash
 ## The Data Cleaning & Processing Engine (`cg_01`)
 
 The `cg_01` engine is the automated, auditable pipeline that transforms raw operational
-and financial workbooks into a star schema (18 tables, 28 relationships, 46 DAX measures)
+and financial workbooks into a star schema (18 tables, 28 relationships, 94 DAX measures)
 consumed by the Power BI dashboard.
 
 **Ingestion** (`src/cg_01/loader.py`):
@@ -94,7 +103,7 @@ consumed by the Power BI dashboard.
 - Every figure carries a source file, sheet and cell coordinate
 - Source hashes verified on every run; mismatches flagged as warnings
 - Decision logs marked `pending` when they contradict the close (e.g., 2029 log)
-- 74 pytest tests on accounting identities, referential integrity, exact variance tie-out,
+- 83 pytest tests on accounting identities, referential integrity, exact variance tie-out,
   backtest coverage, and source-identity regressions
 
 **Tech stack:** Python 3.12 · pandas, NumPy, openpyxl · Galaxy-schema data marts (8 fact
@@ -106,18 +115,29 @@ tables sharing 9 conformed dimensions) · Git and CI (GitHub Actions) · Power B
 uv sync --group dev
 uv run python -m cg_01              # canonical layer + literal cell export
 uv run python -m cg_01.fpa.marts   # statements, marts and the 2030 forecast
-uv run pytest -q                     # 74 tests
+uv run pytest -q                     # 83 tests
 ```
 
 ---
 
 ## 📸 Visual Assets
 
-![1_Summary.png](assets/1_Summary.png)
-*Page 01 | Summary — KPI cards, header title/subtitle, navigation row, and hover tooltips*
+All five pages, captured from the report canvas at 1920×1080.
 
-![2_Profitability.png](assets/2_Profitability.png)
-*Page 02 | Profitability — product margin analysis, 12-column grid, navigation buttons*
+![Page 01 | Summary](assets/01-summary.png)
+*`01 \| Summary` — KPI cards with a five-year P&L, gross-margin trend, year matrix and report page tooltips*
+
+![Page 02 | Profitability](assets/02-profitability.png)
+*`02 \| Profitability` — margin by product line, revenue mix and gross-margin contribution*
+
+![Page 03 | Variance](assets/03-variance.png)
+*`03 \| Variance` — plan vs actual, driver bridge and the operating-expense overrun line by line*
+
+![Page 04 | Forecast](assets/04-forecast.png)
+*`04 \| Forecast` — scenario band for 2030, backtest fold accuracy and forecast error by headline*
+
+![Page 05 | Market](assets/05-market.png)
+*`05 \| Market` — published demand, unserved units and market share, with the gap concentrated in neckties*
 
 ---
 
@@ -127,7 +147,7 @@ uv run pytest -q                     # 74 tests
 uv sync --group dev
 uv run python -m cg_01              # canonical layer + literal cell export
 uv run python -m cg_01.fpa.marts   # statements, marts and the 2030 forecast
-uv run pytest -q                     # 74 tests
+uv run pytest -q                     # 83 tests
 ```
 Visit `outputs/markdown/` for the literal cell-by-cell export and
 `dashboard/FPA_Case_Study.Report/` for the Power BI PBIR report.
@@ -153,7 +173,7 @@ before it is used.
 uv sync --group dev
 uv run python -m cg_01            # canonical layer + literal cell export
 uv run python -m cg_01.fpa.marts  # statements, marts and the 2030 forecast
-uv run pytest -q                  # 74 tests
+uv run pytest -q                  # 83 tests
 ```
 
 Inside the repository: `outputs/markdown/` keeps a literal cell-by-cell export of
