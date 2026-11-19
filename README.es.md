@@ -1,6 +1,6 @@
 # FP&A Forecasting & Variance Analysis - Caso de estudio: accesorios de moda
 
-![CI](https://github.com/DaelFame/fpa-forecasting-case-study/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/DaelFame/fpa-forecasting-case-study/actions/workflows/ci.yml/badge.svg)](https://github.com/DaelFame/fpa-forecasting-case-study/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![uv](https://img.shields.io/badge/managed%20with-uv-black)
 ![Tests](https://img.shields.io/badge/tests-83%20passing-brightgreen)
@@ -8,8 +8,21 @@
 Un fabricante de corbatas, bufandas y calcetines creció un 0,9% en ingresos en 2026 y vio
 caer su resultado neto un 61%. Un modelo financiero en Python reconstruyó sus estados
 contables desde los libros de cierre originales, atribuyó toda la desviación a gastos
-operativos y pronosticó los ingresos del año siguiente con un **0,3% de error** - un año
-antes, usando solo la información disponible en ese momento.
+operativos y midió el pronóstico contra su propio cierre posterior: el pliegue 2029 del
+backtest quedó **76,2% exacto con un sesgo de −21,4%** — fue demasiado pesimista, no
+demasiado optimista.
+
+Lee el caso escrito en **[daelfame.github.io/work/fpa-forecasting](https://daelfame.github.io/work/fpa-forecasting/)**.
+
+## Estado
+
+| Pieza | Estado |
+|---|---|
+| Motor de datos (`src/cg_01`) | Completo — capa canónica, marts y pronóstico 2030 |
+| Pruebas | 83 pasando; CI en verde sobre `main` |
+| Modelo semántico | 18 tablas, 28 relaciones, 94 medidas DAX |
+| Informe Power BI (PBIR) | Cinco páginas construidas, validadas y verificadas con capturas |
+| Backtest | Pliegue 2028 86,9% exacto (sesgo −8,8%); pliegue 2029 76,2% (−21,4%) |
 
 ---
 

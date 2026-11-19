@@ -1,15 +1,27 @@
 # FP&A Forecasting & Variance Analysis - Fashion Accessories Case Study
 
-![CI](https://github.com/DaelFame/fpa-forecasting-case-study/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/DaelFame/fpa-forecasting-case-study/actions/workflows/ci.yml/badge.svg)](https://github.com/DaelFame/fpa-forecasting-case-study/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![uv](https://img.shields.io/badge/managed%20with-uv-black)
 ![Tests](https://img.shields.io/badge/tests-83%20passing-brightgreen)
 
 A manufacturer of neckties, scarves and socks grew revenue 0.9% in 2026 and watched
 net income fall 61%. A Python financial model rebuilt its statements from the raw
-closing workbooks, traced the entire miss to operating expenses, and forecast the
-next year's revenue within **0.3%** of the actual close - one year ahead, using only
-information available at the time.
+closing workbooks, traced the entire miss to operating expenses, and scored the
+forecast against its own later close: the 2029 backtest fold landed **76.2% accurate
+with a −21.4% bias** — it was too pessimistic, not too optimistic.
+
+Read the written case at **[daelfame.github.io/work/fpa-forecasting](https://daelfame.github.io/work/fpa-forecasting/)**.
+
+## Status
+
+| Piece | State |
+|---|---|
+| Data engine (`src/cg_01`) | Complete — canonical layer, marts and the 2030 forecast |
+| Tests | 83 passing; CI green on `main` |
+| Semantic model | 18 tables, 28 relationships, 94 DAX measures |
+| Power BI report (PBIR) | Five pages built, validated and screenshot-verified |
+| Backtest | 2028 fold 86.9% accurate (−8.8% bias); 2029 fold 76.2% (−21.4% bias) |
 
 ---
 
